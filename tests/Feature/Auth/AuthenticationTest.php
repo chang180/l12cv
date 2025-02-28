@@ -13,8 +13,9 @@ test('login screen can be rendered', function () {
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
-    // 先訪問一個受保護的路由來設置 intended URL
-    $this->get(route('resume.dashboard'));
+    // 使用 withSession 方法來模擬 intended URL
+    $this->withSession(['url.intended' => route('resume.dashboard')])
+        ->get('/login');
 
     $response = LivewireVolt::test('auth.login')
         ->set('email', $user->email)
@@ -23,7 +24,7 @@ test('users can authenticate using the login screen', function () {
 
     $response->assertHasNoErrors();
     $this->assertAuthenticated();
-    $this->assertEquals(route('resume.dashboard', absolute: false), session('url.intended'));
+    $response->assertRedirect(route('resume.dashboard'));
 });
 
 test('users can not authenticate with invalid password', function () {
@@ -41,7 +42,7 @@ test('users can logout', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
-        ->get('/logout'); // 改用 GET 方法，或者確保你的應用支援 POST 方法的登出
+        ->post(route('logout'));
 
     $this->assertGuest();
     $response->assertRedirect('/');
