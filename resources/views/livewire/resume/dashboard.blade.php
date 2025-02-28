@@ -30,7 +30,6 @@ $create = function () {
 
     return $this->redirect(route('resume.edit'), navigate: true);
 };
-
 ?>
 
 <div>
@@ -72,20 +71,20 @@ $create = function () {
                                             </p>
                                         </div>
                                         <div class="flex space-x-2">
-                                            <x-button
+                                            <flux:button
                                                 wire:click="edit"
                                                 icon="pencil"
                                                 variant="primary"
                                             >
                                                 編輯
-                                            </x-button>
-                                            <x-button
+                                            </flux:button>
+                                            <flux:button
                                                 wire:click="settings"
-                                                icon="settings"
-                                                variant="secondary"
+                                                icon="cog"
+                                                variant="ghost"
                                             >
                                                 設定
-                                            </x-button>
+                                            </flux:button>
                                         </div>
                                     </div>
                                 </x-card>
@@ -95,13 +94,13 @@ $create = function () {
                                         <h3 class="text-lg font-medium">還沒有履歷</h3>
                                         <p class="mt-1 text-sm text-gray-500">開始建立你的第一份履歷吧！</p>
                                         <div class="mt-4">
-                                            <x-button
+                                            <flux:button
                                                 wire:click="create"
                                                 icon="plus"
                                                 variant="primary"
                                             >
                                                 建立履歷
-                                            </x-button>
+                                            </flux:button>
                                         </div>
                                     </div>
                                 </x-card>
@@ -110,7 +109,6 @@ $create = function () {
                     </section>
                 </div>
             </x-card>
-
             <!-- 個人資料設定區塊 -->
             <x-card>
                 <div class="max-w-xl">
@@ -119,19 +117,17 @@ $create = function () {
                             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                                 {{ __('個人資料') }}
                             </h2>
-
                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                 {{ __('更新你的帳號資料與電子郵件。') }}
                             </p>
                         </header>
-
                         <div class="mt-6">
-                            <x-button
+                            <flux:button
                                 href="{{ route('settings.profile') }}"
                                 variant="primary"
                             >
                                 {{ __('編輯個人資料') }}
-                            </x-button>
+                            </flux:button>
                         </div>
                     </section>
                 </div>
@@ -145,19 +141,17 @@ $create = function () {
                             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                                 {{ __('安全性') }}
                             </h2>
-
                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                 {{ __('確保你的帳號使用夠強的密碼以保持安全。') }}
                             </p>
                         </header>
-
                         <div class="mt-6">
-                            <x-button
+                            <flux:button
                                 href="{{ route('settings.password') }}"
                                 variant="primary"
                             >
                                 {{ __('變更密碼') }}
-                            </x-button>
+                            </flux:button>
                         </div>
                     </section>
                 </div>
@@ -171,19 +165,17 @@ $create = function () {
                             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                                 {{ __('外觀設定') }}
                             </h2>
-
                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                 {{ __('自訂你的使用體驗，設定深色模式與其他顯示選項。') }}
                             </p>
                         </header>
-
                         <div class="mt-6">
-                            <x-button
+                            <flux:button
                                 href="{{ route('settings.appearance') }}"
                                 variant="primary"
                             >
                                 {{ __('調整外觀') }}
-                            </x-button>
+                            </flux:button>
                         </div>
                     </section>
                 </div>
