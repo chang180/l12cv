@@ -24,7 +24,7 @@ mount(function () {
     $this->experience = $this->resume->experience ?? [];
 });
 
-$updateBasicInfo = function() {
+$updateBasicInfo = function () {
     $this->resume->update([
         'title' => $this->title,
         'summary' => $this->summary,
@@ -36,7 +36,7 @@ $updateBasicInfo = function() {
     ]);
 };
 
-$addEducation = function() {
+$addEducation = function () {
     $this->education[] = [
         'school' => '',
         'degree' => '',
@@ -47,12 +47,12 @@ $addEducation = function() {
     ];
 };
 
-$removeEducation = function($index) {
+$removeEducation = function ($index) {
     unset($this->education[$index]);
     $this->education = array_values($this->education);
 };
 
-$updateEducation = function() {
+$updateEducation = function () {
     $this->resume->update([
         'education' => $this->education,
     ]);
@@ -63,7 +63,7 @@ $updateEducation = function() {
     ]);
 };
 
-$addExperience = function() {
+$addExperience = function () {
     $this->experience[] = [
         'company' => '',
         'position' => '',
@@ -74,12 +74,12 @@ $addExperience = function() {
     ];
 };
 
-$removeExperience = function($index) {
+$removeExperience = function ($index) {
     unset($this->experience[$index]);
     $this->experience = array_values($this->experience);
 };
 
-$updateExperience = function() {
+$updateExperience = function () {
     $this->resume->update([
         'experience' => $this->experience,
     ]);
@@ -98,264 +98,192 @@ $updateExperience = function() {
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('編輯履歷') }}
             </h2>
-            <x-filament::button
-                wire:click="$dispatch('save')"
-                icon="heroicon-o-check"
-                color="success"
-            >
+            <flux:button wire:click="$dispatch('save')" variant="success">
+                <flux:icon name="check" class="mr-2" />
                 儲存
-            </x-filament::button>
+            </flux:button>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <x-card>
                 <div class="p-6">
                     <!-- 分頁標籤 -->
-                    <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
-                        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav class="flex -mb-px space-x-8">
                             <button
                                 wire:click="$set('currentTab', 'basic')"
-                                class="{{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
                             >
                                 基本資料
                             </button>
                             <button
                                 wire:click="$set('currentTab', 'education')"
-                                class="{{ $currentTab === 'education' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'education' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
                             >
                                 學歷
                             </button>
                             <button
                                 wire:click="$set('currentTab', 'experience')"
-                                class="{{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
                             >
                                 工作經驗
                             </button>
                         </nav>
                     </div>
-
                     <!-- 基本資料表單 -->
                     <div x-show="$wire.currentTab === 'basic'">
-                        <x-filament::card>
+                        <x-card>
                             <form wire:submit="updateBasicInfo" class="space-y-6">
                                 <div>
-                                    <x-filament::input.wrapper>
-                                        <x-filament::input.label for="title">標題</x-filament::input.label>
-                                        <x-filament::input
-                                            wire:model="title"
-                                            id="title"
-                                            type="text"
-                                            required
-                                        />
-                                    </x-filament::input.wrapper>
+                                    <flux:label for="title">標題</flux:label>
+                                    <flux:input wire:model="title" id="title" type="text" required />
+                                    <flux:error :messages="$errors->get('title')" />
                                 </div>
-
                                 <div>
-                                    <x-filament::input.wrapper>
-                                        <x-filament::input.label for="summary">簡介</x-filament::input.label>
-                                        <x-filament::textarea
-                                            wire:model="summary"
-                                            id="summary"
-                                            rows="4"
-                                        />
-                                    </x-filament::input.wrapper>
+                                    <flux:label for="summary">簡介</flux:label>
+                                    <flux:textarea wire:model="summary" id="summary" rows="4" />
+                                    <flux:error :messages="$errors->get('summary')" />
                                 </div>
-
                                 <div class="flex justify-end">
-                                    <x-filament::button type="submit">
+                                    <flux:button type="submit" variant="primary">
+                                        <flux:icon name="save" class="mr-2" />
                                         更新基本資料
-                                    </x-filament::button>
+                                    </flux:button>
                                 </div>
                             </form>
-                        </x-filament::card>
+                                </x-card>
                     </div>
 
                     <!-- 學歷表單 -->
                     <div x-show="$wire.currentTab === 'education'">
                         <div class="space-y-4">
-                            @foreach($education as $index => $edu)
-                                <x-filament::card>
+                            @foreach ($education as $index => $edu)
+                                <x-card>
                                     <div class="space-y-4">
-                                        <div class="flex justify-between items-start">
+                                    <div class="flex justify-between items-start">
                                             <h3 class="text-lg font-medium">學歷 #{{ $index + 1 }}</h3>
-                                            <x-filament::button
-                                                wire:click="removeEducation({{ $index }})"
-                                                color="danger"
-                                                size="sm"
-                                                icon="heroicon-o-trash"
-                                            >
-                                                刪除
-                                            </x-filament::button>
-                                        </div>
-
-                                        <div class="grid grid-cols-2 gap-4">
-                                            <x-filament::input.wrapper>
-                                                <x-filament::input.label>學校</x-filament::input.label>
-                                                <x-filament::input
-                                                    wire:model="education.{{ $index }}.school"
-                                                    type="text"
-                                                />
-                                            </x-filament::input.wrapper>
-
-                                            <x-filament::input.wrapper>
-                                                <x-filament::input.label>學位</x-filament::input.label>
-                                                <x-filament::input
-                                                    wire:model="education.{{ $index }}.degree"
-                                                    type="text"
-                                                />
-                                            </x-filament::input.wrapper>
-
-                                            <x-filament::input.wrapper>
-                                                <x-filament::input.label>科系</x-filament::input.label>
-                                                <x-filament::input
-                                                    wire:model="education.{{ $index }}.field"
-                                                    type="text"
-                                                />
-                                            </x-filament::input.wrapper>
-
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <x-filament::input.wrapper>
-                                                    <x-filament::input.label>開始日期</x-filament::input.label>
-                                                    <x-filament::input
-                                                        wire:model="education.{{ $index }}.start_date"
-                                                        type="date"
-                                                    />
-                                                </x-filament::input.wrapper>
-
-                                                <x-filament::input.wrapper>
-                                                    <x-filament::input.label>結束日期</x-filament::input.label>
-                                                    <x-filament::input
-                                                        wire:model="education.{{ $index }}.end_date"
-                                                        type="date"
-                                                    />
-                                                </x-filament::input.wrapper>
-                                            </div>
-                                        </div>
-
-                                        <x-filament::input.wrapper>
-                                            <x-filament::input.label>描述</x-filament::input.label>
-                                            <x-filament::textarea
-                                                wire:model="education.{{ $index }}.description"
-                                                rows="3"
-                                            />
-                                        </x-filament::input.wrapper>
+                                            <flux:button wire:click="removeEducation({{ $index }})"
+                                            variant="danger" size="sm">
+                                            <flux:icon name="trash" class="mr-2" />
+                                            刪除
+                                        </flux:button>
                                     </div>
-                                </x-filament::card>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                                <flux:label>學校</flux:label>
+                                                <flux:input wire:model="education.{{ $index }}.school"
+                                                type="text" />
+                                        </div>
+                                        <div>
+                                                <flux:label>學位</flux:label>
+                                                <flux:input wire:model="education.{{ $index }}.degree"
+                                                type="text" />
+                                        </div>
+                                            <div>
+                                                <flux:label>科系</flux:label>
+                                                <flux:input wire:model="education.{{ $index }}.field"
+                                                    type="text" />
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <flux:label>開始日期</flux:label>
+                                                    <flux:input wire:model="education.{{ $index }}.start_date"
+                                                        type="date" />
+                                            </div>
+                                                <div>
+                                                    <flux:label>結束日期</flux:label>
+                                                    <flux:input wire:model="education.{{ $index }}.end_date"
+                                                        type="date" />
+                                        </div>
+                                    </div>
+                                        </div>
+                                        <div>
+                                            <flux:label>描述</flux:label>
+                                            <flux:textarea wire:model="education.{{ $index }}.description"
+                                                rows="3" />
+                                </div>
+                                    </div>
+                                </x-card>
                             @endforeach
-
                             <div class="flex justify-between">
-                                <x-filament::button
-                                    wire:click="addEducation"
-                                    icon="heroicon-o-plus"
-                                >
+                                <flux:button wire:click="addEducation" variant="secondary">
+                                    <flux:icon name="plus" class="mr-2" />
                                     新增學歷
-                                </x-filament::button>
-
-                                <x-filament::button
-                                    wire:click="updateEducation"
-                                    color="success"
-                                >
+                            </flux:button>
+                                <flux:button wire:click="updateEducation" variant="success">
+                                    <flux:icon name="save" class="mr-2" />
                                     儲存學歷資料
-                                </x-filament::button>
-                            </div>
-                        </div>
+                                </flux:button>
+                    </div>
+                </div>
                     </div>
 
                     <!-- 工作經驗表單 -->
                     <div x-show="$wire.currentTab === 'experience'" class="space-y-4">
-                        @foreach($experience as $index => $exp)
-                            <x-filament::card>
+                        @foreach ($experience as $index => $exp)
+                            <x-card>
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-start">
                                         <h3 class="text-lg font-medium">工作經驗 #{{ $index + 1 }}</h3>
-                                        <x-filament::button
-                                            wire:click="removeExperience({{ $index }})"
-                                            color="danger"
-                                            size="sm"
-                                            icon="heroicon-o-trash"
-                                        >
+                                        <flux:button wire:click="removeExperience({{ $index }})"
+                                            variant="danger" size="sm">
+                                            <flux:icon name="trash" class="mr-2" />
                                             刪除
-                                        </x-filament::button>
-                                    </div>
-
+                                        </flux:button>
+        </div>
                                     <div class="grid grid-cols-2 gap-4">
-                                        <x-filament::input.wrapper>
-                                            <x-filament::input.label>公司</x-filament::input.label>
-                                            <x-filament::input
-                                                wire:model="experience.{{ $index }}.company"
-                                                type="text"
-                                            />
-                                        </x-filament::input.wrapper>
-
-                                        <x-filament::input.wrapper>
-                                            <x-filament::input.label>職位</x-filament::input.label>
-                                            <x-filament::input
-                                                wire:model="experience.{{ $index }}.position"
-                                                type="text"
-                                            />
-                                        </x-filament::input.wrapper>
-
+                                        <div>
+                                            <flux:label>公司</flux:label>
+                                            <flux:input wire:model="experience.{{ $index }}.company"
+                                                type="text" />
+    </div>
+                                        <div>
+                                            <flux:label>職位</flux:label>
+                                            <flux:input wire:model="experience.{{ $index }}.position"
+                                                type="text" />
+</div>
                                         <div class="grid grid-cols-2 gap-4">
-                                            <x-filament::input.wrapper>
-                                                <x-filament::input.label>開始日期</x-filament::input.label>
-                                                <x-filament::input
-                                                    wire:model="experience.{{ $index }}.start_date"
+                                            <div>
+                                                <flux:label>開始日期</flux:label>
+                                                <flux:input wire:model="experience.{{ $index }}.start_date"
+                                                    type="date" />
+                                            </div>
+                                            <div>
+                                                <flux:label>結束日期</flux:label>
+                                                <flux:input wire:model="experience.{{ $index }}.end_date"
                                                     type="date"
-                                                />
-                                            </x-filament::input.wrapper>
-
-                                            <x-filament::input.wrapper>
-                                                <x-filament::input.label>結束日期</x-filament::input.label>
-                                                <x-filament::input
-                                                    wire:model="experience.{{ $index }}.end_date"
-                                                    type="date"
-                                                    :disabled="$experience[$index]['current'] ?? false"
-                                                />
-                                            </x-filament::input.wrapper>
+                                                    :disabled="$experience[$index]['current'] ?? false" />
+                                            </div>
                                         </div>
-
-                                        <x-filament::input.wrapper>
-                                            <label class="flex items-center">
-                                                <x-filament::input
-                                                    wire:model="experience.{{ $index }}.current"
-                                                    type="checkbox"
-                                                />
-                                                <span class="ml-2">目前在職中</span>
-                                            </label>
-                                        </x-filament::input.wrapper>
+                                        <div>
+                                            <flux:checkbox wire:model="experience.{{ $index }}.current"
+                                                label="目前在職中" />
+                                        </div>
                                     </div>
-
-                                    <x-filament::input.wrapper>
-                                        <x-filament::input.label>工作描述</x-filament::input.label>
-                                        <x-filament::textarea
-                                            wire:model="experience.{{ $index }}.description"
-                                            rows="3"
-                                        />
-                                    </x-filament::input.wrapper>
+                                    <div>
+                                        <flux:label>工作描述</flux:label>
+                                        <flux:textarea wire:model="experience.{{ $index }}.description"
+                                            rows="3" />
+                                    </div>
                                 </div>
-                            </x-filament::card>
+                            </x-card>
                         @endforeach
 
                         <div class="flex justify-between">
-                            <x-filament::button
-                                wire:click="addExperience"
-                                icon="heroicon-o-plus"
-                            >
+                            <flux:button wire:click="addExperience" variant="secondary">
+                                <flux:icon name="plus" class="mr-2" />
                                 新增工作經驗
-                            </x-filament::button>
-
-                            <x-filament::button
-                                wire:click="updateExperience"
-                                color="success"
-                            >
+                            </flux:button>
+                            <flux:button wire:click="updateExperience" variant="success">
+                                <flux:icon name="save" class="mr-2" />
                                 儲存工作經驗
-                            </x-filament::button>
+                            </flux:button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
     </div>
 </div>

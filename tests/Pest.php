@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Blade;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -45,3 +47,12 @@ function something()
 {
     // ..
 }
+
+/*
+|--------------------------------------------------------------------------
+| Flux Components Registration
+|--------------------------------------------------------------------------
+|
+| Register Flux components for testing environment
+|
+*/
