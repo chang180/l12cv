@@ -36,67 +36,158 @@ $create = function () {
 <div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('履歷管理') }}
+            {{ __('控制台') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div class="space-y-4">
-                        @if($resume)
-                            <x-filament::card>
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h3 class="text-lg font-medium">{{ $resume->title }}</h3>
-                                        <p class="text-sm text-gray-500">
-                                            {{ $resume->is_public ? '公開' : '未公開' }} ·
-                                            @if($resume->is_public)
-                                                <a href="{{ route('resume.public', $resume->slug) }}" class="text-primary-600 hover:text-primary-500">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <!-- 履歷管理區塊 -->
+            <x-card>
+                <div class="max-w-xl">
+                    <section>
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                {{ __('履歷管理') }}
+                            </h2>
+                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                {{ __('管理你的個人履歷，設定公開狀態與分享連結。') }}
+                            </p>
+                        </header>
+                        <div class="mt-6 space-y-6">
+                            @if($resume)
+                                <x-card>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-lg font-medium">{{ $resume->title }}</h3>
+                                            <p class="text-sm text-gray-500">
+                                                {{ $resume->is_public ? '公開' : '未公開' }} ·
+                                                @if($resume->is_public)
+                                                    <a href="{{ route('resume.public', $resume->slug) }}" class="text-primary-600 hover:text-primary-500">
+                                                        {{ '@' . $resume->slug }}
+                                                    </a>
+                                                @else
                                                     {{ '@' . $resume->slug }}
-                                                </a>
-                                            @else
-                                                {{ '@' . $resume->slug }}
-                                            @endif
-                                        </p>
+                                                @endif
+                                            </p>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <x-button
+                                                wire:click="edit"
+                                                icon="pencil"
+                                                variant="primary"
+                                            >
+                                                編輯
+                                            </x-button>
+                                            <x-button
+                                                wire:click="settings"
+                                                icon="settings"
+                                                variant="secondary"
+                                            >
+                                                設定
+                                            </x-button>
+                                        </div>
                                     </div>
-                                    <div class="flex space-x-2">
-                                        <x-filament::button
-                                            wire:click="$edit"
-                                            icon="heroicon-o-pencil"
-                                        >
-                                            編輯
-                                        </x-filament::button>
-                                        <x-filament::button
-                                            wire:click="$settings"
-                                            icon="heroicon-o-cog"
-                                            color="secondary"
-                                        >
-                                            設定
-                                        </x-filament::button>
+                                </x-card>
+                            @else
+                                <x-card>
+                                    <div class="text-center">
+                                        <h3 class="text-lg font-medium">還沒有履歷</h3>
+                                        <p class="mt-1 text-sm text-gray-500">開始建立你的第一份履歷吧！</p>
+                                        <div class="mt-4">
+                                            <x-button
+                                                wire:click="create"
+                                                icon="plus"
+                                                variant="primary"
+                                            >
+                                                建立履歷
+                                            </x-button>
+                                        </div>
                                     </div>
-                                </div>
-                            </x-filament::card>
-                        @else
-                            <x-filament::card>
-                                <div class="text-center">
-                                    <h3 class="text-lg font-medium">還沒有履歷</h3>
-                                    <p class="mt-1 text-sm text-gray-500">開始建立你的第一份履歷吧！</p>
-                                    <div class="mt-4">
-                                        <x-filament::button
-                                            wire:click="$create"
-                                            icon="heroicon-o-plus"
-                                        >
-                                            建立履歷
-                                        </x-filament::button>
-                                    </div>
-                                </div>
-                            </x-filament::card>
-                        @endif
-                    </div>
+                                </x-card>
+                            @endif
+                        </div>
+                    </section>
                 </div>
-            </div>
+            </x-card>
+
+            <!-- 個人資料設定區塊 -->
+            <x-card>
+                <div class="max-w-xl">
+                    <section>
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                {{ __('個人資料') }}
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                {{ __('更新你的帳號資料與電子郵件。') }}
+                            </p>
+                        </header>
+
+                        <div class="mt-6">
+                            <x-button
+                                href="{{ route('settings.profile') }}"
+                                variant="primary"
+                            >
+                                {{ __('編輯個人資料') }}
+                            </x-button>
+                        </div>
+                    </section>
+                </div>
+            </x-card>
+
+            <!-- 密碼設定區塊 -->
+            <x-card>
+                <div class="max-w-xl">
+                    <section>
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                {{ __('安全性') }}
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                {{ __('確保你的帳號使用夠強的密碼以保持安全。') }}
+                            </p>
+                        </header>
+
+                        <div class="mt-6">
+                            <x-button
+                                href="{{ route('settings.password') }}"
+                                variant="primary"
+                            >
+                                {{ __('變更密碼') }}
+                            </x-button>
+                        </div>
+                    </section>
+                </div>
+            </x-card>
+
+            <!-- 外觀設定區塊 -->
+            <x-card>
+                <div class="max-w-xl">
+                    <section>
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                {{ __('外觀設定') }}
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                {{ __('自訂你的使用體驗，設定深色模式與其他顯示選項。') }}
+                            </p>
+                        </header>
+
+                        <div class="mt-6">
+                            <x-button
+                                href="{{ route('settings.appearance') }}"
+                                variant="primary"
+                            >
+                                {{ __('調整外觀') }}
+                            </x-button>
+                        </div>
+                    </section>
+                </div>
+            </x-card>
         </div>
     </div>
 </div>
