@@ -89,7 +89,6 @@ $updateExperience = function () {
         'type' => 'success',
     ]);
 };
-
 ?>
 
 <div>
@@ -98,8 +97,8 @@ $updateExperience = function () {
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('編輯履歷') }}
             </h2>
-            <flux:button wire:click="$dispatch('save')" variant="success">
-                <flux:icon name="check" class="mr-2" />
+            <flux:button wire:click="$dispatch('save')" variant="primary">
+                <flux:icon name="check-circle" class="mr-2" />
                 儲存
             </flux:button>
         </div>
@@ -139,21 +138,25 @@ $updateExperience = function () {
                                 <div>
                                     <flux:label for="title">標題</flux:label>
                                     <flux:input wire:model="title" id="title" type="text" required />
-                                    <flux:error :messages="$errors->get('title')" />
+                                    @error('title')
+                                        <flux:error :messages="$message" />
+                                    @enderror
                                 </div>
                                 <div>
                                     <flux:label for="summary">簡介</flux:label>
                                     <flux:textarea wire:model="summary" id="summary" rows="4" />
-                                    <flux:error :messages="$errors->get('summary')" />
+                                    @error('summary')
+                                        <flux:error :messages="$message" />
+                                    @enderror
                                 </div>
                                 <div class="flex justify-end">
                                     <flux:button type="submit" variant="primary">
-                                        <flux:icon name="save" class="mr-2" />
+                                        <flux:icon name="check-circle" class="mr-2" />
                                         更新基本資料
                                     </flux:button>
                                 </div>
                             </form>
-                                </x-card>
+                        </x-card>
                     </div>
 
                     <!-- 學歷表單 -->
@@ -208,12 +211,12 @@ $updateExperience = function () {
                                 </x-card>
                             @endforeach
                             <div class="flex justify-between">
-                                <flux:button wire:click="addEducation" variant="secondary">
-                                    <flux:icon name="plus" class="mr-2" />
+                                <flux:button wire:click="addEducation" variant="ghost">
+                                    <flux:icon name="plus-circle" class="mr-2" />
                                     新增學歷
                             </flux:button>
-                                <flux:button wire:click="updateEducation" variant="success">
-                                    <flux:icon name="save" class="mr-2" />
+                                <flux:button wire:click="updateEducation" variant="primary">
+                                    <flux:icon name="check-circle" class="mr-2" />
                                     儲存學歷資料
                                 </flux:button>
                     </div>
@@ -272,12 +275,12 @@ $updateExperience = function () {
                         @endforeach
 
                         <div class="flex justify-between">
-                            <flux:button wire:click="addExperience" variant="secondary">
-                                <flux:icon name="plus" class="mr-2" />
+                            <flux:button wire:click="addExperience" variant="ghost">
+                                <flux:icon name="plus-circle" class="mr-2" />
                                 新增工作經驗
                             </flux:button>
-                            <flux:button wire:click="updateExperience" variant="success">
-                                <flux:icon name="save" class="mr-2" />
+                            <flux:button wire:click="updateExperience" variant="primary">
+                                <flux:icon name="check-circle" class="mr-2" />
                                 儲存工作經驗
                             </flux:button>
                         </div>

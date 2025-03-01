@@ -1,6 +1,5 @@
 <?php
-
-use function Livewire\Volt\{state, mount, computed};
+use function Livewire\Volt\{state, mount};
 use App\Models\Resume;
 
 state(['resume' => null]);
@@ -17,16 +16,29 @@ $settings = function () {
     return $this->redirect(route('resume.settings'), navigate: true);
 };
 
-$create = function () {
-    // 建立基本履歷
-    $resume = auth()->user()->resume()->create([
-        'title' => auth()->user()->name . ' 的履歷',
-        'slug' => strtolower(str_replace(' ', '-', auth()->user()->name)),
-        'summary' => '',
-        'education' => [],
-        'experience' => [],
-        'is_public' => false,
+$updateVisibility = function ($value) {
+    $this->resume->update([
+        'is_public' => (bool) $value,
     ]);
+
+    $this->dispatch('notify', [
+        'message' => '履歷公開狀態已更新',
+        'type' => 'success',
+    ]);
+};
+
+$create = function () {
+    $resume = auth()
+        ->user()
+        ->resume()
+        ->create([
+            'title' => auth()->user()->name . ' 的履歷',
+            'slug' => strtolower(str_replace(' ', '-', auth()->user()->name)),
+            'summary' => '',
+            'education' => [],
+            'experience' => [],
+            'is_public' => false,
+        ]);
 
     return $this->redirect(route('resume.edit'), navigate: true);
 };
@@ -53,39 +65,56 @@ $create = function () {
                                 {{ __('管理你的個人履歷，設定公開狀態與分享連結。') }}
                             </p>
                         </header>
+
                         <div class="mt-6 space-y-6">
-                            @if($resume)
+                            @if ($resume)
                                 <x-card>
-                                    <div class="flex items-center justify-between">
+                                    <div class="flex items-center justify-between" x-data="{
+                                        isPublic: @js($resume->is_public),
+                                        slug: @js($resume->slug),
+                                        title: @js($resume->title)
+                                    }"
+                                        x-init="$watch('isPublic', value => {
+                                            $wire.call('updateVisibility', value)
+                                        })">
+                                        <!-- 左側：標題和狀態 -->
                                         <div>
-                                            <h3 class="text-lg font-medium">{{ $resume->title }}</h3>
+                                            <h3 class="text-lg font-medium" x-text="title"></h3>
                                             <p class="text-sm text-gray-500">
-                                                {{ $resume->is_public ? '公開' : '未公開' }} ·
-                                                @if($resume->is_public)
-                                                    <a href="{{ route('resume.public', $resume->slug) }}" class="text-primary-600 hover:text-primary-500">
-                                                        {{ '@' . $resume->slug }}
+                                                <span x-text="isPublic == 1 ? '公開' : '未公開'"></span> ·
+                                                <template x-if="isPublic == 1">
+                                                    <a :href="`/resume/${slug}`"
+                                                        class="text-primary-600 hover:text-primary-500"
+                                                        x-text="`@${slug}`">
                                                     </a>
-                                                @else
-                                                    {{ '@' . $resume->slug }}
-                                                @endif
+                                                </template>
+                                                <template x-if="isPublic != 1">
+                                                    <span class="text-gray-400" x-text="`@${slug}`"></span>
+                                                </template>
                                             </p>
                                         </div>
-                                        <div class="flex space-x-2">
-                                            <flux:button
-                                                wire:click="edit"
-                                                icon="pencil"
-                                                variant="primary"
-                                            >
+
+                                        <!-- 中間：編輯按鈕和公開狀態切換 -->
+                                        <div class="flex items-center gap-6">
+                                            <flux:button wire:click="edit" icon="pencil" variant="primary">
                                                 編輯
                                             </flux:button>
-                                            <flux:button
-                                                wire:click="settings"
-                                                icon="cog"
-                                                variant="ghost"
-                                            >
-                                                設定
-                                            </flux:button>
+
+                                            <flux:radio.group x-model="isPublic" variant="segmented"
+                                                class="flex items-center">
+                                                <flux:radio value="1" icon="eye">
+                                                    公開
+                                                </flux:radio>
+                                                <flux:radio value="0" icon="eye-slash">
+                                                    不公開
+                                                </flux:radio>
+                                            </flux:radio.group>
                                         </div>
+
+                                        <!-- 右側：設定按鈕 -->
+                                        <flux:button wire:click="settings" icon="cog" variant="ghost">
+                                            設定
+                                        </flux:button>
                                     </div>
                                 </x-card>
                             @else
@@ -94,11 +123,7 @@ $create = function () {
                                         <h3 class="text-lg font-medium">還沒有履歷</h3>
                                         <p class="mt-1 text-sm text-gray-500">開始建立你的第一份履歷吧！</p>
                                         <div class="mt-4">
-                                            <flux:button
-                                                wire:click="create"
-                                                icon="plus"
-                                                variant="primary"
-                                            >
+                                            <flux:button wire:click="create" icon="plus" variant="primary">
                                                 建立履歷
                                             </flux:button>
                                         </div>
@@ -109,6 +134,7 @@ $create = function () {
                     </section>
                 </div>
             </x-card>
+
             <!-- 個人資料設定區塊 -->
             <x-card>
                 <div class="max-w-xl">
@@ -122,10 +148,7 @@ $create = function () {
                             </p>
                         </header>
                         <div class="mt-6">
-                            <flux:button
-                                href="{{ route('settings.profile') }}"
-                                variant="primary"
-                            >
+                            <flux:button href="{{ route('settings.profile') }}" variant="primary">
                                 {{ __('編輯個人資料') }}
                             </flux:button>
                         </div>
@@ -146,10 +169,7 @@ $create = function () {
                             </p>
                         </header>
                         <div class="mt-6">
-                            <flux:button
-                                href="{{ route('settings.password') }}"
-                                variant="primary"
-                            >
+                            <flux:button href="{{ route('settings.password') }}" variant="primary">
                                 {{ __('變更密碼') }}
                             </flux:button>
                         </div>
@@ -170,10 +190,7 @@ $create = function () {
                             </p>
                         </header>
                         <div class="mt-6">
-                            <flux:button
-                                href="{{ route('settings.appearance') }}"
-                                variant="primary"
-                            >
+                            <flux:button href="{{ route('settings.appearance') }}" variant="primary">
                                 {{ __('調整外觀') }}
                             </flux:button>
                         </div>
