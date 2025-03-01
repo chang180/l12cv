@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Models\Resume;
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,8 +13,19 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 // 公開履歷路由 - 不需要驗證
-Volt::route('@{slug}', 'resume.public')
-    ->name('resume.public');
+Route::get('/@{slug}', function ($slug) {
+    $resume = Resume::where('slug', $slug)
+        ->where('is_public', true)
+        ->with('user')  // 預先載入用戶資料
+        ->firstOrFail();
+
+    if (!$resume) {
+        abort(404);
+    }
+    return view('livewire.resume.public', [
+        'resume' => $resume
+    ]);
+})->name('resume.public');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

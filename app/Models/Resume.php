@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 履歷模型
@@ -19,14 +20,12 @@ class Resume extends Model
      * @var array<string>
      */
     protected $fillable = [
-        'user_id',
-        'slug',
         'title',
+        'slug',
         'summary',
-        'avatar',
-        'education',
         'experience',
-        'is_public'
+        'education',
+        'is_public',
     ];
 
     /**
@@ -35,15 +34,15 @@ class Resume extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'education' => 'array',
         'experience' => 'array',
+        'education' => 'array',
         'is_public' => 'boolean',
     ];
 
     /**
      * 獲取擁有此履歷的使用者
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

@@ -34,15 +34,24 @@ mount(function () {
                     </span>
                 </div>
 
-                @if(!empty($resume->experience))
                     <div class="mt-2">
+                    @php
+                        $experiences = $resume->experience ?? [];
+                        $latestExperience = is_array($experiences) ? end($experiences) : null;
+                    @endphp
+
+                    @if($latestExperience)
                         <p class="text-sm text-gray-600 dark:text-gray-400">
-                            {{ end($resume->experience)['company'] }} · {{ end($resume->experience)['position'] }}
+                            {{ $latestExperience['company'] ?? '' }}
+                            @if(isset($latestExperience['company']) && isset($latestExperience['position']))
+                                ·
+                            @endif
+                            {{ $latestExperience['position'] ?? '' }}
                         </p>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </a>
-        </div>
+</div>
     @empty
         <div class="text-center py-8">
             <p class="text-gray-500 dark:text-gray-400">目前還沒有公開的履歷</p>
