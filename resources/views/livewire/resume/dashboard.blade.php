@@ -2,10 +2,11 @@
 use function Livewire\Volt\{state, mount};
 use App\Models\Resume;
 
-state(['resume' => null]);
+state(['resume' => null, 'isPublic' => false]);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
+    $this->isPublic = (int) $this->resume->is_public;
 });
 
 $edit = function () {
@@ -16,15 +17,10 @@ $settings = function () {
     return $this->redirect(route('resume.settings'), navigate: true);
 };
 
+// @todo 修正第二次更新資料後，狀態會異常的問題
 $updateVisibility = function ($value) {
-    $this->resume->update([
-        'is_public' => (bool) $value,
-    ]);
-
-    $this->dispatch('notify', [
-        'message' => '履歷公開狀態已更新',
-        'type' => 'success',
-    ]);
+    $value = (int) $value;
+    $this->resume->update(['is_public' => $value]);
 };
 
 $create = function () {
@@ -70,20 +66,18 @@ $create = function () {
                             @if ($resume)
                                 <x-card>
                                     <div class="flex items-center justify-between" x-data="{
-                                        isPublic: @js($resume->is_public),
+                                        resume: @js($resume),
+                                        isPublic: Number(@js($resume->is_public)),
                                         slug: @js($resume->slug),
                                         title: @js($resume->title)
-                                    }"
-                                        x-init="$watch('isPublic', value => {
-                                            $wire.call('updateVisibility', value)
-                                        })">
+                                    }">
                                         <!-- 左側：標題和狀態 -->
                                         <div>
                                             <h3 class="text-lg font-medium" x-text="title"></h3>
                                             <p class="text-sm text-gray-500">
                                                 <span x-text="isPublic == 1 ? '公開' : '未公開'"></span> ·
                                                 <template x-if="isPublic == 1">
-                                                    <a :href="`/resume/${slug}`"
+                                                    <a :href="`/@${slug}`"
                                                         class="text-primary-600 hover:text-primary-500"
                                                         x-text="`@${slug}`">
                                                     </a>
@@ -93,14 +87,14 @@ $create = function () {
                                                 </template>
                                             </p>
                                         </div>
-
                                         <!-- 中間：編輯按鈕和公開狀態切換 -->
                                         <div class="flex items-center gap-6">
                                             <flux:button wire:click="edit" icon="pencil" variant="primary">
                                                 編輯
                                             </flux:button>
-
+                                            <div x-text="isPublic"></div>
                                             <flux:radio.group x-model="isPublic" variant="segmented"
+                                                wire:change="updateVisibility($event.target.value)"
                                                 class="flex items-center">
                                                 <flux:radio value="1" icon="eye">
                                                     公開
@@ -110,11 +104,13 @@ $create = function () {
                                                 </flux:radio>
                                             </flux:radio.group>
                                         </div>
-
-                                        <!-- 右側：設定按鈕 -->
-                                        <flux:button wire:click="settings" icon="cog" variant="ghost">
-                                            設定
-                                        </flux:button>
+                                        <!-- 右側：預覽按鈕 -->
+                                        <template x-if="isPublic == 1">
+                                            <flux:button href="/@" x-bind:href="`/@${slug}`" target="_blank"
+                                                icon="eye" variant="ghost">
+                                                預覽履歷
+                                            </flux:button>
+                                        </template>
                                     </div>
                                 </x-card>
                             @else
