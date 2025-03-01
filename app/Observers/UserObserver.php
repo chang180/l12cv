@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\User;
-use App\Models\Resume;
 use Illuminate\Support\Str;
 
 /**
@@ -20,9 +19,9 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        Resume::create([
-            'user_id' => $user->id,
-            'slug' => Str::slug($user->name) . '-' . Str::random(6), // 生成一個包含使用者名稱的唯一 slug
+        // 使用關聯方法創建履歷，這樣會自動設置 user_id
+        $user->resume()->create([
+            'slug' => Str::slug($user->name) . '-' . Str::random(6),
             'title' => '尚未設定標題',
             'summary' => '請輸入您的履歷內容...',
             'education' => [],
