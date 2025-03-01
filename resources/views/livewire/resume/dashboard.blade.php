@@ -92,7 +92,6 @@ $create = function () {
                                             <flux:button wire:click="edit" icon="pencil" variant="primary">
                                                 編輯
                                             </flux:button>
-                                            <div x-text="isPublic"></div>
                                             <flux:radio.group x-model="isPublic" variant="segmented"
                                                 wire:change="updateVisibility($event.target.value)"
                                                 class="flex items-center">
