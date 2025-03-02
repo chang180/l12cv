@@ -65,51 +65,63 @@ $create = function () {
                         <div class="mt-6 space-y-6">
                             @if ($resume)
                                 <x-card>
-                                    <div class="flex items-center justify-between" x-data="{
+                                    <div x-data="{
                                         resume: @js($resume),
                                         isPublic: Number(@js($resume->is_public)),
                                         slug: @js($resume->slug),
                                         title: @js($resume->title)
                                     }">
-                                        <!-- 左側：標題和狀態 -->
-                                        <div>
-                                            <h3 class="text-lg font-medium" x-text="title"></h3>
-                                            <p class="text-sm text-gray-500">
-                                                <span x-text="isPublic == 1 ? '公開' : '未公開'"></span> ·
-                                                <template x-if="isPublic == 1">
-                                                    <a :href="`/@${slug}`"
-                                                        class="text-primary-600 hover:text-primary-500"
-                                                        x-text="`@${slug}`">
-                                                    </a>
-                                                </template>
-                                                <template x-if="isPublic != 1">
-                                                    <span class="text-gray-400" x-text="`@${slug}`"></span>
-                                                </template>
-                                            </p>
+                                        <!-- 使用 grid 進行響應式布局 -->
+                                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                            <!-- 左側：標題和狀態 -->
+                                            <div class="lg:col-span-4">
+                                                <h3 class="text-lg font-medium" x-text="title"></h3>
+                                                <p class="text-sm text-gray-500 mt-1">
+                                                    <span x-text="isPublic == 1 ? '公開' : '未公開'"></span> ·
+                                                    <template x-if="isPublic == 1">
+                                                        <a :href="`/@${slug}`"
+                                                            class="text-primary-600 hover:text-primary-500"
+                                                            x-text="`@${slug}`">
+                                                        </a>
+                                                    </template>
+                                                    <template x-if="isPublic != 1">
+                                                        <span class="text-gray-400" x-text="`@${slug}`"></span>
+                                                    </template>
+                                                </p>
+                                            </div>
+
+                                            <!-- 右側控制區域 -->
+                                            <div class="lg:col-span-8">
+                                                <div
+                                                    class="flex flex-col sm:flex-row items-start sm:items-center justify-start lg:justify-end gap-4">
+                                                    <!-- 編輯按鈕和公開狀態切換 -->
+                                                    <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+                                                        <flux:button wire:click="edit" icon="pencil" variant="primary"
+                                                            class="w-full sm:w-auto">
+                                                            編輯
+                                                        </flux:button>
+                                                        <flux:radio.group x-model="isPublic" variant="segmented"
+                                                            wire:change="updateVisibility($event.target.value)"
+                                                            class="flex items-center w-full sm:w-auto">
+                                                            <flux:radio value="1" icon="eye">
+                                                                公開
+                                                            </flux:radio>
+                                                            <flux:radio value="0" icon="eye-slash">
+                                                                不公開
+                                                            </flux:radio>
+                                                        </flux:radio.group>
+                                                    </div>
+                                                    <!-- 預覽按鈕 -->
+                                                    <template x-if="isPublic == 1">
+                                                        <flux:button href="/@" x-bind:href="`/@${slug}`"
+                                                            target="_blank" icon="eye" variant="ghost"
+                                                            class="w-full sm:w-auto">
+                                                            預覽履歷
+                                                        </flux:button>
+                                                    </template>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <!-- 中間：編輯按鈕和公開狀態切換 -->
-                                        <div class="flex items-center gap-6">
-                                            <flux:button wire:click="edit" icon="pencil" variant="primary">
-                                                編輯
-                                            </flux:button>
-                                            <flux:radio.group x-model="isPublic" variant="segmented"
-                                                wire:change="updateVisibility($event.target.value)"
-                                                class="flex items-center">
-                                                <flux:radio value="1" icon="eye">
-                                                    公開
-                                                </flux:radio>
-                                                <flux:radio value="0" icon="eye-slash">
-                                                    不公開
-                                                </flux:radio>
-                                            </flux:radio.group>
-                                        </div>
-                                        <!-- 右側：預覽按鈕 -->
-                                        <template x-if="isPublic == 1">
-                                            <flux:button href="/@" x-bind:href="`/@${slug}`" target="_blank"
-                                                icon="eye" variant="ghost">
-                                                預覽履歷
-                                            </flux:button>
-                                        </template>
                                     </div>
                                 </x-card>
                             @else

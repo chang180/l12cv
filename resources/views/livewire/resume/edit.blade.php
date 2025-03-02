@@ -89,6 +89,7 @@ $updateExperience = function () {
         'type' => 'success',
     ]);
 };
+
 ?>
 
 <div>
@@ -97,8 +98,8 @@ $updateExperience = function () {
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('編輯履歷') }}
             </h2>
-            <flux:button wire:click="$dispatch('save')" variant="primary">
-                <flux:icon name="check-circle" class="mr-2" />
+            <flux:button wire:click="$dispatch('save')" variant="primary" class="hidden sm:flex">
+                <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
                 儲存
             </flux:button>
         </div>
@@ -111,22 +112,16 @@ $updateExperience = function () {
                     <!-- 分頁標籤 -->
                     <div class="border-b border-gray-200 mb-6">
                         <nav class="flex -mb-px space-x-8">
-                            <button
-                                wire:click="$set('currentTab', 'basic')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
-                            >
+                            <button wire:click="$set('currentTab', 'basic')"
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                                 基本資料
                             </button>
-                            <button
-                                wire:click="$set('currentTab', 'education')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'education' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
-                            >
+                            <button wire:click="$set('currentTab', 'education')"
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'education' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                                 學歷
                             </button>
-                            <button
-                                wire:click="$set('currentTab', 'experience')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
-                            >
+                            <button wire:click="$set('currentTab', 'experience')"
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                                 工作經驗
                             </button>
                         </nav>
@@ -150,8 +145,8 @@ $updateExperience = function () {
                                     @enderror
                                 </div>
                                 <div class="flex justify-end">
-                                    <flux:button type="submit" variant="primary">
-                                        <flux:icon name="check-circle" class="mr-2" />
+                                    <flux:button type="submit" variant="primary" class="w-full sm:w-auto">
+                                        <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
                                         更新基本資料
                                     </flux:button>
                                 </div>
@@ -165,62 +160,60 @@ $updateExperience = function () {
                             @foreach ($education as $index => $edu)
                                 <x-card>
                                     <div class="space-y-4">
-                                    <div class="flex justify-between items-start">
+                                        <div class="flex justify-between items-start flex-wrap gap-2">
                                             <h3 class="text-lg font-medium">學歷 #{{ $index + 1 }}</h3>
                                             <flux:button wire:click="removeEducation({{ $index }})"
-                                            variant="danger" size="sm">
-                                            <flux:icon name="trash" class="mr-2" />
-                                            刪除
-                                        </flux:button>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
+                                                variant="danger" size="sm" class="shrink-0 !px-2">
+                                                <flux:icon name="trash" class="w-4 h-4" />
+                                                <span class="sr-only">刪除</span>
+                                            </flux:button>
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
                                                 <flux:label>學校</flux:label>
                                                 <flux:input wire:model="education.{{ $index }}.school"
-                                                type="text" />
-                                        </div>
-                                        <div>
+                                                    type="text" />
+                                            </div>
+                                            <div>
                                                 <flux:label>學位</flux:label>
                                                 <flux:input wire:model="education.{{ $index }}.degree"
-                                                type="text" />
-                                        </div>
-                                            <div>
+                                                    type="text" />
+                                            </div>
+                                            <div class="sm:col-span-2">
                                                 <flux:label>科系</flux:label>
                                                 <flux:input wire:model="education.{{ $index }}.field"
                                                     type="text" />
                                             </div>
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <flux:label>開始日期</flux:label>
-                                                    <flux:input wire:model="education.{{ $index }}.start_date"
-                                                        type="date" />
+                                            <div>
+                                                <flux:label>開始日期</flux:label>
+                                                <flux:input wire:model="education.{{ $index }}.start_date"
+                                                    type="date" class="w-full" />
                                             </div>
-                                                <div>
-                                                    <flux:label>結束日期</flux:label>
-                                                    <flux:input wire:model="education.{{ $index }}.end_date"
-                                                        type="date" />
-                                        </div>
-                                    </div>
+                                            <div>
+                                                <flux:label>結束日期</flux:label>
+                                                <flux:input wire:model="education.{{ $index }}.end_date"
+                                                    type="date" class="w-full" />
+                                            </div>
                                         </div>
                                         <div>
                                             <flux:label>描述</flux:label>
                                             <flux:textarea wire:model="education.{{ $index }}.description"
                                                 rows="3" />
-                                </div>
+                                        </div>
                                     </div>
                                 </x-card>
                             @endforeach
-                            <div class="flex justify-between">
-                                <flux:button wire:click="addEducation" variant="ghost">
-                                    <flux:icon name="plus-circle" class="mr-2" />
+                            <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6">
+                                <flux:button wire:click="addEducation" variant="ghost" class="w-full sm:w-auto order-2 sm:order-1">
+                                    <flux:icon name="plus-circle" class="w-5 h-5 mr-2" />
                                     新增學歷
-                            </flux:button>
-                                <flux:button wire:click="updateEducation" variant="primary">
-                                    <flux:icon name="check-circle" class="mr-2" />
+                                </flux:button>
+                                <flux:button wire:click="updateEducation" variant="primary" class="w-full sm:w-auto order-1 sm:order-2">
+                                    <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
                                     儲存學歷資料
                                 </flux:button>
-                    </div>
-                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 工作經驗表單 -->
@@ -228,39 +221,37 @@ $updateExperience = function () {
                         @foreach ($experience as $index => $exp)
                             <x-card>
                                 <div class="space-y-4">
-                                    <div class="flex justify-between items-start">
+                                    <div class="flex justify-between items-start flex-wrap gap-2">
                                         <h3 class="text-lg font-medium">工作經驗 #{{ $index + 1 }}</h3>
                                         <flux:button wire:click="removeExperience({{ $index }})"
-                                            variant="danger" size="sm">
-                                            <flux:icon name="trash" class="mr-2" />
-                                            刪除
+                                            variant="danger" size="sm" class="shrink-0 !px-2">
+                                            <flux:icon name="trash" class="w-4 h-4" />
+                                            <span class="sr-only">刪除</span>
                                         </flux:button>
-        </div>
-                                    <div class="grid grid-cols-2 gap-4">
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <flux:label>公司</flux:label>
                                             <flux:input wire:model="experience.{{ $index }}.company"
                                                 type="text" />
-    </div>
+                                        </div>
                                         <div>
                                             <flux:label>職位</flux:label>
                                             <flux:input wire:model="experience.{{ $index }}.position"
                                                 type="text" />
-</div>
-                                        <div class="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <flux:label>開始日期</flux:label>
+                                        </div>
+                                        <div>
+                                            <flux:label>開始日期</flux:label>
                                                 <flux:input wire:model="experience.{{ $index }}.start_date"
-                                                    type="date" />
+                                                type="date" class="w-full" />
                                             </div>
                                             <div>
                                                 <flux:label>結束日期</flux:label>
                                                 <flux:input wire:model="experience.{{ $index }}.end_date"
-                                                    type="date"
+                                                type="date" class="w-full"
                                                     :disabled="$experience[$index]['current'] ?? false" />
                                             </div>
-                                        </div>
-                                        <div>
+                                        <div class="sm:col-span-2">
                                             <flux:checkbox wire:model="experience.{{ $index }}.current"
                                                 label="目前在職中" />
                                         </div>
@@ -274,13 +265,13 @@ $updateExperience = function () {
                             </x-card>
                         @endforeach
 
-                        <div class="flex justify-between">
-                            <flux:button wire:click="addExperience" variant="ghost">
-                                <flux:icon name="plus-circle" class="mr-2" />
+                        <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6">
+                            <flux:button wire:click="addExperience" variant="ghost" class="w-full sm:w-auto order-2 sm:order-1">
+                                <flux:icon name="plus-circle" class="w-5 h-5 mr-2" />
                                 新增工作經驗
                             </flux:button>
-                            <flux:button wire:click="updateExperience" variant="primary">
-                                <flux:icon name="check-circle" class="mr-2" />
+                            <flux:button wire:click="updateExperience" variant="primary" class="w-full sm:w-auto order-1 sm:order-2">
+                                <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
                                 儲存工作經驗
                             </flux:button>
                         </div>
