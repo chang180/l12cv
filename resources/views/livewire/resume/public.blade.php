@@ -1,11 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full"
+    x-data="{ darkMode: localStorage.getItem('darkMode') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') }"
+    x-init="$watch('darkMode', val => {
+          if (val === 'dark') {
+              document.documentElement.classList.add('dark');
+              localStorage.setItem('darkMode', 'dark');
+          } else {
+              document.documentElement.classList.remove('dark');
+              localStorage.setItem('darkMode', 'light');
+          }
+      })"
+    :class="{ 'dark': darkMode === 'dark' }">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume</title>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+<!-- Styles -->
+    @livewireStyles
 </head>
 
 <body>
@@ -156,6 +170,7 @@
             </div>
         </div>
     </div>
+    @livewireScripts
 </body>
 
 </html>
