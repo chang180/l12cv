@@ -1,24 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full"
-    x-data="{ darkMode: localStorage.getItem('darkMode') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') }"
-    x-init="$watch('darkMode', val => {
-          if (val === 'dark') {
-              document.documentElement.classList.add('dark');
-              localStorage.setItem('darkMode', 'dark');
-          } else {
-              document.documentElement.classList.remove('dark');
-              localStorage.setItem('darkMode', 'light');
-          }
-      })"
-    :class="{ 'dark': darkMode === 'dark' }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume</title>
 
+    @fluxAppearance
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-<!-- Styles -->
+    <!-- Styles -->
     @livewireStyles
 </head>
 
