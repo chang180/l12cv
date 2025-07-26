@@ -10,6 +10,8 @@
 - 📱 完整的響應式設計
 - 🔒 隱私控制，自由設定公開狀態
 - 🇹🇼 繁體中文介面
+- 📊 作品集管理，展示您的專案和成就
+- 🖼️ 圖片上傳功能，為專案添加視覺效果
 
 ## 開發技術
 
@@ -18,6 +20,7 @@
 - [Volt](https://livewire.laravel.com/docs/volt) - Laravel Livewire 的新寫法
 - [Tailwind CSS](https://tailwindcss.com) - CSS 框架
 - [Alpine.js](https://alpinejs.dev) - 輕量級 JS 框架
+- [Flux UI](https://fluxui.dev) - 現代化 UI 元件庫
 
 ## 本地開發
 
@@ -58,6 +61,14 @@ resume-builder/
 │       └── livewire/    # Livewire 視圖
 └── routes/              # 路由定義
 ```
+
+## 最新更新
+
+- 新增作品集管理功能，可添加和編輯專案
+- 實現專案縮略圖上傳和預覽功能
+- 優化表單界面，改善用戶體驗
+- 添加深色模式支持，適應不同瀏覽環境
+- 修復圖片移除功能的問題
 
 ## 開源協作
 
