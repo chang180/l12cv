@@ -16,22 +16,22 @@
             <x-card>
                 <div class="p-6">
                     <!-- 分頁標籤 -->
-                    <div class="border-b border-gray-200 mb-6">
+                    <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
                         <nav class="flex -mb-px space-x-8 overflow-x-auto">
                             <button wire:click="$set('currentTab', 'basic')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                                 基本資料
                             </button>
                             <button wire:click="$set('currentTab', 'education')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'education' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'education' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                                 學歷
                             </button>
                             <button wire:click="$set('currentTab', 'experience')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                                 工作經驗
                             </button>
                             <button wire:click="$set('currentTab', 'portfolio')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'portfolio' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'portfolio' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                                 作品集
                             </button>
                         </nav>
@@ -71,7 +71,7 @@
                                 <x-card>
                                     <div class="space-y-4">
                                         <div class="flex justify-between items-start flex-wrap gap-2">
-                                            <h3 class="text-lg font-medium">學歷 #{{ $index + 1 }}</h3>
+                                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">學歷 #{{ $index + 1 }}</h3>
                                             <flux:button wire:click="removeEducation({{ $index }})"
                                                 variant="danger" size="sm" class="shrink-0 !px-2">
                                                 <flux:icon name="trash" class="w-4 h-4" />
@@ -132,7 +132,7 @@
                             <x-card>
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-start flex-wrap gap-2">
-                                        <h3 class="text-lg font-medium">工作經驗 #{{ $index + 1 }}</h3>
+                                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">工作經驗 #{{ $index + 1 }}</h3>
                                         <flux:button wire:click="removeExperience({{ $index }})"
                                             variant="danger" size="sm" class="shrink-0 !px-2">
                                             <flux:icon name="trash" class="w-4 h-4" />
