@@ -16,17 +16,17 @@
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                 <!-- 項目標題 -->
                 <div class="sm:col-span-6">
-                                                <flux:label for="title">
+                                                <flux:label for="title" class="text-gray-700 dark:text-gray-300">
                         項目標題 <span class="text-red-500">*</span>
                     </flux:label>
-                                                <flux:input wire:model="title" id="title" type="text" required />
+                                                <flux:input wire:model="title" id="title" type="text" required class="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
                                                 @error('title') <flux:error :messages="$message" /> @enderror
                 </div>
 
                 <!-- 項目描述 -->
                 <div class="sm:col-span-6">
-                                                <flux:label for="description">項目描述</flux:label>
-                                                <flux:textarea wire:model="description" id="description" rows="4" />
+                                                <flux:label for="description" class="text-gray-700 dark:text-gray-300">項目描述</flux:label>
+                                                <flux:textarea wire:model="description" id="description" rows="4" class="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         簡要描述您的項目，包括其目的、功能和您的貢獻。
                     </p>
@@ -35,7 +35,7 @@
 
                 <!-- 縮略圖上傳 -->
                 <div class="sm:col-span-6">
-                                                <flux:label for="thumbnail">項目縮略圖</flux:label>
+                                                <flux:label for="thumbnail" class="text-gray-700 dark:text-gray-300">項目縮略圖</flux:label>
                     <div class="mt-1 flex items-center">
                         <div x-data="{ uploading: false, progress: 0 }"
                             x-on:livewire-upload-start="uploading = true"
@@ -86,22 +86,22 @@
 
                 <!-- 項目鏈接 -->
                 <div class="sm:col-span-3">
-                                                <flux:label for="url">項目演示鏈接</flux:label>
-                                                <flux:input wire:model="url" id="url" type="url" placeholder="https://example.com" />
+                                                <flux:label for="url" class="text-gray-700 dark:text-gray-300">項目演示鏈接</flux:label>
+                                                <flux:input wire:model="url" id="url" type="url" placeholder="https://example.com" class="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-500" />
                                                 @error('url') <flux:error :messages="$message" /> @enderror
                 </div>
 
                 <!-- GitHub 鏈接 -->
                 <div class="sm:col-span-3">
-                                                <flux:label for="githubUrl">GitHub 鏈接</flux:label>
-                                                <flux:input wire:model="githubUrl" id="githubUrl" type="url" placeholder="https://github.com/username/repo" />
+                                                <flux:label for="githubUrl" class="text-gray-700 dark:text-gray-300">GitHub 鏈接</flux:label>
+                                                <flux:input wire:model="githubUrl" id="githubUrl" type="url" placeholder="https://github.com/username/repo" class="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-500" />
                                                 @error('githubUrl') <flux:error :messages="$message" /> @enderror
                 </div>
 
                 <!-- 技術標籤 -->
                 <div class="sm:col-span-3">
-                                                <flux:label for="technologies">使用的技術</flux:label>
-                                                <flux:input wire:model="technologies" id="technologies" type="text" placeholder="PHP, Laravel, Vue.js, Tailwind CSS" />
+                                                <flux:label for="technologies" class="text-gray-700 dark:text-gray-300">使用的技術</flux:label>
+                                                <flux:input wire:model="technologies" id="technologies" type="text" placeholder="PHP, Laravel, Vue.js, Tailwind CSS" class="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-500" />
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         使用逗號分隔多個技術標籤
                     </p>
@@ -110,14 +110,14 @@
 
                 <!-- 完成日期 -->
                 <div class="sm:col-span-3">
-                                                <flux:label for="completionDate">完成日期</flux:label>
-                                                <flux:input wire:model="completionDate" id="completionDate" type="date" />
+                                                <flux:label for="completionDate" class="text-gray-700 dark:text-gray-300">完成日期</flux:label>
+                                                <flux:input wire:model="completionDate" id="completionDate" type="date" class="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
                                                 @error('completionDate') <flux:error :messages="$message" /> @enderror
                 </div>
 
                 <!-- 特色項目 -->
                 <div class="sm:col-span-3">
-                                                <flux:checkbox wire:model="isFeatured" id="isFeatured" label="設為特色項目" />
+                                                <flux:checkbox wire:model="isFeatured" id="isFeatured" label="設為特色項目" class="dark:text-gray-300" />
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         特色項目將在作品集頁面中被突出顯示
                     </p>
@@ -126,8 +126,8 @@
 
                 <!-- 排序順序 -->
                 <div class="sm:col-span-3">
-                                                <flux:label for="order">排序順序</flux:label>
-                                                <flux:input wire:model="order" id="order" type="number" min="0" />
+                                                <flux:label for="order" class="text-gray-700 dark:text-gray-300">排序順序</flux:label>
+                                                <flux:input wire:model="order" id="order" type="number" min="0" class="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         較小的數字將排在前面
                     </p>
