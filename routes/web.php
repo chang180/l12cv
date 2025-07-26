@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Models\Resume;
+use App\Models\User;
+use App\Models\Project;
 use App\Http\Controllers\RedisTestController;
 
 Route::get('/', function () {
@@ -30,6 +32,38 @@ Route::get('/@{slug}', function ($slug) {
         'resume' => $resume
     ]);
 })->name('resume.public');
+
+// 公開作品集路由 - 不需要驗證
+Route::get('/portfolio/{user}', function ($user) {
+    $user = User::findOrFail($user);
+    $projects = $user->projects()->orderBy('order')->orderBy('created_at', 'desc')->get();
+
+    // 獲取用戶的公開履歷，用於頁面切換
+    $resume = $user->resume()->where('is_public', true)->first();
+
+    return view('livewire.portfolio.public', [
+        'user' => $user,
+        'projects' => $projects,
+        'resume' => $resume
+    ]);
+})->name('portfolio.public');
+
+// 單個作品詳情頁路由 - 不需要驗證
+Route::get('/portfolio/{user}/project/{project}', function ($userId, $projectId) {
+    $user = User::findOrFail($userId);
+    $project = Project::where('user_id', $userId)
+                    ->where('id', $projectId)
+                    ->firstOrFail();
+
+    // 獲取用戶的公開履歷，用於頁面切換
+    $resume = $user->resume()->where('is_public', true)->first();
+
+    return view('livewire.portfolio.project-detail', [
+        'user' => $user,
+        'project' => $project,
+        'resume' => $resume
+    ]);
+})->name('portfolio.project.detail');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume</title>
+    <title>{{ $resume->user->name ?? '未知' }} - 履歷</title>
 
     @fluxAppearance
 
@@ -21,17 +21,29 @@
 
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         <div class="py-8">
-            {{-- 回首頁按鈕 --}}
+            {{-- 頂部導航區域 --}}
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-                <a href="{{ route('home') }}"
-                    class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24"
-                        height="24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    返回首頁
-                </a>
+                <div class="flex items-center justify-between">
+                    <a href="{{ route('home') }}"
+                        class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24"
+                            height="24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        返回首頁
+                    </a>
+                    
+                    <div class="flex space-x-4">
+                        <span class="bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300 px-4 py-2 rounded-md text-sm font-medium">
+                            履歷
+                        </span>
+                        <a href="{{ route('portfolio.public', $resume->user->id) }}" 
+                           class="bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            作品集
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

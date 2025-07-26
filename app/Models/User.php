@@ -3,6 +3,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Resume;
+use App\Models\Project;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
  * @property \Illuminate\Support\Carbon $created_at 建立時間
  * @property \Illuminate\Support\Carbon $updated_at 更新時間
  * @property-read \App\Models\Resume|null $resume 關聯的履歷資料
+ * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\Project> $projects 關聯的作品集項目
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection $notifications 通知集合
  */
 class User extends Authenticatable
@@ -72,6 +74,17 @@ class User extends Authenticatable
     public function resume()
     {
         return $this->hasOne(Resume::class);
+    }
+
+    /**
+     * 取得使用者關聯的作品集項目
+     * 一個使用者可以有多個作品集項目
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Project>
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
     }
 
     /**

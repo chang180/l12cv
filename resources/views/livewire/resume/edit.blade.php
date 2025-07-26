@@ -1,97 +1,3 @@
-<?php
-
-use function Livewire\Volt\{state, mount, computed};
-use App\Models\Resume;
-
-state([
-    'resume' => null,
-    'title' => '',
-    'summary' => '',
-    'education' => [],
-    'experience' => [],
-    'currentTab' => 'basic', // basic, education, experience
-]);
-
-mount(function () {
-    $this->resume = auth()->user()->resume;
-    if (!$this->resume) {
-        return $this->redirect(route('resume.dashboard'), navigate: true);
-    }
-
-    $this->title = $this->resume->title;
-    $this->summary = $this->resume->summary;
-    $this->education = $this->resume->education ?? [];
-    $this->experience = $this->resume->experience ?? [];
-});
-
-$updateBasicInfo = function () {
-    $this->resume->update([
-        'title' => $this->title,
-        'summary' => $this->summary,
-    ]);
-
-    $this->dispatch('notify', [
-        'message' => '基本資料已更新',
-        'type' => 'success',
-    ]);
-};
-
-$addEducation = function () {
-    $this->education[] = [
-        'school' => '',
-        'degree' => '',
-        'field' => '',
-        'start_date' => '',
-        'end_date' => '',
-        'description' => '',
-    ];
-};
-
-$removeEducation = function ($index) {
-    unset($this->education[$index]);
-    $this->education = array_values($this->education);
-};
-
-$updateEducation = function () {
-    $this->resume->update([
-        'education' => $this->education,
-    ]);
-
-    $this->dispatch('notify', [
-        'message' => '學歷資料已更新',
-        'type' => 'success',
-    ]);
-};
-
-$addExperience = function () {
-    $this->experience[] = [
-        'company' => '',
-        'position' => '',
-        'start_date' => '',
-        'end_date' => '',
-        'current' => false,
-        'description' => '',
-    ];
-};
-
-$removeExperience = function ($index) {
-    unset($this->experience[$index]);
-    $this->experience = array_values($this->experience);
-};
-
-$updateExperience = function () {
-    $this->resume->update([
-        'experience' => $this->experience,
-    ]);
-
-    $this->dispatch('notify', [
-        'message' => '工作經驗已更新',
-        'type' => 'success',
-    ]);
-};
-
-?>
-
 <div>
     <x-slot name="header">
         <div class="flex justify-between items-center">
@@ -111,7 +17,7 @@ $updateExperience = function () {
                 <div class="p-6">
                     <!-- 分頁標籤 -->
                     <div class="border-b border-gray-200 mb-6">
-                        <nav class="flex -mb-px space-x-8">
+                        <nav class="flex -mb-px space-x-8 overflow-x-auto">
                             <button wire:click="$set('currentTab', 'basic')"
                                 class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                                 基本資料
@@ -123,6 +29,10 @@ $updateExperience = function () {
                             <button wire:click="$set('currentTab', 'experience')"
                                 class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                                 工作經驗
+                            </button>
+                            <button wire:click="$set('currentTab', 'portfolio')"
+                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'portfolio' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                作品集
                             </button>
                         </nav>
                     </div>
@@ -275,6 +185,12 @@ $updateExperience = function () {
                                 儲存工作經驗
                             </flux:button>
                         </div>
+                    </div>
+
+                    <!-- 作品集管理 - 使用組件 -->
+                    <div x-show="$wire.currentTab === 'portfolio'" class="space-y-4">
+                        <!-- 使用作品集組件 -->
+                        <livewire:resume.portfolio.project-list :resumeId="$resume->id" />
                     </div>
                 </div>
             </x-card>
