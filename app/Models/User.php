@@ -6,6 +6,7 @@ use App\Models\Resume;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 使用者模型
@@ -15,8 +16,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property int $id 使用者ID
  * @property string $name 使用者名稱
  * @property string $email 電子郵件
+ * @property string|null $avatar 使用者頭像路徑
  * @property string $password 密碼(已加密)
- * @property \Illuminate\Support\Carbon|null $email_verified_at 郵件驗證時間
+ * @property \Illuminate\Support\Carbon|null $email_vphp arfied_at 郵件驗證時間
  * @property string|null $remember_token 記住登入token
  * @property \Illuminate\Support\Carbon $created_at 建立時間
  * @property \Illuminate\Support\Carbon $updated_at 更新時間
@@ -37,6 +39,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
     ];
     /**
      * 序列化時要隱藏的欄位
@@ -86,5 +89,30 @@ class User extends Authenticatable
         }
 
         return mb_strtoupper($initials);
+    }
+
+    /**
+     * 取得使用者頭像的URL
+     *
+     * @return string
+     */
+    public function avatarUrl(): string
+    {
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+
+        // 如果沒有頭像，返回默認頭像
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+    }
+
+    /**
+     * 判斷使用者是否有頭像
+     *
+     * @return bool
+     */
+    public function hasAvatar(): bool
+    {
+        return !empty($this->avatar);
     }
 }

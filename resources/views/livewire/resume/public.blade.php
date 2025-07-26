@@ -41,12 +41,17 @@
                         <div class="p-6">
                             <div class="flex items-start space-x-6">
                                 <div class="flex-shrink-0">
-                                    <div
-                                        class="w-24 h-24 rounded-full bg-primary-50 dark:bg-primary-900/50 flex items-center justify-center">
-                                        <span class="text-3xl font-bold text-primary-600 dark:text-primary-400">
-                                            {{ substr($resume->user->name ?? '未知', 0, 1) }}
-                                        </span>
-                                    </div>
+                                    @if ($resume->user && $resume->user->avatar)
+                                        <img src="{{ Storage::url($resume->user->avatar) }}"
+                                             alt="{{ $resume->user->name ?? '未知' }}"
+                                             class="w-24 h-24 rounded-full object-cover">
+                                    @else
+                                        <div class="w-24 h-24 rounded-full bg-primary-50 dark:bg-primary-900/50 flex items-center justify-center">
+                                            <span class="text-3xl font-bold text-primary-600 dark:text-primary-400">
+                                                {{ substr($resume->user->name ?? '未知', 0, 1) }}
+                                            </span>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
