@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * 使用者模型
@@ -16,10 +17,11 @@ use Illuminate\Support\Facades\Storage;
  *
  * @property int $id 使用者ID
  * @property string $name 使用者名稱
+ * @property string|null $slug 使用者唯一標識符
  * @property string $email 電子郵件
  * @property string|null $avatar 使用者頭像路徑
  * @property string $password 密碼(已加密)
- * @property \Illuminate\Support\Carbon|null $email_vphp arfied_at 郵件驗證時間
+ * @property \Illuminate\Support\Carbon|null $email_verified_at 郵件驗證時間
  * @property string|null $remember_token 記住登入token
  * @property \Illuminate\Support\Carbon $created_at 建立時間
  * @property \Illuminate\Support\Carbon $updated_at 更新時間
@@ -42,6 +44,7 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'slug',
     ];
     /**
      * 序列化時要隱藏的欄位
@@ -63,6 +66,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * 模型啟動時的鉤子方法
+     * 
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        // 創建用戶時自動生成 slug
+        static::creating(function ($user) {
+            if (empty($user->slug)) {
+                $user->slug = Str::slug($user->name) . '-' . Str::random(5);
+            }
+        });
     }
 
     /**

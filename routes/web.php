@@ -25,17 +25,14 @@ Route::get('/@{slug}', function ($slug) {
         ->with('user')  // 預先載入用戶資料
         ->firstOrFail();
 
-    if (!$resume) {
-        abort(404);
-    }
     return view('livewire.resume.public', [
         'resume' => $resume
     ]);
 })->name('resume.public');
 
-// 公開作品集路由 - 不需要驗證
-Route::get('/portfolio/{user}', function ($user) {
-    $user = User::findOrFail($user);
+// 公開作品集路由 - 不需要驗證 (使用 slug 而不是 ID)
+Route::get('/p/{slug}', function ($slug) {
+    $user = User::where('slug', $slug)->firstOrFail();
     $projects = $user->projects()->orderBy('order')->orderBy('created_at', 'desc')->get();
 
     // 獲取用戶的公開履歷，用於頁面切換
@@ -48,10 +45,10 @@ Route::get('/portfolio/{user}', function ($user) {
     ]);
 })->name('portfolio.public');
 
-// 單個作品詳情頁路由 - 不需要驗證
-Route::get('/portfolio/{user}/project/{project}', function ($userId, $projectId) {
-    $user = User::findOrFail($userId);
-    $project = Project::where('user_id', $userId)
+// 單個作品詳情頁路由 - 不需要驗證 (同樣使用 slug)
+Route::get('/p/{slug}/project/{project}', function ($slug, $projectId) {
+    $user = User::where('slug', $slug)->firstOrFail();
+    $project = Project::where('user_id', $user->id)
                     ->where('id', $projectId)
                     ->firstOrFail();
 
