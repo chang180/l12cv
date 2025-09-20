@@ -2,28 +2,96 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('resume.dashboard') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
-                <x-app-logo class="size-8" href="#"></x-app-logo>
-            </a>
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3 px-3 py-4 border-b border-zinc-200 dark:border-zinc-700">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600">
+                    <i class="fas fa-file-alt text-white text-lg"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-lg text-zinc-900 dark:text-zinc-100">{{ config('app.name') }}</span>
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400">履歷管理系統</span>
+                </div>
+            </div>
 
-            <flux:navlist variant="outline">
-                <flux:navlist.group heading="Platform" class="grid">
-                    <flux:navlist.item icon="home" :href="route('resume.dashboard')" :current="request()->routeIs('resume.dashboard')" wire:navigate>Dashboard</flux:navlist.item>
+            <!-- Navigation -->
+            <flux:navlist variant="outline" class="mt-4">
+                <flux:navlist.group heading="主要功能" class="grid">
+                    <flux:navlist.item 
+                        icon="home" 
+                        href="/resume" 
+                        :current="request()->routeIs('resume.dashboard')" 
+                        wire:navigate
+                    >
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-tachometer-alt text-blue-500"></i>
+                            <span>控制台</span>
+                        </div>
+                    </flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group heading="履歷管理" class="grid mt-4">
+                    <flux:navlist.item 
+                        icon="document-text" 
+                        :href="route('resume.edit')" 
+                        :current="request()->routeIs('resume.edit')" 
+                        wire:navigate
+                    >
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-edit text-green-500"></i>
+                            <span>編輯履歷</span>
+                        </div>
+                    </flux:navlist.item>
+                    
+                    
+                </flux:navlist.group>
+
+                <flux:navlist.group heading="帳戶設定" class="grid mt-4">
+                    <flux:navlist.item 
+                        icon="user" 
+                        href="/settings/profile" 
+                        :current="request()->routeIs('settings.profile')" 
+                        wire:navigate
+                    >
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-user text-indigo-500"></i>
+                            <span>個人資料</span>
+                        </div>
+                    </flux:navlist.item>
+                    
+                    <flux:navlist.item 
+                        icon="lock-closed" 
+                        href="/settings/password" 
+                        :current="request()->routeIs('settings.password')" 
+                        wire:navigate
+                    >
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-lock text-red-500"></i>
+                            <span>密碼設定</span>
+                        </div>
+                    </flux:navlist.item>
+                    
+                    <flux:navlist.item 
+                        icon="paint-brush" 
+                        href="/settings/appearance" 
+                        :current="request()->routeIs('settings.appearance')" 
+                        wire:navigate
+                    >
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-palette text-pink-500"></i>
+                            <span>外觀設定</span>
+                        </div>
+                    </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/chang180/l12cv" target="_blank">
-                    Repository
-                </flux:navlist.item>
-            </flux:navlist>
 
             <!-- Desktop User Menu -->
             <flux:dropdown position="bottom" align="start">

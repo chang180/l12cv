@@ -135,7 +135,19 @@
 
         <!-- Footer -->
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200/50 dark:border-slate-700/50">
-            <div class="text-center">
+            <div class="text-center space-y-4">
+                <div class="flex justify-center space-x-6">
+                    <a href="https://github.com/chang180/l12cv" target="_blank" 
+                       class="group flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-300">
+                        <i class="fab fa-github text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        <span class="text-sm font-medium">GitHub Repository</span>
+                    </a>
+                    <a href="https://laravel.com" target="_blank" 
+                       class="group flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-300">
+                        <i class="fab fa-laravel text-xl text-red-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        <span class="text-sm font-medium">Laravel Framework</span>
+                    </a>
+                </div>
                 <p class="text-sm text-slate-500 dark:text-slate-400">
                     Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) 
                     <span class="mx-2">•</span>

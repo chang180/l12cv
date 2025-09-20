@@ -1,13 +1,35 @@
 <div>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('編輯履歷') }}
-            </h2>
-            <flux:button wire:click="$dispatch('save')" variant="primary" class="hidden sm:flex">
-                <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
-                儲存
-            </flux:button>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600">
+                    <i class="fas fa-edit text-white text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-2xl text-gray-900 dark:text-white leading-tight">
+                        編輯履歷
+                    </h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        完善您的履歷資料，讓雇主更了解您
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a 
+                    href="/resume" 
+                    class="hidden sm:flex items-center justify-center space-x-3 px-5 py-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 min-w-[140px]"
+                >
+                    <flux:icon name="arrow-left" class="w-4 h-4 flex-shrink-0" />
+                    <span class="font-medium">返回控制台</span>
+                </a>
+                <button 
+                    wire:click="$dispatch('save')" 
+                    class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 active:scale-95 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[140px]"
+                >
+                    <flux:icon name="check-circle" class="w-5 h-5 flex-shrink-0" />
+                    <span>儲存變更</span>
+                </button>
+            </div>
         </div>
     </x-slot>
 
@@ -16,23 +38,27 @@
             <x-card>
                 <div class="p-6">
                     <!-- 分頁標籤 -->
-                    <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
-                        <nav class="flex -mb-px space-x-8 overflow-x-auto">
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-2 mb-8">
+                        <nav class="flex space-x-2 overflow-x-auto">
                             <button wire:click="$set('currentTab', 'basic')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'basic' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
-                                基本資料
+                                class="flex items-center space-x-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 {{ $currentTab === 'basic' ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-md' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50' }}">
+                                <i class="fas fa-user text-sm"></i>
+                                <span>基本資料</span>
                             </button>
                             <button wire:click="$set('currentTab', 'education')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'education' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
-                                學歷
+                                class="flex items-center space-x-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 {{ $currentTab === 'education' ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-md' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50' }}">
+                                <i class="fas fa-graduation-cap text-sm"></i>
+                                <span>學歷</span>
                             </button>
                             <button wire:click="$set('currentTab', 'experience')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'experience' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
-                                工作經驗
+                                class="flex items-center space-x-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 {{ $currentTab === 'experience' ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-md' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50' }}">
+                                <i class="fas fa-briefcase text-sm"></i>
+                                <span>工作經驗</span>
                             </button>
                             <button wire:click="$set('currentTab', 'portfolio')"
-                                class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap {{ $currentTab === 'portfolio' ? 'border-primary-500 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
-                                作品集
+                                class="flex items-center space-x-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 {{ $currentTab === 'portfolio' ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-md' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50' }}">
+                                <i class="fas fa-folder text-sm"></i>
+                                <span>作品集</span>
                             </button>
                         </nav>
                     </div>
@@ -54,11 +80,14 @@
                                         <flux:error :messages="$message" />
                                     @enderror
                                 </div>
-                                <div class="flex justify-end">
-                                    <flux:button type="submit" variant="primary" class="w-full sm:w-auto">
-                                        <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
-                                        更新基本資料
-                                    </flux:button>
+                                <div class="flex justify-end pt-6">
+                                    <button 
+                                        type="submit" 
+                                        class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
+                                    >
+                                        <flux:icon name="check-circle" class="w-5 h-5 flex-shrink-0" />
+                                        <span>更新基本資料</span>
+                                    </button>
                                 </div>
                             </form>
                         </x-card>
@@ -72,11 +101,13 @@
                                     <div class="space-y-4">
                                         <div class="flex justify-between items-start flex-wrap gap-2">
                                             <h3 class="text-lg font-medium text-gray-900 dark:text-white">學歷 #{{ $index + 1 }}</h3>
-                                            <flux:button wire:click="removeEducation({{ $index }})"
-                                                variant="danger" size="sm" class="shrink-0 !px-2">
+                                            <button 
+                                                wire:click="removeEducation({{ $index }})"
+                                                class="shrink-0 px-4 py-2 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 border border-red-200 dark:border-red-800 hover:border-red-300 dark:hover:border-red-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center"
+                                            >
                                                 <flux:icon name="trash" class="w-4 h-4" />
-                                                <span class="sr-only">刪除</span>
-                                            </flux:button>
+                                                <span class="sr-only">刪除學歷</span>
+                                            </button>
                                         </div>
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
@@ -113,15 +144,21 @@
                                     </div>
                                 </x-card>
                             @endforeach
-                            <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6">
-                                <flux:button wire:click="addEducation" variant="ghost" class="w-full sm:w-auto order-2 sm:order-1">
-                                    <flux:icon name="plus-circle" class="w-5 h-5 mr-2" />
-                                    新增學歷
-                                </flux:button>
-                                <flux:button wire:click="updateEducation" variant="primary" class="w-full sm:w-auto order-1 sm:order-2">
-                                    <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
-                                    儲存學歷資料
-                                </flux:button>
+                            <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 pt-8">
+                                <button 
+                                    wire:click="addEducation" 
+                                    class="w-full sm:w-auto order-2 sm:order-1 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-semibold px-6 py-4 rounded-xl shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 flex items-center justify-center space-x-3 min-w-[140px]"
+                                >
+                                    <flux:icon name="plus-circle" class="w-5 h-5 flex-shrink-0" />
+                                    <span>新增學歷</span>
+                                </button>
+                                <button 
+                                    wire:click="updateEducation" 
+                                    class="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
+                                >
+                                    <flux:icon name="check-circle" class="w-5 h-5 flex-shrink-0" />
+                                    <span>儲存學歷資料</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -133,11 +170,13 @@
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-start flex-wrap gap-2">
                                         <h3 class="text-lg font-medium text-gray-900 dark:text-white">工作經驗 #{{ $index + 1 }}</h3>
-                                        <flux:button wire:click="removeExperience({{ $index }})"
-                                            variant="danger" size="sm" class="shrink-0 !px-2">
+                                        <button 
+                                            wire:click="removeExperience({{ $index }})"
+                                            class="shrink-0 px-4 py-2 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 border border-red-200 dark:border-red-800 hover:border-red-300 dark:hover:border-red-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center"
+                                        >
                                             <flux:icon name="trash" class="w-4 h-4" />
-                                            <span class="sr-only">刪除</span>
-                                        </flux:button>
+                                            <span class="sr-only">刪除工作經驗</span>
+                                        </button>
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
@@ -155,16 +194,37 @@
                                                 <flux:input wire:model="experience.{{ $index }}.start_date"
                                                 type="date" class="w-full" />
                                             </div>
+                                        @if(!($experience[$index]['current'] ?? false))
                                             <div>
                                                 <flux:label>結束日期</flux:label>
                                                 <flux:input wire:model="experience.{{ $index }}.end_date"
-                                                type="date" class="w-full"
-                                                    :disabled="$experience[$index]['current'] ?? false" />
+                                                    type="date" class="w-full" />
                                             </div>
-                                        <div class="sm:col-span-2">
-                                            <flux:checkbox wire:model="experience.{{ $index }}.current"
-                                                label="目前在職中" />
-                                        </div>
+                                        @endif
+                                        @if($this->shouldShowCurrentOption($index))
+                                            <div class="sm:col-span-2">
+                                                <flux:checkbox wire:model="experience.{{ $index }}.current"
+                                                    label="目前在職中" />
+                                                @if(($experience[$index]['current'] ?? false))
+                                                    <p class="text-sm text-green-600 dark:text-green-400 mt-1 flex items-center">
+                                                        <i class="fas fa-check-circle mr-1"></i>
+                                                        已勾選：結束日期欄位已隱藏
+                                                    </p>
+                                                @else
+                                                    <p class="text-sm text-blue-600 dark:text-blue-400 mt-1 flex items-center">
+                                                        <i class="fas fa-info-circle mr-1"></i>
+                                                        勾選後將隱藏結束日期欄位，取消勾選將重新顯示並自動填入預設日期
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <div class="sm:col-span-2">
+                                                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700">
+                                                    <i class="fas fa-info-circle mr-1"></i>
+                                                    此工作經驗的開始日期必須在之前工作結束之後，才能設定為目前工作
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div>
                                         <flux:label>工作描述</flux:label>
@@ -175,15 +235,21 @@
                             </x-card>
                         @endforeach
 
-                        <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6">
-                            <flux:button wire:click="addExperience" variant="ghost" class="w-full sm:w-auto order-2 sm:order-1">
-                                <flux:icon name="plus-circle" class="w-5 h-5 mr-2" />
-                                新增工作經驗
-                            </flux:button>
-                            <flux:button wire:click="updateExperience" variant="primary" class="w-full sm:w-auto order-1 sm:order-2">
-                                <flux:icon name="check-circle" class="w-5 h-5 mr-2" />
-                                儲存工作經驗
-                            </flux:button>
+                        <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 pt-8">
+                            <button 
+                                wire:click="addExperience" 
+                                class="w-full sm:w-auto order-2 sm:order-1 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-semibold px-6 py-4 rounded-xl shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
+                            >
+                                <flux:icon name="plus-circle" class="w-5 h-5 flex-shrink-0" />
+                                <span>新增工作經驗</span>
+                            </button>
+                            <button 
+                                wire:click="updateExperience" 
+                                class="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
+                            >
+                                <flux:icon name="check-circle" class="w-5 h-5 flex-shrink-0" />
+                                <span>儲存工作經驗</span>
+                            </button>
                         </div>
                     </div>
 

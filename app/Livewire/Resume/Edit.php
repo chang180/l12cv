@@ -116,6 +116,83 @@ class Edit extends Component
         ]);
     }
 
+    /**
+     * 檢查是否應該顯示「目前在職中」選項
+     * 只有在開始日期在最後一個工作之後時才顯示
+     */
+    public function shouldShowCurrentOption($index)
+    {
+        // 如果只有一個工作經驗，總是顯示
+        if (count($this->experience) <= 1) {
+            return true;
+        }
+
+        // 獲取當前工作經驗的開始日期
+        $currentStartDate = $this->experience[$index]['start_date'] ?? null;
+        if (!$currentStartDate) {
+            return true; // 如果沒有開始日期，顯示選項讓用戶填寫
+        }
+
+        // 找到其他工作經驗中最晚的結束日期
+        $latestEndDate = null;
+        foreach ($this->experience as $i => $exp) {
+            if ($i === $index) continue; // 跳過當前工作經驗
+            
+            $endDate = $exp['end_date'] ?? null;
+            if ($endDate && (!$latestEndDate || $endDate > $latestEndDate)) {
+                $latestEndDate = $endDate;
+            }
+        }
+
+        // 如果沒有其他工作經驗的結束日期，顯示選項
+        if (!$latestEndDate) {
+            return true;
+        }
+
+        // 如果當前開始日期在最後一個工作之後，顯示選項
+        return $currentStartDate > $latestEndDate;
+    }
+
+    /**
+     * 當工作經驗欄位更新時的處理邏輯
+     */
+    public function updatedExperience($value, $key)
+    {
+        // 檢查是否是 current 欄位被更新
+        if (str_ends_with($key, '.current')) {
+            // 提取索引
+            $index = (int) str_replace('.current', '', $key);
+            
+            if ($value) {
+                // 勾選「目前在職中」時，清空結束日期
+                $this->experience[$index]['end_date'] = '';
+            } else {
+                // 取消勾選「目前在職中」時，如果結束日期為空，提供一個合理的預設值
+                if (empty($this->experience[$index]['end_date'])) {
+                    $startDate = $this->experience[$index]['start_date'] ?? null;
+                    if ($startDate) {
+                        // 設定結束日期為開始日期後 1 年（用戶可以自行修改）
+                        $endDate = date('Y-m-d', strtotime($startDate . ' +1 year'));
+                        $this->experience[$index]['end_date'] = $endDate;
+                    }
+                }
+            }
+        }
+        
+        // 檢查是否是 start_date 欄位被更新
+        if (str_ends_with($key, '.start_date')) {
+            // 提取索引
+            $index = (int) str_replace('.start_date', '', $key);
+            
+            // 如果開始日期改變後，不應該顯示「目前在職中」選項，
+            // 但用戶已經勾選了，則自動取消勾選
+            if (!$this->shouldShowCurrentOption($index) && ($this->experience[$index]['current'] ?? false)) {
+                $this->experience[$index]['current'] = false;
+                // 取消勾選時，不清空結束日期，讓用戶可以重新填寫
+            }
+        }
+    }
+
     public function render()
     {
         return view('livewire.resume.edit');
