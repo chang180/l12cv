@@ -88,20 +88,31 @@
                         @endif
                         @endauth
                         <!-- 主題切換按鈕 -->
-                        <flux:dropdown x-data align="end">
-                            <flux:button variant="subtle" square class="group" aria-label="Preferred color scheme">
-                                <flux:icon.sun x-show="$flux.appearance === 'light'" variant="mini" class="text-zinc-500 dark:text-white" />
-                                <flux:icon.moon x-show="$flux.appearance === 'dark'" variant="mini" class="text-zinc-500 dark:text-white" />
-                                <flux:icon.moon x-show="$flux.appearance === 'system' && $flux.dark" variant="mini" />
-                                <flux:icon.sun x-show="$flux.appearance === 'system' && ! $flux.dark" variant="mini" />
-                            </flux:button>
-
-                            <flux:menu>
-                                <flux:menu.item icon="sun" x-on:click="$flux.appearance = 'light'">Light</flux:menu.item>
-                                <flux:menu.item icon="moon" x-on:click="$flux.appearance = 'dark'">Dark</flux:menu.item>
-                                <flux:menu.item icon="computer-desktop" x-on:click="$flux.appearance = 'system'">System</flux:menu.item>
-                            </flux:menu>
-                        </flux:dropdown>
+                        <button 
+                            type="button"
+                            x-data="{ 
+                                toggleTheme() { 
+                                    if ($flux.appearance === 'light') { 
+                                        $flux.appearance = 'dark' 
+                                    } else { 
+                                        $flux.appearance = 'light' 
+                                    } 
+                                }
+                            }"
+                            @click="toggleTheme()"
+                            class="group relative p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors duration-200 border border-slate-200 dark:border-slate-700"
+                            aria-label="切換主題"
+                        >
+                            <svg x-show="$flux.appearance === 'light'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            <svg x-show="$flux.appearance === 'dark'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                            <svg x-show="$flux.appearance === 'system'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
                         <!-- 漢堡選單按鈕 -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button @click="open = !open"
