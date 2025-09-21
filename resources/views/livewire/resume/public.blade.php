@@ -133,7 +133,7 @@
                     
                     <!-- 統計資訊 -->
                     <div class="p-6 bg-gray-50 dark:bg-gray-700/50">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
                             <div class="text-center">
                                 <div class="flex items-center justify-center w-12 h-12 mx-auto mb-2 rounded-full bg-blue-100 dark:bg-blue-900/50">
                                     <i class="fas fa-graduation-cap text-blue-600 dark:text-blue-400"></i>
@@ -147,6 +147,13 @@
                                 </div>
                                 <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ count($resume->experience ?? []) }}</div>
                                 <div class="text-sm text-gray-600 dark:text-gray-400">工作經驗</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center w-12 h-12 mx-auto mb-2 rounded-full bg-orange-100 dark:bg-orange-900/50">
+                                    <i class="fas fa-eye text-orange-600 dark:text-orange-400"></i>
+                                </div>
+                                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $resume->views ?? 0 }}</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">瀏覽次數</div>
                             </div>
                             <div class="text-center">
                                 <div class="flex items-center justify-center w-12 h-12 mx-auto mb-2 rounded-full bg-purple-100 dark:bg-purple-900/50">

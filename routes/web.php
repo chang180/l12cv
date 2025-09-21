@@ -26,6 +26,12 @@ Route::get('/@{slug}', function ($slug) {
         ->with('user')  // 預先載入用戶資料
         ->firstOrFail();
 
+    // 增加履歷瀏覽數（帶防刷機制）
+    $resume->incrementViewsWithTracking(
+        request()->ip(),
+        request()->userAgent()
+    );
+
     return view('livewire.resume.public', [
         'resume' => $resume
     ]);
@@ -55,6 +61,12 @@ Route::get('/p/{slug}/project/{project}', function ($slug, $projectId) {
     $project = Project::where('user_id', $user->id)
                     ->where('id', $projectId)
                     ->firstOrFail();
+
+    // 增加項目瀏覽數（帶防刷機制）
+    $project->incrementViewsWithTracking(
+        request()->ip(),
+        request()->userAgent()
+    );
 
     // 獲取用戶的公開履歷，用於頁面切換
     $resume = $user->resume()->where('is_public', true)->first();

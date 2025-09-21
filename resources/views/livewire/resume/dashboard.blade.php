@@ -189,7 +189,7 @@ $searchResumes = function () {
                                                       :class="isPublic == 1 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'"
                                                       x-text="isPublic == 1 ? '公開' : '私人'">
                                                 </span>
-                                                <span class="text-sm text-slate-500 dark:text-slate-400">@{{ $resume->slug }}</span>
+                                                <span class="text-sm text-slate-500 dark:text-slate-400" x-text="'@' + slug"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -210,40 +210,52 @@ $searchResumes = function () {
                                 </div>
 
                                 <!-- Resume Stats -->
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200/50 dark:border-blue-700/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
-                                        <div class="flex items-center">
-                                            <div class="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg">
-                                                <i class="fas fa-graduation-cap text-white text-lg"></i>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-8 border border-blue-200/50 dark:border-blue-700/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                                        <div class="text-center">
+                                            <div class="flex justify-center mb-4">
+                                                <div class="p-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg">
+                                                    <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                                                </div>
                                             </div>
-                                            <div class="ml-4">
-                                                <p class="text-sm font-medium text-blue-700 dark:text-blue-300">學歷項目</p>
-                                                <p class="text-2xl font-bold text-blue-900 dark:text-blue-100" x-text="resume.education ? resume.education.length : 0"></p>
-                                            </div>
+                                            <p class="text-lg font-medium text-blue-700 dark:text-blue-300 mb-2">學歷項目</p>
+                                            <p class="text-4xl font-bold text-blue-900 dark:text-blue-100" x-text="resume.education ? resume.education.length : 0"></p>
                                         </div>
                                     </div>
                                     
-                                    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-6 border border-green-200/50 dark:border-green-700/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
-                                        <div class="flex items-center">
-                                            <div class="p-3 bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg">
-                                                <i class="fas fa-briefcase text-white text-lg"></i>
+                                    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-8 border border-green-200/50 dark:border-green-700/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                                        <div class="text-center">
+                                            <div class="flex justify-center mb-4">
+                                                <div class="p-4 bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg">
+                                                    <i class="fas fa-briefcase text-white text-2xl"></i>
+                                                </div>
                                             </div>
-                                            <div class="ml-4">
-                                                <p class="text-sm font-medium text-green-700 dark:text-green-300">工作經驗</p>
-                                                <p class="text-2xl font-bold text-green-900 dark:text-green-100" x-text="resume.experience ? resume.experience.length : 0"></p>
-                                            </div>
+                                            <p class="text-lg font-medium text-green-700 dark:text-green-300 mb-2">工作經驗</p>
+                                            <p class="text-4xl font-bold text-green-900 dark:text-green-100" x-text="resume.experience ? resume.experience.length : 0"></p>
                                         </div>
                                     </div>
                                     
-                                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-6 border border-purple-200/50 dark:border-purple-700/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
-                                        <div class="flex items-center">
-                                            <div class="p-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                                <i class="fas fa-eye text-white text-lg"></i>
+                                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-8 border border-purple-200/50 dark:border-purple-700/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                                        <div class="text-center">
+                                            <div class="flex justify-center mb-4">
+                                                <div class="p-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg">
+                                                    <i class="fas fa-eye text-white text-2xl"></i>
+                                                </div>
                                             </div>
-                                            <div class="ml-4">
-                                                <p class="text-sm font-medium text-purple-700 dark:text-purple-300">瀏覽次數</p>
-                                                <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">0</p>
+                                            <p class="text-lg font-medium text-purple-700 dark:text-purple-300 mb-2">履歷瀏覽</p>
+                                            <p class="text-4xl font-bold text-purple-900 dark:text-purple-100">{{ $resume->views ?? 0 }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl p-8 border border-orange-200/50 dark:border-orange-700/50 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                                        <div class="text-center">
+                                            <div class="flex justify-center mb-4">
+                                                <div class="p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl shadow-lg">
+                                                    <i class="fas fa-folder-open text-white text-2xl"></i>
+                                                </div>
                                             </div>
+                                            <p class="text-lg font-medium text-orange-700 dark:text-orange-300 mb-2">作品集瀏覽</p>
+                                            <p class="text-4xl font-bold text-orange-900 dark:text-orange-100">{{ auth()->user()->projects->sum('views') }}</p>
                                         </div>
                                     </div>
                                 </div>

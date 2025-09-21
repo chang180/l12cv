@@ -43,6 +43,7 @@ class Project extends Model
         'completion_date',
         'is_featured',
         'order',
+        'views',
     ];
 
     /**
@@ -74,7 +75,7 @@ class Project extends Model
     public function getThumbnailUrl()
     {
         if ($this->thumbnail) {
-            return \Storage::url($this->thumbnail);
+            return \Illuminate\Support\Facades\Storage::url($this->thumbnail);
         }
 
         return null;
@@ -119,5 +120,38 @@ class Project extends Model
             ->orderBy('order')
             ->orderBy('created_at', 'desc')
             ->get();
+    }
+
+    /**
+     * 增加項目瀏覽數（帶防刷機制）
+     *
+     * @param string $ipAddress
+     * @param string $userAgent
+     * @return bool 是否成功增加瀏覽數
+     */
+    public function incrementViewsWithTracking(string $ipAddress, string $userAgent = ''): bool
+    {
+        // 檢查是否應該計入瀏覽數
+        if (!ViewTracking::shouldCountView($ipAddress, 'project', $this->id)) {
+            return false;
+        }
+
+        // 記錄瀏覽
+        ViewTracking::recordView($ipAddress, $userAgent, 'project', $this->id);
+        
+        // 增加瀏覽數
+        $this->increment('views');
+        
+        return true;
+    }
+
+    /**
+     * 增加項目瀏覽數（舊方法，向後兼容）
+     *
+     * @return void
+     */
+    public function incrementViews(): void
+    {
+        $this->increment('views');
     }
 }

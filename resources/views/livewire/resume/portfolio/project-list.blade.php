@@ -32,11 +32,20 @@
                                     @endif
                                 </h3>
 
-                                @if($project->completion_date)
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                    完成日期: {{ \Carbon\Carbon::parse($project->completion_date)->format('Y年m月') }}
-                                </p>
-                                @endif
+                                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                                    @if($project->completion_date)
+                                    <span>
+                                        完成日期: {{ \Carbon\Carbon::parse($project->completion_date)->format('Y年m月') }}
+                                    </span>
+                                    @endif
+                                    <span class="inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        {{ $project->views ?? 0 }} 瀏覽
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="flex items-center space-x-2 ml-4">
