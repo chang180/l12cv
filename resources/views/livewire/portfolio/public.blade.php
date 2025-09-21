@@ -20,8 +20,65 @@
     <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <!-- 頂部導航區域 -->
         <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between py-4">
+            <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
+                <!-- 手機版佈局 -->
+                <div class="md:hidden">
+                    <!-- 手機版第一行：品牌和右側按鈕 -->
+                    <div class="flex items-center justify-between py-2">
+                        <div class="flex items-center space-x-2">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-pink-600">
+                                <i class="fas fa-folder-open text-white text-sm"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-gray-900 dark:text-white">L12CV</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 手機版右側按鈕 -->
+                        <div class="flex items-center space-x-2">
+                            <div x-data="{ 
+                                isDark: document.documentElement.classList.contains('dark'),
+                                toggleTheme() {
+                                    this.isDark = window.DarkModeManager.toggle() === 'dark';
+                                }
+                            }">
+                                <button 
+                                    @click="toggleTheme()"
+                                    class="relative inline-flex h-7 w-14 items-center rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 border border-gray-300 dark:border-gray-600"
+                                >
+                                    <span class="sr-only">切換深色模式</span>
+                                    <i class="fas fa-sun absolute left-1 text-yellow-500 text-xs" 
+                                       :class="isDark ? 'opacity-50' : 'opacity-100'"></i>
+                                    <i class="fas fa-moon absolute right-1 text-purple-600 text-xs"
+                                       :class="isDark ? 'opacity-100' : 'opacity-50'"></i>
+                                    <span 
+                                        :class="isDark ? 'translate-x-7' : 'translate-x-0.5'"
+                                        class="inline-block h-5 w-5 transform rounded-full bg-white dark:bg-gray-800 shadow-md transition-transform duration-300 flex items-center justify-center border border-gray-200 dark:border-gray-600"
+                                    >
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 手機版第二行：導航按鈕 -->
+                    <div class="pb-3 pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
+                        <div class="flex justify-center space-x-3">
+                            @if($resume)
+                            <a href="{{ route('resume.public', $resume->slug) }}"
+                                class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md flex items-center">
+                                <i class="fas fa-user mr-2"></i>履歷
+                            </a>
+                            @endif
+                            <span class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center">
+                                <i class="fas fa-folder mr-2"></i>作品集
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 桌面版佈局 -->
+                <div class="hidden md:flex items-center justify-between py-3 sm:py-4">
                     <!-- 左側：品牌和導航 -->
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-3">
@@ -34,7 +91,7 @@
                             </div>
                         </div>
                         
-                        <div class="hidden sm:flex space-x-3">
+                        <div class="flex space-x-3">
                             @if($resume)
                             <a href="{{ route('resume.public', $resume->slug) }}"
                                 class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md">
@@ -60,13 +117,10 @@
                                 class="relative inline-flex h-10 w-20 items-center rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 border-2 border-gray-300 dark:border-gray-600"
                             >
                                 <span class="sr-only">切換深色模式</span>
-                                <!-- 太陽圖標 (左側) -->
                                 <i class="fas fa-sun absolute left-2 text-yellow-500 text-sm" 
                                    :class="isDark ? 'opacity-50' : 'opacity-100'"></i>
-                                <!-- 月亮圖標 (右側) -->
                                 <i class="fas fa-moon absolute right-2 text-purple-600 text-sm"
                                    :class="isDark ? 'opacity-100' : 'opacity-50'"></i>
-                                <!-- 滑動圓球 -->
                                 <span 
                                     :class="isDark ? 'translate-x-10' : 'translate-x-1'"
                                     class="inline-block h-7 w-7 transform rounded-full bg-white dark:bg-gray-800 shadow-lg transition-transform duration-300 flex items-center justify-center border border-gray-200 dark:border-gray-600"
