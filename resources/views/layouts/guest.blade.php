@@ -40,13 +40,13 @@
                     </div>
 
                     <!-- 導航連結 -->
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <div class="hidden sm:flex sm:items-center sm:space-x-4">
                         @auth
                         <!-- 用戶下拉選單 -->
-                        <div class="ms-3 relative" x-data="{ open: false }">
+                        <div class="relative" x-data="{ open: false }">
                             <div>
                                 <button type="button"
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-4 font-medium rounded-lg text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150 shadow-sm hover:shadow-md"
                                     @click="open = !open">
                                     {{ Auth::user()->name }}
                                     <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,7 @@
                             </div>
 
                             <div x-show="open" @click.away="open = false"
-                                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border border-gray-200 dark:border-gray-700"
                                 x-transition:enter="transition ease-out duration-200"
                                 x-transition:enter-start="transform opacity-0 scale-95"
                                 x-transition:enter-end="transform opacity-100 scale-100"
@@ -67,26 +67,34 @@
                                 x-transition:leave-start="transform opacity-100 scale-100"
                                 x-transition:leave-end="transform opacity-0 scale-95">
                                 <a href="{{ route('resume.dashboard') }}"
-                                    class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
+                                    class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                                     儀表板
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit"
-                                        class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
+                                        class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                                         登出
                                     </button>
                                 </form>
                             </div>
                         </div>
                         @else
-                        <a href="{{ route('login') }}"
-                            class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-2 focus:rounded-sm focus:outline-red-500">登入</a>
-                        @if (Route::has('register'))
-                        <a href="{{ route('register') }}"
-                            class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:rounded-sm focus:outline-red-500">註冊</a>
-                        @endif
+                        <!-- 登入和註冊按鈕 -->
+                        <div class="flex items-center space-x-3">
+                            <a href="{{ route('login') }}"
+                                class="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-200">
+                                登入
+                            </a>
+                            @if (Route::has('register'))
+                            <a href="{{ route('register') }}"
+                                class="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                註冊
+                            </a>
+                            @endif
+                        </div>
                         @endauth
+                        
                         <!-- 主題切換按鈕 -->
                         <button 
                             type="button"
@@ -100,16 +108,16 @@
                                 }
                             }"
                             @click="toggleTheme()"
-                            class="group relative p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors duration-200 border border-slate-200 dark:border-slate-700"
+                            class="group relative p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 shadow-sm hover:shadow-md"
                             aria-label="切換主題"
                         >
-                            <svg x-show="$flux.appearance === 'light'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg x-show="$flux.appearance === 'light'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
-                            <svg x-show="$flux.appearance === 'dark'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg x-show="$flux.appearance === 'dark'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                             </svg>
-                            <svg x-show="$flux.appearance === 'system'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg x-show="$flux.appearance === 'system'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         </button>
