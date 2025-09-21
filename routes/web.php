@@ -6,6 +6,7 @@ use App\Models\Resume;
 use App\Models\User;
 use App\Models\Project;
 use App\Http\Controllers\RedisTestController;
+use App\Http\Controllers\ResumePdfController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +30,9 @@ Route::get('/@{slug}', function ($slug) {
         'resume' => $resume
     ]);
 })->name('resume.public');
+
+// PDF 導出路由
+Route::get('/@{slug}/pdf', [ResumePdfController::class, 'download'])->name('resume.pdf');
 
 // 公開作品集路由 - 不需要驗證 (使用 slug 而不是 ID)
 Route::get('/p/{slug}', function ($slug) {
