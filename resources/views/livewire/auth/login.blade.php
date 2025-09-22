@@ -93,6 +93,23 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
+    
+    <!-- Error Messages -->
+    @if ($errors->any())
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                    登入失敗
+                </h3>
+            </div>
+            <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+                @foreach ($errors->all() as $error)
+                    <p>{{ $error }}</p>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <form wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
