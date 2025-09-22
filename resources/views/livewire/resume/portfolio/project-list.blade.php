@@ -117,20 +117,30 @@
                 您尚未添加任何項目到作品集
             </p>
             <div class="mt-6">
-                <flux:button wire:click="createProject" variant="primary">
-                    <flux:icon name="plus-circle" class="w-5 h-5 mr-2" />
-                    添加您的第一個項目
-                </flux:button>
+                <button 
+                    wire:click="createProject" 
+                    class="bg-gradient-to-r from-indigo-500 to-pink-600 hover:from-indigo-600 hover:to-pink-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 mx-auto group"
+                >
+                    <div class="p-2 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                        <i class="fas fa-plus text-sm"></i>
+                    </div>
+                    <span>添加您的第一個項目</span>
+                </button>
             </div>
         </div>
     </x-card>
     @endif
 
     <div class="flex justify-end mt-6">
-        <flux:button wire:click="createProject" variant="primary" class="w-full sm:w-auto">
-            <flux:icon name="plus-circle" class="w-5 h-5 mr-2" />
-            新增項目
-        </flux:button>
+        <button 
+            wire:click="createProject" 
+            class="bg-gradient-to-r from-indigo-500 to-pink-600 hover:from-indigo-600 hover:to-pink-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px] group"
+        >
+            <div class="p-2 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                <i class="fas fa-plus text-sm"></i>
+            </div>
+            <span>新增項目</span>
+        </button>
     </div>
 
     <!-- 引入項目表單組件 -->
