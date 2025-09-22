@@ -21,7 +21,7 @@ mount(function () {
 });
 
 $updateBasicInfo = function () {
-    // 加強日誌測試，確保方法被調用
+    // 簡單的測試，確保方法被調用
     logger('🔥 updateBasicInfo method called at ' . now());
     
     // 立即顯示一個可見的消息
@@ -35,6 +35,9 @@ $updateBasicInfo = function () {
         'message' => 'Livewire 方法被調用了！',
         'type' => 'success'
     ]);
+    
+    // 簡單的測試，直接返回
+    return;
 
     try {
         logger('Current data:', [
