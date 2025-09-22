@@ -240,30 +240,19 @@ on(['markdown-content-updated' => function ($content) {
                                             <flux:error :messages="$message" />
                                         @enderror
                                     </div>
-                                    <div class="flex justify-end pt-6 space-x-4">
-                                        <!-- 測試按鈕 -->
-                                        <button 
-                                            wire:click="updateBasicInfo"
-                                            type="button"
-                                            class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg"
-                                        >
-                                            測試 Livewire
-                                        </button>
-                                        
-                                        <!-- 主要更新按鈕 -->
-                                        <button 
-                                            wire:click="updateBasicInfo"
-                                            wire:loading.attr="disabled"
-                                            wire:loading.class="opacity-50 cursor-not-allowed"
-                                            type="button"
-                                            class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
-                                            onclick="console.log('按鈕被點擊了！'); alert('按鈕被點擊了！');"
-                                        >
-                                            <i class="fas fa-check-circle text-sm" wire:loading.remove></i>
-                                            <i class="fas fa-spinner fa-spin text-sm" wire:loading></i>
-                                            <span wire:loading.remove>更新基本資料</span>
-                                            <span wire:loading>更新中...</span>
-                                        </button>
+                                    <!-- 自動保存說明 -->
+                                    <div class="pt-6">
+                                        <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-save text-green-500 mr-2"></i>
+                                                <h3 class="text-sm font-medium text-green-800 dark:text-green-200">
+                                                    自動保存
+                                                </h3>
+                                            </div>
+                                            <div class="mt-2 text-sm text-green-700 dark:text-green-300">
+                                                <p>您的履歷內容會自動保存，無需手動點擊保存按鈕。</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

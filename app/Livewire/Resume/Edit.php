@@ -51,29 +51,21 @@ class Edit extends Component
         $this->experience = $this->resume->experience ?? [];
     }
 
-    public function updateBasicInfo()
+
+    public function handleMarkdownUpdate($content)
     {
+        logger('🔥 handleMarkdownUpdate called with content: ' . substr($content, 0, 50) . '...');
+        $this->summary = $content;
+        
+        // 自動保存到資料庫
         $this->resume->update([
             'title' => $this->title,
             'summary' => $this->summary,
         ]);
-
+        
         $this->dispatch('notify', [
-            'message' => '基本資料已更新',
-            'type' => 'success',
-        ]);
-    }
-
-    public function handleMarkdownUpdate($content)
-    {
-        dd($content);
-        logger('🔥 handleMarkdownUpdate called with content: ' . substr($content, 0, 50) . '...');
-        logger('🔥 Previous summary: ' . substr($this->summary, 0, 50) . '...');
-        $this->summary = $content;
-        logger('🔥 New summary: ' . substr($this->summary, 0, 50) . '...');
-        $this->dispatch('notify', [
-            'message' => '🔥 Markdown 內容已更新！',
-            'type' => 'info'
+            'message' => '✅ 履歷已自動保存',
+            'type' => 'success'
         ]);
     }
 
