@@ -65,7 +65,14 @@ class Edit extends Component
             'summary' => $this->summary,
         ]);
 
+        // 更新原始內容和重置變更狀態
+        $this->originalSummary = $this->summary;
+        $this->hasUnsavedChanges = false;
+
         session()->flash('status', '✅ 基本資料已更新');
+        
+        // 滾動到頁面頂部
+        $this->dispatch('scroll-to-top');
     }
 
     public function addEducation()

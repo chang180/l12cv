@@ -2,22 +2,25 @@
 use function Livewire\Volt\{state, mount, on};
 use App\Models\Resume;
 
-state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
+state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'experience' => [], 'currentTab' => 'basic', 'hasUnsavedChanges' => false, 'originalSummary' => '']);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
     if ($this->resume) {
         $this->title = $this->resume->title ?? '';
         $this->summary = $this->resume->summary ?? '';
+        $this->originalSummary = $this->summary; // 保存原始內容
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     } else {
         // 新用戶，保持空欄位
         $this->title = '';
         $this->summary = '';
+        $this->originalSummary = '';
         $this->education = [];
         $this->experience = [];
     }
+    $this->hasUnsavedChanges = false;
 });
 
 $updateBasicInfo = function () {
@@ -105,6 +108,8 @@ $shouldShowCurrentOption = function ($index) {
 // 監聽 Markdown 編輯器的內容更新
 on(['markdown-content-updated' => function ($content) {
     $this->summary = $content;
+    // 檢查是否有變更
+    $this->hasUnsavedChanges = ($content !== $this->originalSummary);
 }]);
 ?>
 
@@ -250,19 +255,26 @@ on(['markdown-content-updated' => function ($content) {
                                         @enderror
                                     </div>
                                     <div class="flex justify-end pt-6 space-x-4">
-                                        <!-- 更新基本資料按鈕 -->
-                                        <button 
-                                            wire:click="updateBasicInfo"
-                                            wire:loading.attr="disabled"
-                                            wire:loading.class="opacity-50 cursor-not-allowed"
-                                            type="button"
-                                            class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
-                                        >
-                                            <i class="fas fa-check-circle text-sm" wire:loading.remove></i>
-                                            <i class="fas fa-spinner fa-spin text-sm" wire:loading></i>
-                                            <span wire:loading.remove>更新基本資料</span>
-                                            <span wire:loading>更新中...</span>
-                                        </button>
+            <!-- 更新基本資料按鈕 -->
+            <button
+                wire:click="updateBasicInfo"
+                wire:loading.attr="disabled"
+                wire:loading.class="opacity-50 cursor-not-allowed"
+                @if($hasUnsavedChanges) disabled @endif
+                type="button"
+                class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px] @if($hasUnsavedChanges) opacity-50 cursor-not-allowed @endif"
+            >
+                <i class="fas fa-check-circle text-sm" wire:loading.remove wire:target="updateBasicInfo"></i>
+                <i class="fas fa-spinner fa-spin text-sm" wire:loading wire:target="updateBasicInfo"></i>
+                <span wire:loading.remove wire:target="updateBasicInfo">
+                    @if($hasUnsavedChanges)
+                        請先更新簡介內容
+                    @else
+                        更新基本資料
+                    @endif
+                </span>
+                <span wire:loading wire:target="updateBasicInfo">更新中...</span>
+            </button>
                                     </div>
                                 </div>
                             </div>
@@ -455,3 +467,12 @@ on(['markdown-content-updated' => function ($content) {
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('livewire:init', function () {
+    // 監聽滾動到頂部事件
+    Livewire.on('scroll-to-top', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+});
+</script>
