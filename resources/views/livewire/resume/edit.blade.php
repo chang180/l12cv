@@ -191,9 +191,9 @@
                                         </div>
                                         <div>
                                             <flux:label>開始日期</flux:label>
-                                                <flux:input wire:model="experience.{{ $index }}.start_date"
+                                            <flux:input wire:model="experience.{{ $index }}.start_date"
                                                 type="date" class="w-full" />
-                                            </div>
+                                        </div>
                                         @if(!($experience[$index]['current'] ?? false))
                                             <div>
                                                 <flux:label>結束日期</flux:label>
