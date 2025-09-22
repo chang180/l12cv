@@ -30,7 +30,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->unique()->constrained()->onDelete('cascade');
             $table->string('slug')->unique();
-            $table->string('title')->default('尚未設定標題');
+            $table->string('title')->default('');
             $table->text('summary')->nullable();
             $table->string('avatar')->nullable();
             $table->json('education')->nullable();
