@@ -65,7 +65,9 @@ class Edit extends Component
     public function updateContent($content)
     {
         logger('🔥 updateContent method called with content: ' . substr($content, 0, 50) . '...');
+        logger('🔥 Previous summary: ' . substr($this->summary, 0, 50) . '...');
         $this->summary = $content;
+        logger('🔥 New summary: ' . substr($this->summary, 0, 50) . '...');
         $this->dispatch('notify', [
             'message' => '🔥 Markdown 內容已更新！',
             'type' => 'info'

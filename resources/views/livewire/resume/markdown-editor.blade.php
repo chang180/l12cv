@@ -81,13 +81,18 @@
                         ],
                         events: {
                             change: function() {
+                                console.log('🔥 Markdown editor change event triggered!');
                                 // 使用防抖來避免頻繁更新
                                 clearTimeout(debounceTimer);
                                 debounceTimer = setTimeout(() => {
                                     try {
                                         const markdown = editor.getMarkdown();
+                                        console.log('🔥 Markdown content:', markdown.substring(0, 50) + '...');
                                         if (typeof Livewire !== 'undefined' && window.Livewire) {
+                                            console.log('🔥 Calling updateContent with Livewire...');
                                             @this.call('updateContent', markdown);
+                                        } else {
+                                            console.warn('🔥 Livewire not available!');
                                         }
                                     } catch (e) {
                                         console.warn('Error getting markdown content:', e);
