@@ -16,10 +16,7 @@ class Edit extends Component
     public $education = [];
     public $experience = [];
     public $currentTab = 'basic';
-    public $hasUnsavedChanges = false;
-    public $originalSummary = '';
-
-    protected $listeners = ['markdown-content-updated' => 'handleMarkdownUpdate'];
+    protected $listeners = ['update-parent-summary' => 'handleParentSummaryUpdate'];
 
     public function mount($resumeId = null)
     {
@@ -49,19 +46,14 @@ class Edit extends Component
         // 初始化表單數據
         $this->title = $this->resume->title;
         $this->summary = $this->resume->summary;
-        $this->originalSummary = $this->summary; // 保存原始內容
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
-        $this->hasUnsavedChanges = false;
     }
 
 
-    public function handleMarkdownUpdate($content)
+    public function handleParentSummaryUpdate($content)
     {
-        logger('🔥 handleMarkdownUpdate called with content: ' . substr($content, 0, 50) . '...');
         $this->summary = $content;
-        // 檢查是否有變更
-        $this->hasUnsavedChanges = ($content !== $this->originalSummary);
     }
 
     public function updateBasicInfo()
@@ -71,9 +63,6 @@ class Edit extends Component
             'summary' => $this->summary,
         ]);
 
-        // 更新原始內容和重置變更狀態
-        $this->originalSummary = $this->summary;
-        $this->hasUnsavedChanges = false;
 
         session()->flash('status', '✅ 基本資料已更新');
         

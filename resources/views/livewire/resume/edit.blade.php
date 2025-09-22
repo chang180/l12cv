@@ -234,19 +234,12 @@ $shouldShowCurrentOption = function ($index) {
                 wire:click="updateBasicInfo"
                 wire:loading.attr="disabled"
                 wire:loading.class="opacity-50 cursor-not-allowed"
-                @if($this->hasUnsavedChanges) disabled @endif
                 type="button"
-                class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px] @if($this->hasUnsavedChanges) opacity-50 cursor-not-allowed @endif"
+                class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
             >
                 <i class="fas fa-check-circle text-sm" wire:loading.remove wire:target="updateBasicInfo"></i>
                 <i class="fas fa-spinner fa-spin text-sm" wire:loading wire:target="updateBasicInfo"></i>
-                <span wire:loading.remove wire:target="updateBasicInfo">
-                    @if($this->hasUnsavedChanges)
-                        請先更新簡介內容
-                    @else
-                        更新基本資料
-                    @endif
-                </span>
+                <span wire:loading.remove wire:target="updateBasicInfo">更新基本資料</span>
                 <span wire:loading wire:target="updateBasicInfo">更新中...</span>
             </button>
                                     </div>

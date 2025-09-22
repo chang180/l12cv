@@ -14,11 +14,9 @@
 
             function initEditor() {
                 initAttempts++;
-                console.log(`Editor init attempt ${initAttempts}/${maxAttempts} for ${editorId}`);
 
                 // 檢查Toast UI Editor是否已載入
                 if (typeof toastui === 'undefined') {
-                    console.log('Toast UI Editor not loaded yet, retrying...');
                     if (initAttempts < maxAttempts) {
                         setTimeout(initEditor, 500);
                     }
@@ -29,7 +27,6 @@
                 const element = document.querySelector('#' + editorId);
 
                 if (!element) {
-                    console.log('Editor element not found, retrying...');
                     if (initAttempts < maxAttempts) {
                         setTimeout(initEditor, 500);
                     }
@@ -38,7 +35,6 @@
 
                 // 檢查元素是否可見
                 if (element.offsetParent === null) {
-                    console.log('Editor element not visible, retrying...');
                     if (initAttempts < maxAttempts) {
                         setTimeout(initEditor, 500);
                     }
@@ -47,7 +43,6 @@
 
                 // 如果已經初始化過且編輯器存在，不重複初始化
                 if (isInitialized && editor) {
-                    console.log('Editor already initialized');
                     return;
                 }
 
@@ -62,7 +57,6 @@
                 }
 
                 try {
-                    console.log('Creating new Toast UI Editor...');
                     editor = new Editor({
                         el: element,
                         height: '{{ $height }}',
@@ -81,18 +75,13 @@
                         ],
                         events: {
                             change: function() {
-                                console.log('🔥 Markdown editor change event triggered!');
                                 // 使用防抖來避免頻繁更新
                                 clearTimeout(debounceTimer);
                                 debounceTimer = setTimeout(() => {
                                     try {
                                         const markdown = editor.getMarkdown();
-                                        console.log('🔥 Markdown content:', markdown.substring(0, 50) + '...');
                                         if (typeof Livewire !== 'undefined' && window.Livewire) {
-                                            console.log('🔥 Calling updateContent with Livewire...');
                                             @this.call('updateContent', markdown);
-                                        } else {
-                                            console.warn('🔥 Livewire not available!');
                                         }
                                     } catch (e) {
                                         console.warn('Error getting markdown content:', e);
@@ -103,10 +92,9 @@
                     });
 
                     isInitialized = true;
-                    console.log('✅ Markdown editor initialized successfully!');
 
                 } catch (error) {
-                    console.error('❌ Error initializing markdown editor:', error);
+                    console.error('Error initializing markdown editor:', error);
                     isInitialized = false;
                     // 重試一次
                     if (initAttempts < maxAttempts) {
@@ -124,13 +112,11 @@
 
             // Livewire 初始化時機
             document.addEventListener('livewire:init', function() {
-                console.log('Livewire initialized, trying to init editor...');
                 setTimeout(initEditor, 100);
             });
 
             // 頁面完全載入後再試一次
             window.addEventListener('load', function() {
-                console.log('Window loaded, trying to init editor...');
                 setTimeout(initEditor, 200);
             });
 
@@ -139,7 +125,6 @@
                 if (!isInitialized || !editor) {
                     const element = document.querySelector('#' + editorId);
                     if (element && element.offsetParent !== null) {
-                        console.log('Visibility checker: trying to init editor...');
                         initEditor();
                     }
                 } else {

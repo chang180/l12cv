@@ -31,8 +31,8 @@ class MarkdownEditor extends Component
     public function updateContent($content)
     {
         $this->content = $content;
-        // 發送事件給父組件
-        $this->dispatch('markdown-content-updated', $content);
+        // 直接更新父組件的 summary 屬性
+        $this->dispatch('update-parent-summary', $content);
     }
 
     public function render()
