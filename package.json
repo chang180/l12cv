@@ -7,10 +7,12 @@
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.0.7",
+        "@toast-ui/editor": "^3.2.2",
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^1.0",
+        "simplemde": "^1.11.2",
         "tailwindcss": "^4.0.7",
         "vite": "^6.0"
     },

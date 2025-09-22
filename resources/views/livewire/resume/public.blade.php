@@ -188,9 +188,9 @@
                                     {{ $resume->title }}
                                 </h2>
                                 @if ($resume->summary)
-                                <p class="text-sm sm:text-base text-white/80 whitespace-pre-line leading-relaxed">
-                                    {{ $resume->summary }}
-                                </p>
+                                <div class="text-sm sm:text-base text-white/80 leading-relaxed prose prose-invert max-w-none">
+                                    {!! \App\Helpers\MarkdownHelper::toHtmlWithDarkMode($resume->summary) !!}
+                                </div>
                                 @endif
                             </div>
                         </div>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Switching Debug</title>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <style>
+        .tab-button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .tab-button.active {
+            background: #007cba;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        #editor {
+            height: 400px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div x-data="tabSwitcher()">
+        <h1>Tab Switching Debug Test</h1>
+
+        <!-- Tab Buttons -->
+        <div>
+            <button class="tab-button" :class="{ active: activeTab === 'console' }" @click="switchTab('console')">控制台</button>
+            <button class="tab-button" :class="{ active: activeTab === 'edit' }" @click="switchTab('edit')">編輯履歷</button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-content" :class="{ active: activeTab === 'console' }">
+            <h2>控制台頁面</h2>
+            <p>這是控制台的內容</p>
+        </div>
+
+        <div class="tab-content" :class="{ active: activeTab === 'edit' }">
+            <h2>編輯履歷頁面</h2>
+            <p>Markdown 編輯器應該在下面出現：</p>
+            <div id="editor"></div>
+            <div id="debug-info" style="margin-top: 20px; padding: 10px; background: #f9f9f9;">
+                <h3>Debug 資訊：</h3>
+                <div id="debug-output"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function tabSwitcher() {
+            return {
+                activeTab: 'console',
+                editor: null,
+                isInitialized: false,
+
+                switchTab(tab) {
+                    this.log(`切換到標籤頁: ${tab}`);
+                    this.activeTab = tab;
+
+                    if (tab === 'edit') {
+                        this.$nextTick(() => {
+                            this.log('標籤頁切換完成，準備初始化編輯器');
+                            setTimeout(() => {
+                                this.initEditor();
+                            }, 100);
+                        });
+                    }
+                },
+
+                initEditor() {
+                    this.log('開始初始化編輯器...');
+
+                    const element = document.querySelector('#editor');
+                    if (!element) {
+                        this.log('錯誤：找不到編輯器元素');
+                        return;
+                    }
+
+                    this.log(`編輯器元素存在: ${element.id}`);
+                    this.log(`元素可見性: ${element.offsetParent !== null ? '可見' : '不可見'}`);
+                    this.log(`元素尺寸: ${element.offsetWidth}x${element.offsetHeight}`);
+
+                    if (element.offsetParent === null) {
+                        this.log('元素不可見，延遲重試...');
+                        setTimeout(() => {
+                            this.initEditor();
+                        }, 200);
+                        return;
+                    }
+
+                    if (typeof toastui === 'undefined') {
+                        this.log('錯誤：Toast UI Editor 未載入');
+                        return;
+                    }
+
+                    if (this.isInitialized && this.editor) {
+                        this.log('編輯器已經初始化過了');
+                        return;
+                    }
+
+                    // 清理舊編輯器
+                    if (this.editor) {
+                        this.log('清理舊編輯器...');
+                        try {
+                            this.editor.destroy();
+                        } catch (e) {
+                            this.log(`清理編輯器時發生錯誤: ${e.message}`);
+                        }
+                        this.editor = null;
+                    }
+
+                    try {
+                        this.log('創建新編輯器...');
+                        const { Editor } = toastui;
+
+                        this.editor = new Editor({
+                            el: element,
+                            height: '400px',
+                            initialEditType: 'markdown',
+                            previewStyle: 'vertical',
+                            placeholder: '開始撰寫您的履歷簡介...',
+                            initialValue: '# 測試標題\n\n這是一個測試內容。',
+                            usageStatistics: false,
+                            hideModeSwitch: false,
+                            toolbarItems: [
+                                ['heading', 'bold', 'italic', 'strike'],
+                                ['hr', 'quote'],
+                                ['ul', 'ol', 'task'],
+                                ['table', 'image', 'link'],
+                                ['code', 'codeblock']
+                            ],
+                            events: {
+                                change: () => {
+                                    this.log('編輯器內容發生變化');
+                                }
+                            }
+                        });
+
+                        this.isInitialized = true;
+                        this.log('✅ 編輯器初始化成功！');
+
+                    } catch (error) {
+                        this.log(`❌ 編輯器初始化失敗: ${error.message}`);
+                        this.isInitialized = false;
+                    }
+                },
+
+                log(message) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const debugOutput = document.getElementById('debug-output');
+                    if (debugOutput) {
+                        debugOutput.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+                        debugOutput.scrollTop = debugOutput.scrollHeight;
+                    }
+                    console.log(`[${timestamp}] ${message}`);
+                }
+            }
+        }
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('頁面載入完成');
+        });
+    </script>
+</body>
+</html>

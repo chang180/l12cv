@@ -1,5 +1,5 @@
 <?php
-use function Livewire\Volt\{state, mount};
+use function Livewire\Volt\{state, mount, on};
 use App\Models\Resume;
 
 state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
@@ -15,15 +15,50 @@ mount(function () {
 });
 
 $updateBasicInfo = function () {
-    $this->resume->update([
-        'title' => $this->title,
-        'summary' => $this->summary,
-    ]);
-    
-    $this->dispatch('notify', [
-        'message' => '基本資料已更新',
-        'type' => 'success',
-    ]);
+    // 先添加一個簡單的日誌測試
+    logger('updateBasicInfo method called');
+
+    try {
+        logger('Current data:', [
+            'title' => $this->title,
+            'summary_length' => strlen($this->summary ?? ''),
+            'resume_id' => $this->resume?->id,
+        ]);
+
+        // 簡單驗證
+        if (empty($this->title)) {
+            session()->flash('error', '標題不能為空');
+            return;
+        }
+
+        // 確保有resume物件
+        if (!$this->resume) {
+            $this->resume = auth()->user()->resume()->firstOrCreate([
+                'user_id' => auth()->id(),
+            ]);
+            logger('Created new resume with ID: ' . $this->resume->id);
+        }
+
+        // 更新資料
+        logger('Attempting to update resume...');
+        $this->resume->title = $this->title;
+        $this->resume->summary = $this->summary;
+        $saved = $this->resume->save();
+
+        logger('Save result: ' . ($saved ? 'success' : 'failed'));
+
+        if ($saved) {
+            session()->flash('success', '基本資料已更新');
+            logger('Update successful');
+        } else {
+            session()->flash('error', '更新失敗');
+            logger('Update failed');
+        }
+
+    } catch (\Exception $e) {
+        logger('Exception in updateBasicInfo: ' . $e->getMessage());
+        session()->flash('error', '發生錯誤：' . $e->getMessage());
+    }
 };
 
 $addEducation = function () {
@@ -78,14 +113,19 @@ $updateExperience = function () {
 
 $shouldShowCurrentOption = function ($index) {
     if ($index === 0) return true;
-    
+
     $previousExp = $this->experience[$index - 1] ?? null;
     if (!$previousExp || !isset($previousExp['end_date']) || empty($previousExp['end_date'])) {
         return false;
     }
-    
+
     return true;
 };
+
+// 監聽 Markdown 編輯器的內容更新
+on(['markdown-content-updated' => function ($content) {
+    $this->summary = $content;
+}]);
 ?>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -150,7 +190,8 @@ $shouldShowCurrentOption = function ($index) {
             <!-- Right Column - Content -->
             <div class="lg:col-span-3">
                 <!-- 基本資料表單 -->
-                <div x-show="$wire.currentTab === 'basic'" class="space-y-6">
+                <div x-show="$wire.currentTab === 'basic'"
+                     class="space-y-6">
                     <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
                         <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-4">
                             <h3 class="text-lg font-semibold text-white flex items-center">
@@ -159,29 +200,69 @@ $shouldShowCurrentOption = function ($index) {
                             </h3>
                         </div>
                         <div class="p-6">
-                            <form wire:submit="updateBasicInfo" class="space-y-6">
-                                <div>
-                                    <flux:label for="title">標題</flux:label>
-                                    <flux:input wire:model="title" id="title" type="text" required />
-                                    @error('title')
-                                        <flux:error :messages="$message" />
-                                    @enderror
+                            <!-- Success/Error Messages -->
+                            @if (session()->has('success'))
+                                <div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">
+                                    {{ session('success') }}
                                 </div>
-                                <div>
-                                    <flux:label for="summary">簡介</flux:label>
-                                    <flux:textarea wire:model="summary" id="summary" rows="4" />
-                                    @error('summary')
-                                        <flux:error :messages="$message" />
-                                    @enderror
+                            @endif
+
+                            @if (session()->has('error'))
+                                <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
+                                    {{ session('error') }}
                                 </div>
-                                <div class="flex justify-end pt-6">
-                                    <button 
-                                        type="submit" 
-                                        class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
-                                    >
-                                        <i class="fas fa-check-circle text-sm"></i>
-                                        <span>更新基本資料</span>
-                                    </button>
+                            @endif
+
+                            <form wire:submit.prevent="updateBasicInfo">
+                                <div class="space-y-6">
+                                    <div>
+                                        <flux:label for="title">標題</flux:label>
+                                        <flux:input wire:model="title" id="title" type="text" required />
+                                        @error('title')
+                                            <flux:error :messages="$message" />
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <flux:label for="summary">簡介 <span class="text-sm text-slate-500 dark:text-slate-400">(支援 Markdown 格式)</span></flux:label>
+                                        
+                                        <!-- Markdown 編輯器 -->
+                                        <div class="mt-2">
+                                            <livewire:resume.markdown-editor
+                                                :content="$summary"
+                                                height="400px"
+                                                placeholder="使用 Markdown 格式撰寫您的履歷簡介...
+
+例如：
+# 個人簡介
+## 專業技能
+
+**前端開發** 和 *後端開發*
+
+- 專案經驗 1
+- 專案經驗 2
+
+[個人網站](https://example.com)
+
+> 專業理念
+
+`程式碼範例`"
+                                                wire:key="markdown-editor-{{ $resume->id ?? 'new' }}"
+                                            />
+                                        </div>
+                                        
+                                        @error('summary')
+                                            <flux:error :messages="$message" />
+                                        @enderror
+                                    </div>
+                                    <div class="flex justify-end pt-6">
+                                        <button 
+                                            type="submit"
+                                            class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
+                                        >
+                                            <i class="fas fa-check-circle text-sm"></i>
+                                            <span>更新基本資料</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

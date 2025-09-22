@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
-use App\Models\Resume;
-use App\Models\User;
-use App\Models\Project;
 use App\Http\Controllers\RedisTestController;
 use App\Http\Controllers\ResumePdfController;
+use App\Models\Project;
+use App\Models\Resume;
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,7 +33,7 @@ Route::get('/@{slug}', function ($slug) {
     );
 
     return view('livewire.resume.public', [
-        'resume' => $resume
+        'resume' => $resume,
     ]);
 })->name('resume.public');
 
@@ -51,7 +51,7 @@ Route::get('/p/{slug}', function ($slug) {
     return view('livewire.portfolio.public', [
         'user' => $user,
         'projects' => $projects,
-        'resume' => $resume
+        'resume' => $resume,
     ]);
 })->name('portfolio.public');
 
@@ -59,8 +59,8 @@ Route::get('/p/{slug}', function ($slug) {
 Route::get('/p/{slug}/project/{project}', function ($slug, $projectId) {
     $user = User::where('slug', $slug)->firstOrFail();
     $project = Project::where('user_id', $user->id)
-                    ->where('id', $projectId)
-                    ->firstOrFail();
+        ->where('id', $projectId)
+        ->firstOrFail();
 
     // 增加項目瀏覽數（帶防刷機制）
     $project->incrementViewsWithTracking(
@@ -74,7 +74,7 @@ Route::get('/p/{slug}/project/{project}', function ($slug, $projectId) {
     return view('livewire.portfolio.project-detail', [
         'user' => $user,
         'project' => $project,
-        'resume' => $resume
+        'resume' => $resume,
     ]);
 })->name('portfolio.project.detail');
 
@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('/', 'resume.dashboard')->name('resume.dashboard');
         Volt::route('/edit', 'resume.edit')->name('resume.edit');
     });
+
 });
 
 require __DIR__.'/auth.php';

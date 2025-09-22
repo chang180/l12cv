@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__laravel-boost__browser-logs",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(npm run build:*)",
+      "mcp__laravel-boost__application-info",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:ui.toast.com)",
+      "WebFetch(domain:stackoverflow.com)",
+      "Bash(php artisan make:test:*)",
+      "mcp__laravel-boost__last-error",
+      "mcp__laravel-boost__database-schema",
+      "mcp__laravel-boost__tinker",
+      "mcp__laravel-boost__read-log-entries"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ]
+}
