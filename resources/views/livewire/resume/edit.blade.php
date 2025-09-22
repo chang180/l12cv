@@ -15,14 +15,21 @@ mount(function () {
 });
 
 $updateBasicInfo = function () {
-    // 先添加一個簡單的日誌測試
-    logger('updateBasicInfo method called');
+    // 加強日誌測試，確保方法被調用
+    logger('🔥 updateBasicInfo method called at ' . now());
+    
+    // 立即顯示一個可見的消息
+    $this->dispatch('notify', [
+        'message' => '🔥 updateBasicInfo 方法已被調用！',
+        'type' => 'info'
+    ]);
 
     try {
         logger('Current data:', [
             'title' => $this->title,
             'summary_length' => strlen($this->summary ?? ''),
             'resume_id' => $this->resume?->id,
+            'user_id' => auth()->id(),
         ]);
 
         // 簡單驗證
@@ -48,10 +55,13 @@ $updateBasicInfo = function () {
         logger('Save result: ' . ($saved ? 'success' : 'failed'));
 
         if ($saved) {
-            session()->flash('success', '基本資料已更新');
+            session()->flash('success', '基本資料已更新 ✅');
             logger('Update successful');
+            
+            // 重新載入履歷資料以確保同步
+            $this->resume = $this->resume->fresh();
         } else {
-            session()->flash('error', '更新失敗');
+            session()->flash('error', '更新失敗 ❌');
             logger('Update failed');
         }
 
@@ -257,11 +267,15 @@ on(['markdown-content-updated' => function ($content) {
                                     <div class="flex justify-end pt-6">
                                         <button 
                                             wire:click="updateBasicInfo"
+                                            wire:loading.attr="disabled"
+                                            wire:loading.class="opacity-50 cursor-not-allowed"
                                             type="button"
                                             class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
                                         >
-                                            <i class="fas fa-check-circle text-sm"></i>
-                                            <span>更新基本資料</span>
+                                            <i class="fas fa-check-circle text-sm" wire:loading.remove></i>
+                                            <i class="fas fa-spinner fa-spin text-sm" wire:loading></i>
+                                            <span wire:loading.remove>更新基本資料</span>
+                                            <span wire:loading>更新中...</span>
                                         </button>
                                     </div>
                                 </div>
