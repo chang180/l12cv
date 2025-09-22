@@ -213,7 +213,7 @@ on(['markdown-content-updated' => function ($content) {
                                 </div>
                             @endif
 
-                            <form wire:submit.prevent="updateBasicInfo">
+                            <div>
                                 <div class="space-y-6">
                                     <div>
                                         <flux:label for="title">標題</flux:label>
@@ -256,7 +256,8 @@ on(['markdown-content-updated' => function ($content) {
                                     </div>
                                     <div class="flex justify-end pt-6">
                                         <button 
-                                            type="submit"
+                                            wire:click="updateBasicInfo"
+                                            type="button"
                                             class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
                                         >
                                             <i class="fas fa-check-circle text-sm"></i>
@@ -264,7 +265,7 @@ on(['markdown-content-updated' => function ($content) {
                                         </button>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
