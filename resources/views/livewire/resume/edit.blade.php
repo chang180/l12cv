@@ -40,6 +40,16 @@ $updateBasicInfo = function () {
     return;
 };
 
+// 處理 Markdown 編輯器的內容更新
+$updateContent = function ($content) {
+    logger('🔥 updateContent method called with content: ' . substr($content, 0, 50) . '...');
+    $this->summary = $content;
+    $this->dispatch('notify', [
+        'message' => '🔥 Markdown 內容已更新！',
+        'type' => 'info'
+    ]);
+};
+
 $addEducation = function () {
     $this->education[] = [
         'school' => '',
