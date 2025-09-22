@@ -65,10 +65,7 @@ class Edit extends Component
             'summary' => $this->summary,
         ]);
 
-        $this->dispatch('alert', [
-            'message' => '✅ 基本資料已更新',
-            'type' => 'success',
-        ]);
+        session()->flash('status', '✅ 基本資料已更新');
     }
 
     public function addEducation()
