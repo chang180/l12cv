@@ -29,6 +29,12 @@ $updateBasicInfo = function () {
         'message' => '🔥 updateBasicInfo 方法已被調用！',
         'type' => 'info'
     ]);
+    
+    // 添加一個簡單的測試
+    $this->dispatch('alert', [
+        'message' => 'Livewire 方法被調用了！',
+        'type' => 'success'
+    ]);
 
     try {
         logger('Current data:', [
@@ -276,7 +282,17 @@ on(['markdown-content-updated' => function ($content) {
                                             <flux:error :messages="$message" />
                                         @enderror
                                     </div>
-                                    <div class="flex justify-end pt-6">
+                                    <div class="flex justify-end pt-6 space-x-4">
+                                        <!-- 測試按鈕 -->
+                                        <button 
+                                            wire:click="updateBasicInfo"
+                                            type="button"
+                                            class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg"
+                                        >
+                                            測試 Livewire
+                                        </button>
+                                        
+                                        <!-- 主要更新按鈕 -->
                                         <button 
                                             wire:click="updateBasicInfo"
                                             wire:loading.attr="disabled"
