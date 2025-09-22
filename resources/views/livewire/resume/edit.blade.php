@@ -38,52 +38,6 @@ $updateBasicInfo = function () {
     
     // 簡單的測試，直接返回
     return;
-
-    try {
-        logger('Current data:', [
-            'title' => $this->title,
-            'summary_length' => strlen($this->summary ?? ''),
-            'resume_id' => $this->resume?->id,
-            'user_id' => auth()->id(),
-        ]);
-
-        // 簡單驗證
-        if (empty($this->title)) {
-            session()->flash('error', '標題不能為空');
-            return;
-        }
-
-        // 確保有resume物件
-        if (!$this->resume) {
-            $this->resume = auth()->user()->resume()->firstOrCreate([
-                'user_id' => auth()->id(),
-            ]);
-            logger('Created new resume with ID: ' . $this->resume->id);
-        }
-
-        // 更新資料
-        logger('Attempting to update resume...');
-        $this->resume->title = $this->title;
-        $this->resume->summary = $this->summary;
-        $saved = $this->resume->save();
-
-        logger('Save result: ' . ($saved ? 'success' : 'failed'));
-
-        if ($saved) {
-            session()->flash('success', '基本資料已更新 ✅');
-            logger('Update successful');
-            
-            // 重新載入履歷資料以確保同步
-            $this->resume = $this->resume->fresh();
-        } else {
-            session()->flash('error', '更新失敗 ❌');
-            logger('Update failed');
-        }
-
-    } catch (\Exception $e) {
-        logger('Exception in updateBasicInfo: ' . $e->getMessage());
-        session()->flash('error', '發生錯誤：' . $e->getMessage());
-    }
 };
 
 $addEducation = function () {
