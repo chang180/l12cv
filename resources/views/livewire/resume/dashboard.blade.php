@@ -59,6 +59,14 @@ $create = function () {
     return $this->redirect(route('resume.edit'), navigate: true);
 };
 
+$logout = function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    
+    return $this->redirect('/login', navigate: true);
+};
+
 ?>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -110,7 +118,7 @@ $create = function () {
                                 外觀設定
                             </flux:menu.item>
                             <flux:menu.separator />
-                            <flux:menu.item href="/logout" icon="arrow-right-start-on-rectangle">
+                            <flux:menu.item href="#" wire:click="logout" icon="arrow-right-start-on-rectangle">
                                 登出
                             </flux:menu.item>
                         </flux:menu>
