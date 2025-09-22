@@ -17,6 +17,8 @@ class Edit extends Component
     public $experience = [];
     public $currentTab = 'basic';
 
+    protected $listeners = ['markdown-content-updated' => 'handleMarkdownUpdate'];
+
     public function mount($resumeId = null)
     {
         // 如果沒有提供 resumeId，則獲取當前用戶的履歷
@@ -62,9 +64,10 @@ class Edit extends Component
         ]);
     }
 
-    public function updateContent($content)
+    public function handleMarkdownUpdate($content)
     {
-        logger('🔥 updateContent method called with content: ' . substr($content, 0, 50) . '...');
+        dd($content);
+        logger('🔥 handleMarkdownUpdate called with content: ' . substr($content, 0, 50) . '...');
         logger('🔥 Previous summary: ' . substr($this->summary, 0, 50) . '...');
         $this->summary = $content;
         logger('🔥 New summary: ' . substr($this->summary, 0, 50) . '...');
