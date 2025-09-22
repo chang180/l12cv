@@ -51,7 +51,6 @@ class Edit extends Component
 
     public function updateBasicInfo()
     {
-        dd($this->resume);
         $this->resume->update([
             'title' => $this->title,
             'summary' => $this->summary,
@@ -60,6 +59,16 @@ class Edit extends Component
         $this->dispatch('notify', [
             'message' => '基本資料已更新',
             'type' => 'success',
+        ]);
+    }
+
+    public function updateContent($content)
+    {
+        logger('🔥 updateContent method called with content: ' . substr($content, 0, 50) . '...');
+        $this->summary = $content;
+        $this->dispatch('notify', [
+            'message' => '🔥 Markdown 內容已更新！',
+            'type' => 'info'
         ]);
     }
 
