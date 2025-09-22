@@ -20,8 +20,51 @@
     <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <!-- 頂部導航區域 -->
         <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between py-4">
+            <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
+                <!-- 手機版佈局 -->
+                <div class="md:hidden">
+                    <!-- 手機版第一行：返回按鈕和右側按鈕 -->
+                    <div class="flex items-center justify-between py-2">
+                        <a href="{{ route('portfolio.public', $user->slug) }}"
+                            class="inline-flex items-center text-sm text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            返回作品集
+                        </a>
+                        
+                        <!-- 手機版右側按鈕 -->
+                        <div class="flex items-center space-x-2">
+                            <button 
+                                type="button"
+                                x-data="{ 
+                                    toggleTheme() { 
+                                        if ($flux.appearance === 'light') { 
+                                            $flux.appearance = 'dark' 
+                                        } else { 
+                                            $flux.appearance = 'light' 
+                                        } 
+                                    }
+                                }"
+                                @click="toggleTheme()"
+                                class="group relative p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 shadow-sm hover:shadow-md"
+                                aria-label="切換主題"
+                            >
+                                <svg x-show="$flux.appearance === 'light'" class="w-4 h-4 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                <svg x-show="$flux.appearance === 'dark'" class="w-4 h-4 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                                </svg>
+                                <svg x-show="$flux.appearance === 'system'" class="w-4 h-4 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- 桌面版佈局 -->
+                <div class="hidden md:flex items-center justify-between py-3 sm:py-4">
                     <!-- 左側：返回按鈕和品牌 -->
                     <div class="flex items-center space-x-6">
                         <a href="{{ route('portfolio.public', $user->slug) }}"
@@ -30,7 +73,7 @@
                             返回作品集
                         </a>
                         
-                        <div class="hidden sm:flex items-center space-x-3">
+                        <div class="flex items-center space-x-3">
                             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-pink-600">
                                 <i class="fas fa-folder-open text-white text-sm"></i>
                             </div>
@@ -41,7 +84,7 @@
                     <!-- 右側：導航和 Dark Mode -->
                     <div class="flex items-center space-x-4">
                         @if($resume)
-                        <div class="hidden sm:flex space-x-3">
+                        <div class="flex space-x-3">
                             <a href="{{ route('resume.public', $resume->slug) }}"
                                class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md">
                                 <i class="fas fa-user mr-2"></i>履歷
@@ -54,31 +97,31 @@
                         @endif
                         
                         <!-- Dark Mode 切換 -->
-                        <div x-data="{ 
-                            isDark: document.documentElement.classList.contains('dark'),
-                            toggleTheme() {
-                                this.isDark = window.DarkModeManager.toggle() === 'dark';
-                            }
-                        }">
-                            <button 
-                                @click="toggleTheme()"
-                                class="relative inline-flex h-10 w-20 items-center rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 border-2 border-gray-300 dark:border-gray-600"
-                            >
-                                <span class="sr-only">切換深色模式</span>
-                                <!-- 太陽圖標 (左側) -->
-                                <i class="fas fa-sun absolute left-2 text-yellow-500 text-sm" 
-                                   :class="isDark ? 'opacity-50' : 'opacity-100'"></i>
-                                <!-- 月亮圖標 (右側) -->
-                                <i class="fas fa-moon absolute right-2 text-purple-600 text-sm"
-                                   :class="isDark ? 'opacity-100' : 'opacity-50'"></i>
-                                <!-- 滑動圓球 -->
-                                <span 
-                                    :class="isDark ? 'translate-x-10' : 'translate-x-1'"
-                                    class="inline-block h-7 w-7 transform rounded-full bg-white dark:bg-gray-800 shadow-lg transition-transform duration-300 flex items-center justify-center border border-gray-200 dark:border-gray-600"
-                                >
-                                </span>
-                            </button>
-                        </div>
+                        <button 
+                            type="button"
+                            x-data="{ 
+                                toggleTheme() { 
+                                    if ($flux.appearance === 'light') { 
+                                        $flux.appearance = 'dark' 
+                                    } else { 
+                                        $flux.appearance = 'light' 
+                                    } 
+                                }
+                            }"
+                            @click="toggleTheme()"
+                            class="group relative p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 shadow-sm hover:shadow-md"
+                            aria-label="切換主題"
+                        >
+                            <svg x-show="$flux.appearance === 'light'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            <svg x-show="$flux.appearance === 'dark'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                            <svg x-show="$flux.appearance === 'system'" class="w-5 h-5 text-slate-600 dark:text-slate-300 transition-all duration-200 group-hover:text-slate-800 dark:group-hover:text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -251,10 +294,8 @@
         </footer>
     </div>
 
-    <!-- Dark Mode 腳本 -->
-    @vite('resources/js/dark-mode.js')
-    <!-- Alpine.js 腳本 -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Flux Scripts -->
+    @fluxScripts
     @livewireScripts
 </body>
 
