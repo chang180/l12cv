@@ -23,25 +23,7 @@ mount(function () {
     $this->hasUnsavedChanges = false;
 });
 
-$updateBasicInfo = function () {
-    // 簡單的測試，確保方法被調用
-    logger('🔥 updateBasicInfo method called at ' . now());
-    
-    // 立即顯示一個可見的消息
-    $this->dispatch('notify', [
-        'message' => '🔥 updateBasicInfo 方法已被調用！',
-        'type' => 'info'
-    ]);
-    
-    // 添加一個簡單的測試
-    $this->dispatch('alert', [
-        'message' => 'Livewire 方法被調用了！',
-        'type' => 'success'
-    ]);
-    
-    // 簡單的測試，直接返回
-    return;
-};
+// updateBasicInfo 方法在 app/Livewire/Resume/Edit.php 中定義
 
 
 $addEducation = function () {
