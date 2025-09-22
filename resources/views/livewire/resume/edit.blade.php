@@ -283,6 +283,7 @@ on(['markdown-content-updated' => function ($content) {
                                             wire:loading.class="opacity-50 cursor-not-allowed"
                                             type="button"
                                             class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
+                                            onclick="console.log('按鈕被點擊了！'); alert('按鈕被點擊了！');"
                                         >
                                             <i class="fas fa-check-circle text-sm" wire:loading.remove></i>
                                             <i class="fas fa-spinner fa-spin text-sm" wire:loading></i>
