@@ -112,14 +112,9 @@ on(['markdown-content-updated' => function ($content) {
     <!-- Flash Messages -->
     @if (session('status'))
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                    <h3 class="text-sm font-medium text-green-800 dark:text-green-200">
-                        {{ session('status') }}
-                    </h3>
-                </div>
-            </div>
+            <flux:callout icon="check-circle" color="green" variant="success">
+                <flux:callout.heading>{{ session('status') }}</flux:callout.heading>
+            </flux:callout>
         </div>
     @endif
     
