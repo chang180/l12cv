@@ -5,6 +5,7 @@ namespace App\Livewire\Resume;
 use Livewire\Component;
 use App\Models\Resume;
 use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 
 class Edit extends Component
 {
@@ -20,7 +21,11 @@ class Edit extends Component
     {
         // 如果沒有提供 resumeId，則獲取當前用戶的履歷
         if (!$resumeId) {
-            $this->resume = auth()->user()->resume;
+            $user = Auth::user();
+            if (!$user) {
+                abort(401);
+            }
+            $this->resume = $user->resume;
             if (!$this->resume) {
                 return redirect()->route('resume.dashboard')
                     ->with('error', '您還沒有建立履歷');
@@ -30,10 +35,11 @@ class Edit extends Component
             $this->resumeId = $resumeId;
             $this->resume = Resume::findOrFail($resumeId);
 
-        // 確保當前用戶有權編輯此履歷
-        if ($this->resume->user_id !== auth()->id()) {
-            abort(403);
-        }
+            // 確保當前用戶有權編輯此履歷
+            $currentUserId = Auth::id();
+            if ($this->resume->user_id !== $currentUserId) {
+                abort(403);
+            }
         }
 
         // 初始化表單數據
@@ -45,6 +51,7 @@ class Edit extends Component
 
     public function updateBasicInfo()
     {
+        dd($this->resume);
         $this->resume->update([
             'title' => $this->title,
             'summary' => $this->summary,
@@ -137,7 +144,7 @@ class Edit extends Component
         $latestEndDate = null;
         foreach ($this->experience as $i => $exp) {
             if ($i === $index) continue; // 跳過當前工作經驗
-            
+
             $endDate = $exp['end_date'] ?? null;
             if ($endDate && (!$latestEndDate || $endDate > $latestEndDate)) {
                 $latestEndDate = $endDate;
@@ -162,7 +169,7 @@ class Edit extends Component
         if (str_ends_with($key, '.current')) {
             // 提取索引
             $index = (int) str_replace('.current', '', $key);
-            
+
             if ($value) {
                 // 勾選「目前在職中」時，清空結束日期
                 $this->experience[$index]['end_date'] = '';
@@ -178,12 +185,12 @@ class Edit extends Component
                 }
             }
         }
-        
+
         // 檢查是否是 start_date 欄位被更新
         if (str_ends_with($key, '.start_date')) {
             // 提取索引
             $index = (int) str_replace('.start_date', '', $key);
-            
+
             // 如果開始日期改變後，不應該顯示「目前在職中」選項，
             // 但用戶已經勾選了，則自動取消勾選
             if (!$this->shouldShowCurrentOption($index) && ($this->experience[$index]['current'] ?? false)) {
