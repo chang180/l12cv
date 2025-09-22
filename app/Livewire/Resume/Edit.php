@@ -56,16 +56,18 @@ class Edit extends Component
     {
         logger('🔥 handleMarkdownUpdate called with content: ' . substr($content, 0, 50) . '...');
         $this->summary = $content;
-        
-        // 自動保存到資料庫
+    }
+
+    public function updateBasicInfo()
+    {
         $this->resume->update([
             'title' => $this->title,
             'summary' => $this->summary,
         ]);
-        
-        $this->dispatch('notify', [
-            'message' => '✅ 履歷已自動保存',
-            'type' => 'success'
+
+        $this->dispatch('alert', [
+            'message' => '✅ 基本資料已更新',
+            'type' => 'success',
         ]);
     }
 
