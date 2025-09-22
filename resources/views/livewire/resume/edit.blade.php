@@ -2,25 +2,22 @@
 use function Livewire\Volt\{state, mount, on};
 use App\Models\Resume;
 
-state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'experience' => [], 'currentTab' => 'basic', 'hasUnsavedChanges' => false, 'originalSummary' => '']);
+state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
     if ($this->resume) {
         $this->title = $this->resume->title ?? '';
         $this->summary = $this->resume->summary ?? '';
-        $this->originalSummary = $this->summary; // 保存原始內容
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     } else {
         // 新用戶，保持空欄位
         $this->title = '';
         $this->summary = '';
-        $this->originalSummary = '';
         $this->education = [];
         $this->experience = [];
     }
-    $this->hasUnsavedChanges = false;
 });
 
 // updateBasicInfo 方法在 app/Livewire/Resume/Edit.php 中定義
@@ -87,12 +84,7 @@ $shouldShowCurrentOption = function ($index) {
     return true;
 };
 
-// 監聽 Markdown 編輯器的內容更新
-on(['markdown-content-updated' => function ($content) {
-    $this->summary = $content;
-    // 檢查是否有變更
-    $this->hasUnsavedChanges = ($content !== $this->originalSummary);
-}]);
+// Markdown 編輯器的內容更新由 app/Livewire/Resume/Edit.php 中的 handleMarkdownUpdate 方法處理
 ?>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">

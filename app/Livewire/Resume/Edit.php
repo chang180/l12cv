@@ -16,6 +16,8 @@ class Edit extends Component
     public $education = [];
     public $experience = [];
     public $currentTab = 'basic';
+    public $hasUnsavedChanges = false;
+    public $originalSummary = '';
 
     protected $listeners = ['markdown-content-updated' => 'handleMarkdownUpdate'];
 
@@ -47,8 +49,10 @@ class Edit extends Component
         // 初始化表單數據
         $this->title = $this->resume->title;
         $this->summary = $this->resume->summary;
+        $this->originalSummary = $this->summary; // 保存原始內容
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
+        $this->hasUnsavedChanges = false;
     }
 
 
@@ -56,6 +60,8 @@ class Edit extends Component
     {
         logger('🔥 handleMarkdownUpdate called with content: ' . substr($content, 0, 50) . '...');
         $this->summary = $content;
+        // 檢查是否有變更
+        $this->hasUnsavedChanges = ($content !== $this->originalSummary);
     }
 
     public function updateBasicInfo()
