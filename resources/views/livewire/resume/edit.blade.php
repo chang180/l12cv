@@ -7,10 +7,16 @@ state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'exp
 mount(function () {
     $this->resume = auth()->user()->resume;
     if ($this->resume) {
-        $this->title = $this->resume->title;
-        $this->summary = $this->resume->summary;
+        $this->title = $this->resume->title ?? '';
+        $this->summary = $this->resume->summary ?? '';
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
+    } else {
+        // 新用戶，保持空欄位
+        $this->title = '';
+        $this->summary = '';
+        $this->education = [];
+        $this->experience = [];
     }
 });
 
@@ -227,7 +233,13 @@ on(['markdown-content-updated' => function ($content) {
                                 <div class="space-y-6">
                                     <div>
                                         <flux:label for="title">標題</flux:label>
-                                        <flux:input wire:model="title" id="title" type="text" required />
+                                        <flux:input 
+                                            wire:model="title" 
+                                            id="title" 
+                                            type="text" 
+                                            placeholder="請輸入履歷標題，例如：張三的履歷"
+                                            required 
+                                        />
                                         @error('title')
                                             <flux:error :messages="$message" />
                                         @enderror
