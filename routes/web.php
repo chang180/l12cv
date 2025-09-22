@@ -89,7 +89,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('resume')->group(function () {
         Volt::route('/', 'resume.dashboard')->name('resume.dashboard');
         Volt::route('/edit', 'resume.edit')->name('resume.edit');
-        Volt::route('/settings', 'resume.settings')->name('resume.settings');
     });
 });
 

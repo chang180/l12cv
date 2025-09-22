@@ -2,7 +2,7 @@
 use function Livewire\Volt\{state, mount};
 use App\Models\Resume;
 
-state(['resume' => null, 'isPublic' => false, 'search' => '', 'filter' => 'all']);
+state(['resume' => null, 'isPublic' => false]);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
@@ -18,9 +18,6 @@ $edit = function () {
     return $this->redirect(route('resume.edit'), navigate: true);
 };
 
-$settings = function () {
-    return $this->redirect(route('resume.settings'), navigate: true);
-};
 
 $updateVisibility = function ($value) {
     $value = (int) $value;
@@ -62,13 +59,6 @@ $create = function () {
     return $this->redirect(route('resume.edit'), navigate: true);
 };
 
-$filterResumes = function ($filter) {
-    $this->filter = $filter;
-};
-
-$searchResumes = function () {
-    // 這裡可以實現搜尋邏輯
-};
 ?>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -85,37 +75,6 @@ $searchResumes = function () {
                     </p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <!-- Search Bar -->
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-slate-400"></i>
-                        </div>
-                        <input 
-                            wire:model.live.debounce.300ms="search" 
-                            type="text" 
-                            placeholder="搜尋履歷..." 
-                            class="w-64 pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                        >
-                    </div>
-                    
-                    <!-- Filter Dropdown -->
-                    <flux:dropdown>
-                        <flux:button variant="outline" icon="funnel" class="transition-all duration-200 hover:scale-105">
-                            篩選
-                        </flux:button>
-                        <flux:menu>
-                            <flux:menu.item wire:click="filterResumes('all')" :active="$filter === 'all'">
-                                全部履歷
-                            </flux:menu.item>
-                            <flux:menu.item wire:click="filterResumes('public')" :active="$filter === 'public'">
-                                公開履歷
-                            </flux:menu.item>
-                            <flux:menu.item wire:click="filterResumes('private')" :active="$filter === 'private'">
-                                私人履歷
-                            </flux:menu.item>
-                        </flux:menu>
-                    </flux:dropdown>
-                    
                     <!-- Dark Mode Toggle -->
                     <button 
                         x-data="{ 
@@ -325,14 +284,6 @@ $searchResumes = function () {
                                 </div>
                             </flux:button>
                             
-                            <flux:button href="{{ route('resume.settings') }}" variant="outline" class="w-full justify-start group hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 hover:scale-105">
-                                <div class="flex items-center">
-                                    <div class="p-2 bg-orange-100 dark:bg-orange-900/50 rounded-lg mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-800/50 transition-colors">
-                                        <i class="fas fa-cog text-orange-600 dark:text-orange-400"></i>
-                                    </div>
-                                    <span>履歷設定</span>
-                                </div>
-                            </flux:button>
                             
                             @if($resume && $resume->is_public)
                                 <flux:button :href="route('resume.public', ['slug' => $resume->slug])" target="_blank" variant="outline" class="w-full justify-start group hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 hover:scale-105">
