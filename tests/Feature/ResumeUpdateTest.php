@@ -1,27 +1,24 @@
 <?php
 
+use App\Livewire\Resume\Edit;
 use App\Models\User;
-use App\Models\Resume;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 test('用戶可以更新履歷基本資料', function () {
-    // 創建用戶
+    // 創建用戶（UserObserver 會自動創建履歷）
     $user = User::factory()->create();
-    
-    // 直接創建履歷，不使用 factory
-    $resume = Resume::create([
-        'user_id' => $user->id,
+
+    // 取得已存在的履歷並更新其資料
+    $resume = $user->resume;
+    $resume->update([
         'title' => '原始標題',
         'slug' => 'original-slug',
         'summary' => '原始簡介',
-        'education' => [],
-        'experience' => [],
-        'is_public' => false,
     ]);
 
     // 測試更新功能
-    Volt::test('resume.edit')
-        ->actingAs($user)
+    Livewire::actingAs($user)
+        ->test(Edit::class)
         ->set('title', '新標題')
         ->set('summary', '新簡介')
         ->call('updateBasicInfo')
