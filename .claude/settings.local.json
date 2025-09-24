@@ -1,25 +1,20 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
-      "mcp__laravel-boost__*",
-      "Bash(vendor/bin/:*)",
-      "Bash(npm:*)",
-      "Bash(npx:*)",
-      "Bash(composer:*)",
-      "Bash(php:*)",
-      "Bash(git:*)",
-      "Bash(curl:*)",
-      "Bash(where:*)",
-      "Bash(Invoke-RestMethod:*)",
-      "Bash(*php.bat:*)",
-      "Bash(*composer.bat:*)",
-      "WebSearch",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:stackoverflow.com)",
-      "WebFetch(domain:l12cv.test)",
-      "WebFetch(domain:docs.claude.com)"
-    ]
+      "Bash(php artisan:*)",
+      "Bash(herd php:*)",
+      "Bash(echo $PATH)",
+      "Read(//c/Users/chang180/.config/herd/bin/**)",
+      "Bash(cat:*)",
+      "Bash(\"/c/Users/chang180/.config/herd/bin/php84/php.exe\" --version)",
+      "Bash(\"/c/Users/chang180/.config/herd/bin/php84/php.exe\" artisan test)",
+      "Bash(\"/c/Users/chang180/.config/herd/bin/php84/php.exe\" artisan test --filter=\"AntiSpamViewTrackingTest\")",
+      "Bash(\"/c/Users/chang180/.config/herd/bin/php84/php.exe\" vendor/bin/pint --dirty)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "bypassPermissions"
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
