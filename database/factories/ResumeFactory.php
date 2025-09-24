@@ -28,7 +28,7 @@ class ResumeFactory extends Factory
         return [
             'user_id' => User::factory(),
             'title' => $this->faker->sentence(3),
-            'slug' => $this->faker->slug(),
+            'slug' => $this->faker->unique()->slug(),
             'summary' => $this->faker->paragraph(),
             'education' => [],
             'experience' => [],
