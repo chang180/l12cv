@@ -12,12 +12,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Redis 測試路由
-Route::get('/test-redis', [RedisTestController::class, 'testRedis'])->name('test.redis');
-// Redis 實際應用案例路由
-Route::get('/redis-use-cases', [RedisTestController::class, 'practicalUseCases'])->name('redis.use-cases');
-// Redis 信用卡交易緩存演示
-Route::get('/credit-card-cache', [RedisTestController::class, 'creditCardTransactionCache'])->name('credit.card.cache');
 
 // 公開履歷路由 - 不需要驗證
 Route::get('/@{slug}', function ($slug) {
