@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -29,7 +30,16 @@ Route::middleware('auth')->group(function () {
 
     Volt::route('confirm-password', 'auth.confirm-password')
         ->name('password.confirm');
+
+    Route::delete('settings/google', [GoogleAuthController::class, 'destroy'])
+        ->name('settings.google.destroy');
 });
+
+Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect'])
+    ->name('auth.google.redirect');
+
+Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])
+    ->name('auth.google.callback');
 
 Route::post('logout', App\Livewire\Actions\Logout::class)
     ->name('logout');

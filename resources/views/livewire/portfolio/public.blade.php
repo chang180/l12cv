@@ -30,7 +30,7 @@
                                 <i class="fas fa-folder-open text-white text-sm"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="font-bold text-sm text-gray-900 dark:text-white">L12CV</span>
+                                <span class="font-bold text-sm text-gray-900 dark:text-white">L13CV</span>
                             </div>
                         </div>
                         
@@ -89,7 +89,7 @@
                                 <i class="fas fa-folder-open text-white text-lg"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="font-bold text-lg text-gray-900 dark:text-white">L12CV</span>
+                                <span class="font-bold text-lg text-gray-900 dark:text-white">L13CV</span>
                                 <span class="text-xs text-gray-500 dark:text-gray-400">作品集平台</span>
                             </div>
                         </div>
@@ -297,11 +297,11 @@
                         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-pink-600">
                             <i class="fas fa-folder-open text-white text-sm"></i>
                         </div>
-                        <span class="font-bold text-gray-900 dark:text-white">L12CV</span>
+                        <span class="font-bold text-gray-900 dark:text-white">L13CV</span>
                         <span class="text-sm text-gray-500 dark:text-gray-400">作品集平台</span>
                     </div>
                     <div class="text-sm text-gray-500 dark:text-gray-400">
-                        © {{ date('Y') }} L12CV. 展示您的創意作品
+                        © {{ date('Y') }} L13CV. 展示您的創意作品
                     </div>
                 </div>
             </div>

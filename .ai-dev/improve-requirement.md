@@ -38,7 +38,7 @@
 - **Vite**：現代化前端建構工具
 
 ### 後端技術改進
-- **Laravel 12**：最新版本的 PHP 框架
+- **Laravel 13**：最新版本的 PHP 框架
 - **Livewire Volt**：單檔案元件架構
 - **TCPDF**：跨平台 PDF 生成庫，支援中文
 - **Eloquent 關聯**：優化資料庫查詢和關聯

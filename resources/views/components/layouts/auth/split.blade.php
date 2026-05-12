@@ -25,7 +25,7 @@
                             <i class="fas fa-file-alt text-2xl text-white"></i>
                         </div>
                         <span class="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                            {{ config('app.name', 'Laravel') }}
+                            {{ strtoupper(config('app.name', 'l13cv')) }}
                         </span>
                     </a>
                 </div>
@@ -93,7 +93,7 @@
                             <i class="fas fa-file-alt text-white text-xl"></i>
                         </div>
                         <span class="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400 bg-clip-text text-transparent">
-                            {{ config('app.name', 'Laravel') }}
+                            {{ strtoupper(config('app.name', 'l13cv')) }}
                         </span>
                     </a>
                     

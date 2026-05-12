@@ -1,141 +1,83 @@
-# Resume Builder
+# L13CV
 
-一個簡潔的個人履歷製作平台，讓你輕鬆建立和分享專業履歷。
+L13CV 是一個以 Laravel、Livewire、Volt 和 Flux UI 建立的個人履歷與作品集平台。使用者可以建立履歷、管理作品集、公開分享個人展示頁，並追蹤履歷與作品瀏覽統計。
 
 ## 主要功能
 
-- 📝 快速建立個人履歷
-- 🔗 自訂分享連結（例如：@your-name）
-- 🌓 支援深色模式
-- 📱 完整的響應式設計
-- 🔒 隱私控制，自由設定公開狀態
-- 🇹🇼 繁體中文介面
-- 📊 作品集管理，展示您的專案和成就
-- 🖼️ 圖片上傳功能，為專案添加視覺效果
+- 履歷建立、編輯、公開/私人狀態切換
+- 作品集專案 CRUD、縮圖上傳、技術標籤與排序
+- 公開履歷頁、公開作品集頁、專案詳情頁
+- 中文 PDF 履歷匯出
+- 基於 IP 的 24 小時瀏覽防刷統計
+- Google 登入、註冊與既有帳號綁定
+- 深色模式與繁體中文設定介面
 
-## 開發技術
+## 技術棧
 
-- [Laravel](https://laravel.com) - PHP 網頁框架
-- [Livewire](https://livewire.laravel.com) - 互動式前端框架
-- [Volt](https://livewire.laravel.com/docs/volt) - Laravel Livewire 的新寫法
-- [Tailwind CSS](https://tailwindcss.com) - CSS 框架
-- [Alpine.js](https://alpinejs.dev) - 輕量級 JS 框架
-- [Flux UI](https://fluxui.dev) - 現代化 UI 元件庫
-- [Toast UI Editor](https://ui.toast.com/tui-editor) - 專業 Markdown 編輯器
+- PHP 8.4
+- Laravel 13
+- Laravel Socialite
+- Laravel Sanctum
+- Livewire 4、Volt、Flux UI
+- Tailwind CSS 4、Alpine.js、Vite
+- Pest 4、PHPUnit 12
+- TCPDF
 
 ## 本地開發
 
-1. 安裝相依套件
 ```bash
 composer install
 npm install
-```
-
-2. 環境設定
-```bash
 cp .env.example .env
 php artisan key:generate
-```
-
-3. 資料庫設定
-```bash
 php artisan migrate
 ```
 
-4. 啟動開發環境
+啟動服務：
+
+```bash
+composer run dev
+```
+
+或分開執行：
+
 ```bash
 php artisan serve
 npm run dev
 ```
 
-5. 生成用戶 Slug (如果更新後需要)
+## Google OAuth
+
+本機開發預設關閉 Google OAuth，避免沒有公開 callback URL 或 Google Cloud 憑證時阻斷登入測試。未啟用時，登入、註冊與設定頁會顯示繁體中文提示，並保留電子郵件登入流程。
+
+要啟用 Google OAuth：
+
+```env
+GOOGLE_AUTH_ENABLED=true
+GOOGLE_CLIENT_ID=your-client-id
+GOOGLE_CLIENT_SECRET=your-client-secret
+GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
+```
+
+既有帳號不會在未登入狀態下被 Google email 自動併入。使用者必須先用原本的電子郵件與密碼登入，再到「帳號設定」綁定 Google 帳號。
+
+## 驗證
+
 ```bash
-php artisan users:generate-slugs
+composer validate
+php artisan --version
+php artisan route:list
+php artisan test
+npm run build
 ```
 
-## 專案結構
+## 文件
 
-```
-resume-builder/
-├── app/
-│   ├── Http/
-│   │   └── Livewire/    # Livewire 元件
-│   └── Models/          # 資料模型
-├── resources/
-│   └── views/
-│       ├── components/  # Blade 元件
-│       └── livewire/    # Livewire 視圖
-└── routes/              # 路由定義
-```
+- `.ai-dev/upgrade/plan.md`：本次 Laravel 13 與 Google OAuth 升級計畫
+- `.ai-dev/upgrade/progress.md`：實作進度
+- `.ai-dev/upgrade/verification.md`：驗證紀錄
+- `docs/portfolio-feature.md`：作品集功能規劃與背景
 
-## 最新更新
+## 授權
 
-### 🎨 界面美化與用戶體驗優化
-- **首頁完全重新設計**：現代化漸變背景、動畫效果、特色展示區域
-- **登入/註冊頁面美化**：分割式佈局、Font Awesome 圖標、密碼可見性切換
-- **履歷管理後台重新設計**：2x2 統計卡片佈局、深色模式切換、現代化 UI 元件
-- **履歷編輯頁面優化**：重新設計按鈕樣式、標籤導航美化、表單體驗提升
-- **公開履歷頁面美化**：時間軸設計、漸變卡片、響應式佈局
-- **作品集頁面現代化**：3D 懸停效果、技術標籤美化、專案統計展示
-- **專案詳情頁面設計**：英雄區塊、技術展示、作者資訊區塊
-
-### 🔧 功能增強
-- **全局深色模式**：統一的深色模式管理，支援所有頁面同步切換
-- **PDF 下載功能**：支援中文的履歷 PDF 導出，使用 TCPDF 確保跨平台相容性
-- **瀏覽統計系統**：履歷和作品集瀏覽次數統計，包含防刷機制
-- **工作經驗邏輯優化**：「目前在職中」選項的智能顯示和處理
-- **履歷 Slug 顯示**：正確顯示履歷的公開網址標識
-
-### 🛡️ 技術改進
-- **防刷機制**：基於 IP 地址的 24 小時瀏覽限制
-- **資料庫優化**：新增瀏覽統計表和相關遷移
-- **測試覆蓋**：新增防刷機制和儀表板功能測試
-- **代碼品質**：遵循 Laravel 最佳實踐，優化代碼結構
-
-### 📊 統計功能
-- **履歷瀏覽統計**：顯示履歷總瀏覽次數
-- **作品集瀏覽統計**：顯示所有專案的總瀏覽次數
-- **學歷/經驗統計**：顯示履歷中的學歷和經驗項目數量
-- **響應式統計卡片**：2x2 佈局，支援大數字顯示
-
-### 🎯 最新美化改進 (2024-09-21)
-- **入口頁面全面優化**：修正頂部導航間距，美化登入/註冊按鈕設計
-- **視覺層次改善**：統一按鈕間距，突出註冊按鈕的漸變背景和動畫效果
-- **間距優化**：減少各區塊間過大的留白，提升視覺流動性
-- **動畫效果增強**：添加浮動背景元素、卡片懸停動畫、顏色變化效果
-- **熱門履歷卡片美化**：現代化卡片設計，支援換行顯示，新增統計信息
-- **視覺裝飾系統**：各區塊添加漸變裝飾元素，減少單調感
-- **響應式動畫**：所有動畫效果在不同設備上完美適配
-
-### ✨ Markdown 編輯器優化 (2024-12-22)
-- **深色模式支援**：Markdown 編輯器完美支援深色模式切換
-- **Toast UI Editor 整合**：使用官方 Toast UI Editor 提供專業編輯體驗
-- **動態主題切換**：編輯器會自動響應系統深色模式變化
-- **編輯體驗優化**：支援即時預覽、語法高亮、工具列功能
-- **內容保持**：主題切換時不會丟失編輯內容
-- **錯誤處理完善**：穩定的編輯器生命週期管理，無 DOM 錯誤
-
-### 📱 手機版優化改進 (2024-09-21)
-- **履歷卡片手機版優化**：調整頭像尺寸、文字大小、統計信息佈局，支援自動換行
-- **履歷頁面手機版導航**：解決導航按鈕擠壓問題，採用兩行佈局設計
-- **作品集頁面手機版導航**：應用相同的兩行佈局，解決按鈕擠壓問題
-- **響應式設計完善**：所有頁面在手機上都有完美的顯示效果
-- **文字對齊修正**：履歷說明文字在所有設備上都保持左對齊
-- **觸控友好設計**：優化按鈕大小和間距，提升手機操作體驗
-
-## 開源協作
-
-這是一個開源專案，歡迎提出建議或貢獻程式碼：
-
-1. Fork 此專案
-2. 建立新分支
-3. 提交修改
-4. 發送 Pull Request
-
-## 授權條款
-
-此專案採用 MIT 授權 - 詳見 [LICENSE](LICENSE) 檔案
-
-## 關於作者
-
-這是一個用於展示的個人專案，目的是分享程式開發經驗和技術交流。如果你有任何問題或建議，歡迎透過 Issues 聯繫。
+此專案採用 MIT 授權，詳見 [LICENSE](LICENSE)。

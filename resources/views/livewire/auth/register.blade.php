@@ -26,6 +26,7 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['password_set_at'] = now();
 
         event(new Registered(($user = User::create($validated))));
 
@@ -34,6 +35,13 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
         $this->redirect(route('resume.dashboard', absolute: false), navigate: true);
     }
 }; ?>
+
+@php
+    $googleAuthEnabled = (bool) config('services.google.enabled')
+        && filled(config('services.google.client_id'))
+        && filled(config('services.google.client_secret'))
+        && filled(config('services.google.redirect'));
+@endphp
 
 <div class="flex flex-col gap-8">
     <!-- Header -->
@@ -57,7 +65,27 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
-    <form wire:submit="register" class="flex flex-col gap-6">
+    @if (session('google_oauth_error'))
+        <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+            {{ session('google_oauth_error') }}
+        </div>
+    @endif
+
+    <div class="space-y-3">
+        @if ($googleAuthEnabled)
+            <a href="{{ route('auth.google.redirect') }}"
+                class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                <i class="fab fa-google text-red-500"></i>
+                使用 Google 繼續
+            </a>
+        @else
+            <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
+                本機開發預設未啟用 Google 註冊，請先使用電子郵件建立帳戶。
+            </div>
+        @endif
+    </div>
+
+    <form wire:submit="register" class="flex flex-col gap-6" x-data="{ showPassword: false, showPasswordConfirmation: false }">
         <!-- Name -->
         <div class="space-y-2">
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -118,7 +146,7 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
                 <flux:input
                     wire:model="password"
                     id="password"
-                    type="password"
+                    x-bind:type="showPassword ? 'text' : 'password'"
                     name="password"
                     required
                     autocomplete="new-password"
@@ -126,8 +154,8 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
                     class="w-full pl-10"
                 />
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" onclick="togglePassword('password')">
-                        <i class="fas fa-eye" id="password-toggle-1"></i>
+                    <button type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" x-on:click="showPassword = ! showPassword">
+                        <i class="fas" x-bind:class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                     </button>
                 </div>
             </div>
@@ -146,7 +174,7 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
                 <flux:input
                     wire:model="password_confirmation"
                     id="password_confirmation"
-                    type="password"
+                    x-bind:type="showPasswordConfirmation ? 'text' : 'password'"
                     name="password_confirmation"
                     required
                     autocomplete="new-password"
@@ -154,8 +182,8 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
                     class="w-full pl-10"
                 />
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" onclick="togglePassword('password_confirmation')">
-                        <i class="fas fa-eye" id="password-toggle-2"></i>
+                    <button type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" x-on:click="showPasswordConfirmation = ! showPasswordConfirmation">
+                        <i class="fas" x-bind:class="showPasswordConfirmation ? 'fa-eye-slash' : 'fa-eye'"></i>
                     </button>
                 </div>
             </div>
@@ -206,20 +234,3 @@ new #[Layout('components.layouts.auth.split')] class extends Component {
         </p>
     </div>
 </div>
-
-<script>
-function togglePassword(fieldId) {
-    const passwordInput = document.getElementById(fieldId);
-    const toggleIcon = document.getElementById(`password-toggle-${fieldId === 'password' ? '1' : '2'}`);
-    
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleIcon.classList.remove('fa-eye');
-        toggleIcon.classList.add('fa-eye-slash');
-    } else {
-        passwordInput.type = 'password';
-        toggleIcon.classList.remove('fa-eye-slash');
-        toggleIcon.classList.add('fa-eye');
-    }
-}
-</script>

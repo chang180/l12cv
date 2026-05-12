@@ -21,7 +21,7 @@
                     </div>
                     
                     <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400 bg-clip-text text-transparent mb-4 sm:mb-6 px-4">
-                        {{ config('app.name') }}
+                        {{ strtoupper(config('app.name')) }}
                     </h1>
                     
                     <p class="text-lg sm:text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-3 sm:mb-4 max-w-3xl mx-auto px-4">
@@ -158,12 +158,12 @@
                     <a href="https://github.com/chang180/l12cv" target="_blank" 
                        class="group flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-300">
                         <i class="fab fa-github text-xl group-hover:scale-110 transition-transform duration-300"></i>
-                        <span class="text-sm font-medium">GitHub Repository</span>
+                        <span class="text-sm font-medium">GitHub 倉庫</span>
                     </a>
                     <a href="https://laravel.com" target="_blank" 
                        class="group flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-300">
                         <i class="fab fa-laravel text-xl text-red-500 group-hover:scale-110 transition-transform duration-300"></i>
-                        <span class="text-sm font-medium">Laravel Framework</span>
+                        <span class="text-sm font-medium">Laravel 框架</span>
                     </a>
                 </div>
                 <p class="text-sm text-slate-500 dark:text-slate-400">

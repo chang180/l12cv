@@ -234,7 +234,7 @@
         
         <!-- 頁尾 -->
         <div class="footer">
-            <p>此履歷由 L12CV 履歷平台生成於 {{ now()->format('Y年m月d日') }}</p>
+            <p>此履歷由 L13CV 履歷平台生成於 {{ now()->format('Y年m月d日') }}</p>
         </div>
     </div>
 </body>

@@ -46,6 +46,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
             function ($user) {
                 $user->forceFill([
                     'password' => Hash::make($this->password),
+                    'password_set_at' => now(),
                     'remember_token' => Str::random(60),
                 ])->save();
 
@@ -69,50 +70,50 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header title="Reset password" description="Please enter your new password below" />
+    <x-auth-header title="重設密碼" description="請輸入新的登入密碼" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="resetPassword" class="flex flex-col gap-6">
-        <!-- Email Address -->
+        <!-- 電子郵件 -->
         <flux:input
             wire:model="email"
             id="email"
-            label="{{ __('Email') }}"
+            label="{{ __('電子郵件') }}"
             type="email"
             name="email"
             required
             autocomplete="email"
         />
 
-        <!-- Password -->
+        <!-- 密碼 -->
         <flux:input
             wire:model="password"
             id="password"
-            label="{{ __('Password') }}"
+            label="{{ __('新密碼') }}"
             type="password"
             name="password"
             required
             autocomplete="new-password"
-            placeholder="Password"
+            placeholder="請輸入新密碼"
         />
 
-        <!-- Confirm Password -->
+        <!-- 確認密碼 -->
         <flux:input
             wire:model="password_confirmation"
             id="password_confirmation"
-            label="{{ __('Confirm password') }}"
+            label="{{ __('確認新密碼') }}"
             type="password"
             name="password_confirmation"
             required
             autocomplete="new-password"
-            placeholder="Confirm password"
+            placeholder="請再次輸入新密碼"
         />
 
         <div class="flex items-center justify-end">
             <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Reset password') }}
+                {{ __('重設密碼') }}
             </flux:button>
         </div>
     </form>

@@ -1,6 +1,8 @@
 <?php
-use function Livewire\Volt\{state, mount};
+use function Livewire\Volt\{state, mount, layout};
 use App\Models\Resume;
+
+layout('components.layouts.app');
 
 state(['resume' => null, 'isPublic' => false]);
 

@@ -1,6 +1,8 @@
 <?php
-use function Livewire\Volt\{state, mount, on};
+use function Livewire\Volt\{state, mount, on, layout};
 use App\Models\Resume;
+
+layout('components.layouts.app');
 
 state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
 

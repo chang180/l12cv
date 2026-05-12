@@ -22,6 +22,10 @@ use Illuminate\Support\Str;
  * @property string $email 電子郵件
  * @property string|null $avatar 使用者頭像路徑
  * @property string $password 密碼(已加密)
+ * @property \Illuminate\Support\Carbon|null $password_set_at 密碼設定時間
+ * @property string|null $google_id Google 帳號 ID
+ * @property string|null $google_avatar Google 頭像 URL
+ * @property \Illuminate\Support\Carbon|null $google_linked_at Google 綁定時間
  * @property \Illuminate\Support\Carbon|null $email_verified_at 郵件驗證時間
  * @property string|null $remember_token 記住登入token
  * @property \Illuminate\Support\Carbon $created_at 建立時間
@@ -44,8 +48,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'password_set_at',
         'avatar',
         'slug',
+        'google_id',
+        'google_avatar',
+        'google_linked_at',
     ];
     /**
      * 序列化時要隱藏的欄位
@@ -65,6 +73,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'google_linked_at' => 'datetime',
+            'password_set_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -134,6 +144,10 @@ class User extends Authenticatable
     {
         if ($this->avatar) {
             return Storage::url($this->avatar);
+        }
+
+        if ($this->google_avatar) {
+            return $this->google_avatar;
         }
 
         // 如果沒有頭像，返回默認頭像

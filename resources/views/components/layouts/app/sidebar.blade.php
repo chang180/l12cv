@@ -15,7 +15,7 @@
                     <i class="fas fa-file-alt text-white text-lg"></i>
                 </div>
                 <div class="flex flex-col">
-                    <span class="font-bold text-lg text-zinc-900 dark:text-zinc-100">{{ config('app.name') }}</span>
+                    <span class="font-bold text-lg text-zinc-900 dark:text-zinc-100">{{ strtoupper(config('app.name')) }}</span>
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">履歷管理系統</span>
                 </div>
             </div>
@@ -124,7 +124,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>Settings</flux:menu.item>
+                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>帳號設定</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -132,7 +132,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('登出') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -174,7 +174,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>Settings</flux:menu.item>
+                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>帳號設定</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -182,7 +182,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('登出') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>

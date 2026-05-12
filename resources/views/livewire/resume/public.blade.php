@@ -37,7 +37,7 @@
                                 <i class="fas fa-file-alt text-white text-sm"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="font-bold text-sm text-gray-900 dark:text-white">L12CV</span>
+                                <span class="font-bold text-sm text-gray-900 dark:text-white">L13CV</span>
                             </div>
                         </div>
                         
@@ -102,7 +102,7 @@
                                 <i class="fas fa-file-alt text-white text-lg"></i>
                             </div>
                             <div class="flex flex-col">
-                                <span class="font-bold text-lg text-gray-900 dark:text-white">L12CV</span>
+                                <span class="font-bold text-lg text-gray-900 dark:text-white">L13CV</span>
                                 <span class="text-xs text-gray-500 dark:text-gray-400">履歷平台</span>
                             </div>
                         </div>
@@ -380,11 +380,11 @@
                         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
                             <i class="fas fa-file-alt text-white text-sm"></i>
                         </div>
-                        <span class="font-bold text-gray-900 dark:text-white">L12CV</span>
+                        <span class="font-bold text-gray-900 dark:text-white">L13CV</span>
                         <span class="text-sm text-gray-500 dark:text-gray-400">履歷平台</span>
                     </div>
                     <div class="text-sm text-gray-500 dark:text-gray-400">
-                        © {{ date('Y') }} L12CV. 讓您的履歷更專業
+                        © {{ date('Y') }} L13CV. 讓您的履歷更專業
                     </div>
                 </div>
             </div>

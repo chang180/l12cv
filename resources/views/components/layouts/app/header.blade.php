@@ -13,23 +13,23 @@
 
             <flux:navbar class="-mb-px max-lg:hidden">
                 <flux:navbar.item icon="layout-grid" href="{{ route('resume.dashboard') }}" :current="request()->routeIs('resume.dashboard')" wire:navigate>
-                    Dashboard
+                    控制台
                 </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
 
             <flux:navbar class="mr-1.5 space-x-0.5 py-0!">
-                <flux:tooltip content="Search" position="bottom">
-                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" label="Search" />
+                <flux:tooltip content="搜尋" position="bottom">
+                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" label="搜尋" />
                 </flux:tooltip>
-                <flux:tooltip content="Repository" position="bottom">
+                <flux:tooltip content="程式碼倉庫" position="bottom">
                     <flux:navbar.item
                         class="h-10 max-lg:hidden [&>div>svg]:size-5"
                         icon="folder-git-2"
-                        href="https://github.com/laravel/livewire-starter-kit"
+                        href="https://github.com/chang180/l12cv"
                         target="_blank"
-                        label="Repository"
+                        label="程式碼倉庫"
                     />
                 </flux:tooltip>
             </flux:navbar>
@@ -64,7 +64,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>Settings</flux:menu.item>
+                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>帳號設定</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -72,7 +72,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('登出') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -88,9 +88,9 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group heading="Platform">
+                <flux:navlist.group heading="主要功能">
                     <flux:navlist.item icon="layout-grid" href="{{ route('resume.dashboard') }}" :current="request()->routeIs('resume.dashboard')" wire:navigate>
-                        Dashboard
+                        控制台
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
@@ -98,8 +98,8 @@
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    Repository
+                <flux:navlist.item icon="folder-git-2" href="https://github.com/chang180/l12cv" target="_blank">
+                    程式碼倉庫
                 </flux:navlist.item>
             </flux:navlist>
         </flux:sidebar>

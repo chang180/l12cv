@@ -20,7 +20,7 @@ class ResumePdfController extends Controller
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         
         // 設定文檔資訊
-        $pdf->SetCreator('L12CV');
+        $pdf->SetCreator('L13CV');
         $pdf->SetAuthor($resume->user->name ?? '未知');
         $pdf->SetTitle($resume->user->name . ' - 履歷');
         $pdf->SetSubject('履歷');
@@ -162,6 +162,6 @@ class ResumePdfController extends Controller
         $pdf->SetY(-20);
         $pdf->SetFont('stsongstdlight', '', 8);
         $pdf->SetTextColor(150, 150, 150);
-        $pdf->Cell(0, 5, '此履歷由 L12CV 履歷平台生成於 ' . now()->format('Y年m月d日'), 0, 1, 'C');
+        $pdf->Cell(0, 5, '此履歷由 L13CV 履歷平台生成於 ' . now()->format('Y年m月d日'), 0, 1, 'C');
     }
 }

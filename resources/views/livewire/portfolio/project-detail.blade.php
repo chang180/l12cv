@@ -283,11 +283,11 @@
                         <div class="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-pink-600">
                             <i class="fas fa-folder-open text-white text-xs sm:text-sm"></i>
                         </div>
-                        <span class="font-bold text-gray-900 dark:text-white text-sm sm:text-base">L12CV</span>
+                        <span class="font-bold text-gray-900 dark:text-white text-sm sm:text-base">L13CV</span>
                         <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">作品集平台</span>
                     </div>
                     <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center md:text-right">
-                        © {{ date('Y') }} L12CV. 展示您的創意作品
+                        © {{ date('Y') }} L13CV. 展示您的創意作品
                     </div>
                 </div>
             </div>

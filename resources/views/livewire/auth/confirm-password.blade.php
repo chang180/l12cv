@@ -34,26 +34,26 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
 <div class="flex flex-col gap-6">
     <x-auth-header
-        title="Confirm password"
-        description="This is a secure area of the application. Please confirm your password before continuing."
+        title="確認密碼"
+        description="這是受保護的操作區域，請先確認您的密碼。"
     />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="confirmPassword" class="flex flex-col gap-6">
-        <!-- Password -->
+        <!-- 密碼 -->
         <flux:input
             wire:model="password"
             id="password"
-            label="{{ __('Password') }}"
+            label="{{ __('密碼') }}"
             type="password"
             name="password"
             required
             autocomplete="new-password"
-            placeholder="Password"
+            placeholder="請輸入密碼"
         />
 
-        <flux:button variant="primary" type="submit" class="w-full">{{ __('Confirm') }}</flux:button>
+        <flux:button variant="primary" type="submit" class="w-full">{{ __('確認') }}</flux:button>
     </form>
 </div>
