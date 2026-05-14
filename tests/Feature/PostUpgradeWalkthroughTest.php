@@ -51,6 +51,14 @@ test('public resume portfolio project and pdf pages render with seeded content',
         'languages' => [
             ['name' => '英文', 'level' => '流利'],
         ],
+        'certifications' => [
+            [
+                'name' => 'AWS Certified Developer',
+                'issuer' => 'Amazon Web Services',
+                'issued_at' => '2026-05-14',
+                'url' => 'https://example.com/cert',
+            ],
+        ],
         'education' => [
             [
                 'school' => '測試大學',
@@ -93,6 +101,8 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertSee('Tailwind CSS')
         ->assertSee('英文')
         ->assertSee('流利')
+        ->assertSee('AWS Certified Developer')
+        ->assertSee('Amazon Web Services')
         ->assertSee('下載 PDF');
 
     $this->get('/p/test-user')

@@ -82,3 +82,35 @@ test('用戶可以更新語言能力並清理空白項目', function () {
         ['name' => '日文', 'level' => '基礎'],
     ]);
 });
+
+test('用戶可以更新證照和認證並清理空白項目', function () {
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test(Edit::class)
+        ->set('certifications', [
+            [
+                'name' => ' AWS Certified Developer ',
+                'issuer' => ' Amazon Web Services ',
+                'issued_at' => '2026-05-14',
+                'url' => ' https://example.com/cert ',
+            ],
+            [
+                'name' => '',
+                'issuer' => 'Ignored Issuer',
+                'issued_at' => '2026-05-14',
+                'url' => '',
+            ],
+        ])
+        ->call('updateCertifications')
+        ->assertHasNoErrors();
+
+    expect($user->resume->fresh()->certifications)->toBe([
+        [
+            'name' => 'AWS Certified Developer',
+            'issuer' => 'Amazon Web Services',
+            'issued_at' => '2026-05-14',
+            'url' => 'https://example.com/cert',
+        ],
+    ]);
+});

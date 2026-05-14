@@ -31,8 +31,8 @@
   - 3 passed，23 assertions。
   - 覆蓋登入後 `/resume`、`/resume/edit`、`/settings/profile`，公開履歷、公開作品集、專案詳情、PDF 下載，以及 Google OAuth 本機停用提示。
 - `php artisan test tests/Feature/ResumeUpdateTest.php tests/Feature/PostUpgradeWalkthroughTest.php`
-  - 9 passed，56 assertions。
-  - 覆蓋履歷模板更新、無效模板驗證、公開頁模板標記、無效模板 fallback、`classic`、`modern`、`compact` 三種模板 PDF 回應、技能標籤清理/儲存/公開展示，以及語言能力清理/儲存/公開展示。
+  - 10 passed，60 assertions。
+  - 覆蓋履歷模板更新、無效模板驗證、公開頁模板標記、無效模板 fallback、`classic`、`modern`、`compact` 三種模板 PDF 回應、技能標籤清理/儲存/公開展示、語言能力清理/儲存/公開展示，以及證照和認證清理/儲存/公開展示。
 
 ## 待執行
 

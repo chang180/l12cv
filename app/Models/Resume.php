@@ -27,6 +27,7 @@ class Resume extends Model
         'summary',
         'skills',
         'languages',
+        'certifications',
         'experience',
         'education',
         'is_public',
@@ -43,6 +44,7 @@ class Resume extends Model
         'education' => 'array',
         'skills' => 'array',
         'languages' => 'array',
+        'certifications' => 'array',
         'is_public' => 'boolean',
     ];
 

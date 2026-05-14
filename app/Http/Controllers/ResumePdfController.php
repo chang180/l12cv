@@ -137,6 +137,37 @@ class ResumePdfController extends Controller
             $pdf->Ln(5);
         }
 
+        if (! empty($resume->certifications)) {
+            $pdf->SetFont('stsongstdlight', 'B', 14);
+            $pdf->SetTextColor(...$primary);
+            $pdf->Cell(0, 8, '證照和認證', 0, 1);
+
+            foreach ($resume->certifications as $certification) {
+                $name = $certification['name'] ?? '';
+
+                if ($name === '') {
+                    continue;
+                }
+
+                $pdf->SetFont('stsongstdlight', 'B', 11);
+                $pdf->SetTextColor(0, 0, 0);
+                $pdf->Cell(0, 6, $name, 0, 1);
+
+                $details = array_filter([
+                    $certification['issuer'] ?? '',
+                    $certification['issued_at'] ?? '',
+                    $certification['url'] ?? '',
+                ]);
+
+                if ($details !== []) {
+                    $pdf->SetFont('stsongstdlight', '', 10);
+                    $pdf->SetTextColor(100, 100, 100);
+                    $pdf->MultiCell(0, 5, implode(' · ', $details), 0, 'L');
+                }
+            }
+            $pdf->Ln(5);
+        }
+
         if ($theme['order'] === 'experience-first') {
             $this->writeExperience($pdf, $resume, $primary, $secondary);
             $this->writeEducation($pdf, $resume, $primary);

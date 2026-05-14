@@ -6,7 +6,7 @@ use Illuminate\Validation\Rule;
 
 layout('components.layouts.app');
 
-state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'skills' => [], 'languages' => [], 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
+state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'skills' => [], 'languages' => [], 'certifications' => [], 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
@@ -16,6 +16,7 @@ mount(function () {
         $this->template = ResumeTemplates::resolve($this->resume->template ?? null)['key'];
         $this->skills = $this->resume->skills ?? [];
         $this->languages = $this->resume->languages ?? [];
+        $this->certifications = $this->resume->certifications ?? [];
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     } else {
@@ -25,6 +26,7 @@ mount(function () {
         $this->template = ResumeTemplates::DEFAULT;
         $this->skills = [];
         $this->languages = [];
+        $this->certifications = [];
         $this->education = [];
         $this->experience = [];
     }
@@ -44,6 +46,42 @@ $updateBasicInfo = function () {
     session()->flash('status', '✅ 基本資料已更新');
 
     $this->dispatch('scroll-to-top');
+};
+
+$addCertification = function () {
+    $this->certifications[] = [
+        'name' => '',
+        'issuer' => '',
+        'issued_at' => '',
+        'url' => '',
+    ];
+};
+
+$removeCertification = function ($index) {
+    unset($this->certifications[$index]);
+    $this->certifications = array_values($this->certifications);
+};
+
+$updateCertifications = function () {
+    $certifications = collect($this->certifications)
+        ->map(fn ($certification) => [
+            'name' => trim((string) ($certification['name'] ?? '')),
+            'issuer' => trim((string) ($certification['issuer'] ?? '')),
+            'issued_at' => trim((string) ($certification['issued_at'] ?? '')),
+            'url' => trim((string) ($certification['url'] ?? '')),
+        ])
+        ->filter(fn ($certification) => $certification['name'] !== '')
+        ->values()
+        ->all();
+
+    $this->certifications = $certifications;
+
+    $this->resume->update(['certifications' => $certifications]);
+
+    $this->dispatch('notify', [
+        'message' => '證照和認證已更新',
+        'type' => 'success',
+    ]);
 };
 
 $addLanguage = function () {
@@ -236,6 +274,11 @@ $shouldShowCurrentOption = function ($index) {
                                 <i class="fas fa-language text-sm"></i>
                                 <span>語言能力</span>
                             </button>
+                            <button wire:click="$set('currentTab', 'certifications')"
+                                class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'certifications' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
+                                <i class="fas fa-certificate text-sm"></i>
+                                <span>證照認證</span>
+                            </button>
                             <button wire:click="$set('currentTab', 'experience')"
                                 class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'experience' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
                                 <i class="fas fa-briefcase text-sm"></i>
@@ -364,6 +407,80 @@ $shouldShowCurrentOption = function ($index) {
                 <span wire:loading wire:target="updateBasicInfo">更新中...</span>
             </button>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 證照和認證表單 -->
+                <div x-show="$wire.currentTab === 'certifications'" class="space-y-6">
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+                        <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-4">
+                            <h3 class="text-lg font-semibold text-white flex items-center">
+                                <i class="fas fa-certificate mr-2"></i>
+                                證照和認證
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-5">
+                                @foreach ($certifications as $index => $certification)
+                                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/60">
+                                        <div class="flex items-start justify-between gap-4 mb-4">
+                                            <h4 class="font-semibold text-slate-900 dark:text-white">證照 #{{ $index + 1 }}</h4>
+                                            <button
+                                                wire:click="removeCertification({{ $index }})"
+                                                type="button"
+                                                class="px-4 py-2 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg shadow-sm transition-all duration-200"
+                                            >
+                                                <i class="fas fa-trash text-sm mr-2"></i>
+                                                刪除
+                                            </button>
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <flux:label>證照名稱</flux:label>
+                                                <flux:input wire:model="certifications.{{ $index }}.name" type="text" placeholder="例如：AWS Certified Developer" />
+                                            </div>
+                                            <div>
+                                                <flux:label>發證單位</flux:label>
+                                                <flux:input wire:model="certifications.{{ $index }}.issuer" type="text" placeholder="例如：Amazon Web Services" />
+                                            </div>
+                                            <div>
+                                                <flux:label>取得日期</flux:label>
+                                                <flux:input wire:model="certifications.{{ $index }}.issued_at" type="date" class="w-full" />
+                                            </div>
+                                            <div>
+                                                <flux:label>驗證連結</flux:label>
+                                                <flux:input wire:model="certifications.{{ $index }}.url" type="url" placeholder="https://..." />
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                                @if (empty($certifications))
+                                    <div class="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-center text-slate-500 dark:text-slate-400">
+                                        尚未新增證照或認證
+                                    </div>
+                                @endif
+
+                                <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 pt-4">
+                                    <button
+                                        wire:click="addCertification"
+                                        type="button"
+                                        class="w-full sm:w-auto order-2 sm:order-1 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold px-6 py-4 rounded-xl shadow-md hover:shadow-lg border border-slate-200 dark:border-slate-600 transition-all duration-200 flex items-center justify-center space-x-3 min-w-[140px]"
+                                    >
+                                        <i class="fas fa-plus-circle text-sm"></i>
+                                        <span>新增證照</span>
+                                    </button>
+                                    <button
+                                        wire:click="updateCertifications"
+                                        type="button"
+                                        class="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
+                                    >
+                                        <i class="fas fa-check-circle text-sm"></i>
+                                        <span>儲存證照認證</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>

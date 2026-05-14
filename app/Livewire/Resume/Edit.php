@@ -28,6 +28,8 @@ class Edit extends Component
 
     public $languages = [];
 
+    public $certifications = [];
+
     public $education = [];
 
     public $experience = [];
@@ -68,6 +70,7 @@ class Edit extends Component
         $this->templateOptions = ResumeTemplates::all();
         $this->skills = $this->resume->skills ?? [];
         $this->languages = $this->resume->languages ?? [];
+        $this->certifications = $this->resume->certifications ?? [];
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     }
@@ -164,6 +167,47 @@ class Edit extends Component
 
         $this->dispatch('notify', [
             'message' => '語言能力已更新',
+            'type' => 'success',
+        ]);
+    }
+
+    public function addCertification()
+    {
+        $this->certifications[] = [
+            'name' => '',
+            'issuer' => '',
+            'issued_at' => '',
+            'url' => '',
+        ];
+    }
+
+    public function removeCertification($index)
+    {
+        unset($this->certifications[$index]);
+        $this->certifications = array_values($this->certifications);
+    }
+
+    public function updateCertifications()
+    {
+        $certifications = collect($this->certifications)
+            ->map(fn ($certification) => [
+                'name' => trim((string) ($certification['name'] ?? '')),
+                'issuer' => trim((string) ($certification['issuer'] ?? '')),
+                'issued_at' => trim((string) ($certification['issued_at'] ?? '')),
+                'url' => trim((string) ($certification['url'] ?? '')),
+            ])
+            ->filter(fn ($certification) => $certification['name'] !== '')
+            ->values()
+            ->all();
+
+        $this->certifications = $certifications;
+
+        $this->resume->update([
+            'certifications' => $certifications,
+        ]);
+
+        $this->dispatch('notify', [
+            'message' => '證照和認證已更新',
             'type' => 'success',
         ]);
     }

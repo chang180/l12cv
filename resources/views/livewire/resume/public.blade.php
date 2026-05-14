@@ -236,6 +236,42 @@
                     </div>
                 </div>
 
+                <!-- 證照和認證 -->
+                @if (!empty($resume->certifications))
+                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                    <div class="p-4 sm:p-6">
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
+                            <i class="fas fa-certificate mr-2 sm:mr-3 text-amber-600 dark:text-amber-400 text-sm sm:text-base"></i>
+                            證照和認證
+                        </h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            @foreach ($resume->certifications as $certification)
+                                <div class="rounded-xl border border-amber-100 bg-amber-50 px-4 py-4 dark:border-amber-800 dark:bg-amber-900/30">
+                                    <div class="font-semibold text-amber-950 dark:text-amber-100">{{ $certification['name'] ?? '' }}</div>
+                                    @if (!empty($certification['issuer']))
+                                        <div class="mt-1 text-sm text-amber-800 dark:text-amber-200">{{ $certification['issuer'] }}</div>
+                                    @endif
+                                    <div class="mt-3 flex flex-wrap items-center gap-3 text-sm text-amber-700 dark:text-amber-300">
+                                        @if (!empty($certification['issued_at']))
+                                            <span class="inline-flex items-center">
+                                                <i class="fas fa-calendar mr-1"></i>
+                                                {{ $certification['issued_at'] }}
+                                            </span>
+                                        @endif
+                                        @if (!empty($certification['url']))
+                                            <a href="{{ $certification['url'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center font-medium hover:text-amber-900 dark:hover:text-amber-100">
+                                                <i class="fas fa-arrow-up-right-from-square mr-1"></i>
+                                                驗證連結
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- 技能標籤 -->
                 @if (!empty($resume->skills))
                 <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
