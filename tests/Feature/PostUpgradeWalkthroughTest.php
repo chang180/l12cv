@@ -103,6 +103,7 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertSee('查看完整作品集')
         ->assertSee('列印')
         ->assertSee('下載 DOCX')
+        ->assertSee('下載全部')
         ->assertSee('Tailwind CSS')
         ->assertSee('英文')
         ->assertSee('流利')
@@ -126,6 +127,10 @@ test('public resume portfolio project and pdf pages render with seeded content',
     $this->get('/@test-user/docx')
         ->assertOk()
         ->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+    $this->get('/@test-user/exports')
+        ->assertOk()
+        ->assertHeader('Content-Type', 'application/zip');
 });
 
 test('resume templates fall back safely and pdf supports all built in templates', function () {

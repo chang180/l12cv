@@ -90,6 +90,14 @@
                             >
                                 <i class="fas fa-file-word text-xs"></i>
                             </a>
+                            <a
+                                href="{{ route('resume.exports', ['slug' => $resume->slug]) }}"
+                                target="_blank"
+                                class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 px-2 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shadow-md hover:shadow-lg flex items-center"
+                                aria-label="下載全部"
+                            >
+                                <i class="fas fa-file-zipper text-xs"></i>
+                            </a>
                             <button
                                 type="button"
                                 onclick="window.print()"
@@ -183,6 +191,14 @@
                         >
                             <i class="fas fa-file-word"></i>
                             <span>下載 DOCX</span>
+                        </a>
+                        <a
+                            href="{{ route('resume.exports', ['slug' => $resume->slug]) }}"
+                            target="_blank"
+                            class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2"
+                        >
+                            <i class="fas fa-file-zipper"></i>
+                            <span>下載全部</span>
                         </a>
                         <button
                             type="button"
