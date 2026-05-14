@@ -161,6 +161,12 @@
                                             <span>{{ $project->getFormattedCompletionDate('Y年m月') }} 完成</span>
                                         </div>
                                     @endif
+                                    @if($project->category)
+                                        <div class="mt-2 inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white ring-1 ring-white/30">
+                                            <i class="fas fa-layer-group mr-2"></i>
+                                            {{ $project->category }}
+                                        </div>
+                                    @endif
                                 </div>
                                 
                                 <!-- 項目統計 -->

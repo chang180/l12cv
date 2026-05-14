@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string|null $thumbnail 縮略圖路徑
  * @property string|null $media_type 多媒體類型
  * @property string|null $media_url 多媒體連結
+ * @property string|null $category 分類
  * @property string|null $url 項目鏈接
  * @property string|null $github_url GitHub鏈接
  * @property array|null $technologies 使用的技術
@@ -45,6 +46,7 @@ class Project extends Model
         'thumbnail',
         'media_type',
         'media_url',
+        'category',
         'url',
         'github_url',
         'technologies',

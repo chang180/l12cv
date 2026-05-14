@@ -199,6 +199,20 @@
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 作品分類 -->
+                        <div>
+                            <flux:label for="category" class="text-slate-700 dark:text-slate-300 font-medium">作品分類</flux:label>
+                            <flux:input
+                                wire:model="category"
+                                id="category"
+                                type="text"
+                                maxlength="80"
+                                placeholder="網站、App、資料分析..."
+                                class="mt-2 dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder-slate-400"
+                            />
+                            @error('category') <flux:error :messages="$message" /> @enderror
+                        </div>
+
                         <!-- 項目鏈接 -->
                         <div>
                             <flux:label for="url" class="text-slate-700 dark:text-slate-300 font-medium">項目演示鏈接</flux:label>

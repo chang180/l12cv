@@ -39,6 +39,12 @@
                                 </h3>
 
                                 <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                                    @if($project->category)
+                                    <span class="inline-flex items-center rounded-full bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-200 dark:ring-indigo-800">
+                                        <i class="fas fa-layer-group mr-1"></i>
+                                        {{ $project->category }}
+                                    </span>
+                                    @endif
                                     @if($project->completion_date)
                                     <span>
                                         完成日期: {{ \Carbon\Carbon::parse($project->completion_date)->format('Y年m月') }}

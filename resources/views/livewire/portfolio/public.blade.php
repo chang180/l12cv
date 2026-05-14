@@ -241,6 +241,12 @@
                                     {{ $project->media_type === 'video' ? '影片展示' : '音訊展示' }}
                                 </div>
                                 @endif
+                                @if($project->category)
+                                <div class="mb-3 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-200 dark:ring-indigo-800">
+                                    <i class="fas fa-layer-group mr-1"></i>
+                                    {{ $project->category }}
+                                </div>
+                                @endif
 
                                 <!-- 技術標籤 -->
                                 @if($project->technologies)

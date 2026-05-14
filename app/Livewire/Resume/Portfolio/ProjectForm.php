@@ -25,6 +25,8 @@ class ProjectForm extends Component
 
     public $mediaUrl = '';
 
+    public $category = '';
+
     public $url = '';
 
     public $githubUrl = '';
@@ -53,6 +55,7 @@ class ProjectForm extends Component
         'thumbnail' => 'nullable|image|max:1024',
         'mediaType' => 'nullable|in:video,audio',
         'mediaUrl' => 'nullable|required_with:mediaType|url|max:255',
+        'category' => 'nullable|max:80',
         'url' => 'nullable|url|max:255',
         'githubUrl' => 'nullable|url|max:255',
         'technologies' => 'nullable',
@@ -93,6 +96,7 @@ class ProjectForm extends Component
             $this->description = $project->description;
             $this->mediaType = $project->media_type ?? '';
             $this->mediaUrl = $project->media_url ?? '';
+            $this->category = $project->category ?? '';
             $this->url = $project->url;
             $this->githubUrl = $project->github_url;
             $this->technologies = $project->technologies ? implode(', ', $project->technologies) : '';
@@ -111,6 +115,7 @@ class ProjectForm extends Component
         $this->thumbnail = null;
         $this->mediaType = '';
         $this->mediaUrl = '';
+        $this->category = '';
         $this->url = '';
         $this->githubUrl = '';
         $this->technologies = '';
@@ -152,6 +157,7 @@ class ProjectForm extends Component
             'description' => $this->description,
             'media_type' => $this->mediaType ?: null,
             'media_url' => $this->mediaType ? ($this->mediaUrl ?: null) : null,
+            'category' => $this->category ? trim($this->category) : null,
             'url' => $this->url,
             'github_url' => $this->githubUrl,
             'technologies' => $technologies,

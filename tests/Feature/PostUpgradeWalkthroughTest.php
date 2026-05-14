@@ -91,6 +91,7 @@ test('public resume portfolio project and pdf pages render with seeded content',
         'technologies' => ['Laravel', 'Livewire', 'Tailwind'],
         'media_type' => 'audio',
         'media_url' => 'https://example.com/demo.mp3',
+        'category' => '網站平台',
         'completion_date' => '2026-05-14',
         'is_featured' => true,
         'order' => 1,
@@ -117,11 +118,13 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertOk()
         ->assertSee('L13CV 驗證作品')
         ->assertSee('音訊展示')
+        ->assertSee('網站平台')
         ->assertSee('Laravel');
 
     $this->get("/p/test-user/project/{$project->id}")
         ->assertOk()
         ->assertSee('用於升級後 walkthrough 的公開作品集項目。')
+        ->assertSee('網站平台')
         ->assertSee('多媒體展示')
         ->assertSee('https://example.com/demo.mp3');
 
