@@ -30,9 +30,9 @@
         $resumeProjects = $resume->user?->projects?->take(3) ?? collect();
     @endphp
 
-    <div class="min-h-screen {{ $templateClasses['page'] }}" data-resume-template="{{ $template['key'] }}">
+    <div class="min-h-screen {{ $templateClasses['page'] }} print-page" data-resume-template="{{ $template['key'] }}">
         <!-- 頂部導航區域 -->
-        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+        <div class="print-hide bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
             <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
                 <!-- 手機版佈局 -->
                 <div class="md:hidden">
@@ -82,6 +82,14 @@
                             >
                                 <i class="fas fa-download text-xs"></i>
                             </a>
+                            <button
+                                type="button"
+                                onclick="window.print()"
+                                class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 px-2 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shadow-md hover:shadow-lg flex items-center"
+                                aria-label="列印履歷"
+                            >
+                                <i class="fas fa-print text-xs"></i>
+                            </button>
                         </div>
                     </div>
                     
@@ -160,6 +168,14 @@
                             <i class="fas fa-download"></i>
                             <span>下載 PDF</span>
                         </a>
+                        <button
+                            type="button"
+                            onclick="window.print()"
+                            class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2"
+                        >
+                            <i class="fas fa-print"></i>
+                            <span>列印</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -170,7 +186,7 @@
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 @if ($resume)
                 <!-- 個人資料卡片 -->
-                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                <div class="print-card bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="bg-gradient-to-r {{ $templateClasses['hero'] }} p-4 sm:p-6">
                         <div class="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                             <div class="flex-shrink-0 mx-auto sm:mx-0">
@@ -239,7 +255,7 @@
 
                 <!-- 證照和認證 -->
                 @if (!empty($resume->certifications))
-                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="p-4 sm:p-6">
                         <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
                             <i class="fas fa-certificate mr-2 sm:mr-3 text-amber-600 dark:text-amber-400 text-sm sm:text-base"></i>
@@ -275,7 +291,7 @@
 
                 <!-- 專案經驗 -->
                 @if ($resumeProjects->isNotEmpty())
-                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="p-4 sm:p-6">
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
                             <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center justify-center sm:justify-start">
@@ -328,7 +344,7 @@
 
                 <!-- 技能標籤 -->
                 @if (!empty($resume->skills))
-                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="p-4 sm:p-6">
                         <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
                             <i class="fas fa-tags mr-2 sm:mr-3 text-cyan-600 dark:text-cyan-400 text-sm sm:text-base"></i>
@@ -347,7 +363,7 @@
 
                 <!-- 語言能力 -->
                 @if (!empty($resume->languages))
-                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="p-4 sm:p-6">
                         <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
                             <i class="fas fa-language mr-2 sm:mr-3 text-indigo-600 dark:text-indigo-400 text-sm sm:text-base"></i>
@@ -367,7 +383,7 @@
 
                 <!-- 學歷背景 -->
                 @if (!empty($resume->education))
-                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="bg-gradient-to-r {{ $templateClasses['sectionEducation'] }} px-4 sm:px-6 py-3 sm:py-4">
                         <h2 class="text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start">
                             <i class="fas fa-graduation-cap mr-2 sm:mr-3 text-sm sm:text-base"></i>
@@ -424,7 +440,7 @@
 
                 <!-- 工作經驗 -->
                 @if (!empty($resume->experience))
-                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="bg-gradient-to-r {{ $templateClasses['sectionExperience'] }} px-4 sm:px-6 py-3 sm:py-4">
                         <h2 class="text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start">
                             <i class="fas fa-briefcase mr-2 sm:mr-3 text-sm sm:text-base"></i>
@@ -507,7 +523,7 @@
         </div>
         
         <!-- 底部版權 -->
-        <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8 mt-16">
+        <footer class="print-hide bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8 mt-16">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row items-center justify-between">
                     <div class="flex items-center space-x-3 mb-4 md:mb-0">

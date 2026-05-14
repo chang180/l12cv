@@ -61,3 +61,50 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+@media print {
+    @page {
+        size: A4;
+        margin: 12mm;
+    }
+
+    html,
+    body {
+        background: #ffffff !important;
+        color: #111827 !important;
+    }
+
+    .print-hide {
+        display: none !important;
+    }
+
+    .print-page {
+        min-height: auto !important;
+        background: #ffffff !important;
+    }
+
+    .print-page .py-8 {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .print-page .max-w-6xl {
+        max-width: none !important;
+    }
+
+    .print-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: none !important;
+    }
+
+    .print-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .print-page a {
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+}

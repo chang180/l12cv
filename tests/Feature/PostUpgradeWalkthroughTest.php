@@ -101,6 +101,7 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertSee('專案經驗')
         ->assertSee('L13CV 驗證作品')
         ->assertSee('查看完整作品集')
+        ->assertSee('列印')
         ->assertSee('Tailwind CSS')
         ->assertSee('英文')
         ->assertSee('流利')
