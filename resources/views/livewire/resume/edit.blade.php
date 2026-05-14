@@ -1,29 +1,46 @@
 <?php
 use function Livewire\Volt\{state, mount, on, layout};
 use App\Models\Resume;
+use App\Support\ResumeTemplates;
+use Illuminate\Validation\Rule;
 
 layout('components.layouts.app');
 
-state(['resume' => null, 'title' => '', 'summary' => '', 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
+state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
     if ($this->resume) {
         $this->title = $this->resume->title ?? '';
         $this->summary = $this->resume->summary ?? '';
+        $this->template = ResumeTemplates::resolve($this->resume->template ?? null)['key'];
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     } else {
         // 新用戶，保持空欄位
         $this->title = '';
         $this->summary = '';
+        $this->template = ResumeTemplates::DEFAULT;
         $this->education = [];
         $this->experience = [];
     }
 });
 
-// updateBasicInfo 方法在 app/Livewire/Resume/Edit.php 中定義
+$updateBasicInfo = function () {
+    $this->validate([
+        'template' => ['required', Rule::in(ResumeTemplates::keys())],
+    ]);
 
+    $this->resume->update([
+        'title' => $this->title,
+        'summary' => $this->summary,
+        'template' => $this->template,
+    ]);
+
+    session()->flash('status', '✅ 基本資料已更新');
+
+    $this->dispatch('scroll-to-top');
+};
 
 $addEducation = function () {
     $this->education[] = [
@@ -195,6 +212,31 @@ $shouldShowCurrentOption = function ($index) {
                                             required 
                                         />
                                         @error('title')
+                                            <flux:error :messages="$message" />
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <flux:label>履歷模板</flux:label>
+                                        <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            @foreach ($templateOptions as $option)
+                                                <label class="cursor-pointer">
+                                                    <input type="radio" wire:model="template" value="{{ $option['key'] }}" class="sr-only peer">
+                                                    <div class="h-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 p-4 shadow-sm transition-all duration-200 peer-checked:border-blue-500 peer-checked:ring-2 peer-checked:ring-blue-200 dark:peer-checked:ring-blue-900 hover:border-slate-300 dark:hover:border-slate-600">
+                                                        <div class="mb-3 h-16 rounded-lg bg-gradient-to-r {{ $option['hero'] }}"></div>
+                                                        <div class="flex items-start justify-between gap-3">
+                                                            <div>
+                                                                <p class="font-semibold text-slate-900 dark:text-white">{{ $option['name'] }}</p>
+                                                                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{{ $option['description'] }}</p>
+                                                            </div>
+                                                            @if ($template === $option['key'])
+                                                                <i class="fas fa-check-circle text-blue-500 mt-1"></i>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                        @error('template')
                                             <flux:error :messages="$message" />
                                         @enderror
                                     </div>

@@ -14,6 +14,7 @@ test('authenticated resume and settings pages render after the Laravel 13 upgrad
     $user->resume->update([
         'title' => 'Test User 的履歷',
         'slug' => 'test-user',
+        'template' => 'modern',
         'summary' => '具備 Laravel 與 Livewire 專案經驗。',
         'is_public' => true,
     ]);
@@ -44,6 +45,7 @@ test('public resume portfolio project and pdf pages render with seeded content',
     $user->resume->update([
         'title' => 'Test User 的履歷',
         'slug' => 'test-user',
+        'template' => 'modern',
         'summary' => '具備 Laravel 與 Livewire 專案經驗。',
         'education' => [
             [
@@ -82,6 +84,7 @@ test('public resume portfolio project and pdf pages render with seeded content',
 
     $this->get('/@test-user')
         ->assertOk()
+        ->assertSee('data-resume-template="modern"', false)
         ->assertSee('Test User 的履歷')
         ->assertSee('下載 PDF');
 
@@ -97,6 +100,42 @@ test('public resume portfolio project and pdf pages render with seeded content',
     $this->get('/@test-user/pdf')
         ->assertOk()
         ->assertHeader('Content-Type', 'application/pdf');
+});
+
+test('resume templates fall back safely and pdf supports all built in templates', function () {
+    $user = User::factory()->create([
+        'name' => 'Template User',
+        'slug' => 'template-user',
+    ]);
+
+    foreach (['classic', 'modern', 'compact'] as $template) {
+        $slug = "template-user-{$template}";
+
+        $user->resume->update([
+            'title' => "{$template} template",
+            'slug' => $slug,
+            'template' => $template,
+            'summary' => '模板回歸測試',
+            'is_public' => true,
+        ]);
+
+        $this->get("/@{$slug}")
+            ->assertOk()
+            ->assertSee("data-resume-template=\"{$template}\"", false);
+
+        $this->get("/@{$slug}/pdf")
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/pdf');
+    }
+
+    $user->resume->update([
+        'slug' => 'template-user-invalid',
+        'template' => 'invalid-template',
+    ]);
+
+    $this->get('/@template-user-invalid')
+        ->assertOk()
+        ->assertSee('data-resume-template="classic"', false);
 });
 
 test('google oauth remains disabled on local guest auth pages', function () {

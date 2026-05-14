@@ -24,7 +24,12 @@
     state(['resume']);
     ?>
 
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    @php
+        $template = \App\Support\ResumeTemplates::resolve($resume->template ?? null);
+        $templateClasses = \App\Support\ResumeTemplates::publicClasses($template['key']);
+    @endphp
+
+    <div class="min-h-screen {{ $templateClasses['page'] }}" data-resume-template="{{ $template['key'] }}">
         <!-- 頂部導航區域 -->
         <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
             <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
@@ -164,8 +169,8 @@
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 @if ($resume)
                 <!-- 個人資料卡片 -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-6 sm:mb-8 border border-gray-100 dark:border-gray-700">
-                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 sm:p-6">
+                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gradient-to-r {{ $templateClasses['hero'] }} p-4 sm:p-6">
                         <div class="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                             <div class="flex-shrink-0 mx-auto sm:mx-0">
                                 @if ($resume->user && $resume->user->avatar)
@@ -233,8 +238,8 @@
 
                 <!-- 學歷背景 -->
                 @if (!empty($resume->education))
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-6 sm:mb-8 border border-gray-100 dark:border-gray-700">
-                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 px-4 sm:px-6 py-3 sm:py-4">
+                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gradient-to-r {{ $templateClasses['sectionEducation'] }} px-4 sm:px-6 py-3 sm:py-4">
                         <h2 class="text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start">
                             <i class="fas fa-graduation-cap mr-2 sm:mr-3 text-sm sm:text-base"></i>
                             學歷背景
@@ -290,8 +295,8 @@
 
                 <!-- 工作經驗 -->
                 @if (!empty($resume->experience))
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-6 sm:mb-8 border border-gray-100 dark:border-gray-700">
-                    <div class="bg-gradient-to-r from-green-500 to-emerald-600 px-4 sm:px-6 py-3 sm:py-4">
+                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                    <div class="bg-gradient-to-r {{ $templateClasses['sectionExperience'] }} px-4 sm:px-6 py-3 sm:py-4">
                         <h2 class="text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start">
                             <i class="fas fa-briefcase mr-2 sm:mr-3 text-sm sm:text-base"></i>
                             工作經驗

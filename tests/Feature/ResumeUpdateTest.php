@@ -29,3 +29,25 @@ test('用戶可以更新履歷基本資料', function () {
     expect($resume->title)->toBe('新標題');
     expect($resume->summary)->toBe('新簡介');
 });
+
+test('用戶可以更新履歷模板', function () {
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test(Edit::class)
+        ->set('template', 'modern')
+        ->call('updateBasicInfo')
+        ->assertHasNoErrors();
+
+    expect($user->resume->fresh()->template)->toBe('modern');
+});
+
+test('無效履歷模板會被拒絕', function () {
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test(Edit::class)
+        ->set('template', 'unknown-template')
+        ->call('updateBasicInfo')
+        ->assertHasErrors(['template']);
+});

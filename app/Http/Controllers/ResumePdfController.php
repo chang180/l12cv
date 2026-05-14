@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use App\Support\ResumeTemplates;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use TCPDF;
@@ -58,22 +59,31 @@ class ResumePdfController extends Controller
     private function generateResumeContent(TCPDF $pdf, Resume $resume): void
     {
         $user = $resume->user;
+        $template = ResumeTemplates::resolve($resume->template ?? null);
+        $theme = ResumeTemplates::pdfTheme($template['key']);
+        $primary = $theme['primary'];
+        $secondary = $theme['secondary'];
+        $titleAlign = $theme['align'];
 
         // 標題區域
         $pdf->SetFont('stsongstdlight', 'B', 24);
-        $pdf->SetTextColor(102, 126, 234); // 藍色
-        $pdf->Cell(0, 15, $user->name ?? '未知', 0, 1, 'C');
+        $pdf->SetTextColor(...$primary);
+        $pdf->Cell(0, 15, $user->name ?? '未知', 0, 1, $titleAlign);
 
         $pdf->SetFont('stsongstdlight', '', 16);
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Cell(0, 10, $resume->title, 0, 1, 'C');
+        $pdf->Cell(0, 10, $resume->title, 0, 1, $titleAlign);
+
+        $pdf->SetFont('stsongstdlight', '', 9);
+        $pdf->SetTextColor(120, 120, 120);
+        $pdf->Cell(0, 6, '模板：'.$template['name'], 0, 1, $titleAlign);
 
         $pdf->Ln(10);
 
         // 個人簡介
         if ($resume->summary) {
             $pdf->SetFont('stsongstdlight', 'B', 14);
-            $pdf->SetTextColor(102, 126, 234);
+            $pdf->SetTextColor(...$primary);
             $pdf->Cell(0, 8, '個人簡介', 0, 1);
 
             $pdf->SetFont('stsongstdlight', '', 12);
@@ -84,7 +94,7 @@ class ResumePdfController extends Controller
 
         // 統計資訊
         $pdf->SetFont('stsongstdlight', 'B', 14);
-        $pdf->SetTextColor(102, 126, 234);
+        $pdf->SetTextColor(...$primary);
         $pdf->Cell(0, 8, '基本資訊', 0, 1);
 
         $pdf->SetFont('stsongstdlight', '', 12);
@@ -98,10 +108,29 @@ class ResumePdfController extends Controller
         $pdf->Cell(0, 6, "建立時間：{$daysAgo} 天前", 0, 1);
         $pdf->Ln(5);
 
-        // 學歷背景
+        if ($theme['order'] === 'experience-first') {
+            $this->writeExperience($pdf, $resume, $primary, $secondary);
+            $this->writeEducation($pdf, $resume, $primary);
+        } else {
+            $this->writeEducation($pdf, $resume, $primary);
+            $this->writeExperience($pdf, $resume, $primary, $secondary);
+        }
+
+        // 頁尾
+        $pdf->SetY(-20);
+        $pdf->SetFont('stsongstdlight', '', 8);
+        $pdf->SetTextColor(150, 150, 150);
+        $pdf->Cell(0, 5, '此履歷由 L13CV 履歷平台生成於 '.now()->format('Y年m月d日'), 0, 1, 'C');
+    }
+
+    /**
+     * @param  array<int, int>  $primary
+     */
+    private function writeEducation(TCPDF $pdf, Resume $resume, array $primary): void
+    {
         if (! empty($resume->education)) {
             $pdf->SetFont('stsongstdlight', 'B', 14);
-            $pdf->SetTextColor(102, 126, 234);
+            $pdf->SetTextColor(...$primary);
             $pdf->Cell(0, 8, '學歷背景', 0, 1);
 
             $pdf->SetFont('stsongstdlight', '', 12);
@@ -112,7 +141,7 @@ class ResumePdfController extends Controller
                 $pdf->Cell(0, 6, $edu['school'], 0, 1);
 
                 $pdf->SetFont('stsongstdlight', '', 10);
-                $pdf->SetTextColor(102, 126, 234);
+                $pdf->SetTextColor(...$primary);
                 $pdf->Cell(0, 5, $edu['degree'].' · '.$edu['field'], 0, 1);
 
                 $pdf->SetTextColor(100, 100, 100);
@@ -126,11 +155,17 @@ class ResumePdfController extends Controller
             }
             $pdf->Ln(5);
         }
+    }
 
-        // 工作經驗
+    /**
+     * @param  array<int, int>  $primary
+     * @param  array<int, int>  $secondary
+     */
+    private function writeExperience(TCPDF $pdf, Resume $resume, array $primary, array $secondary): void
+    {
         if (! empty($resume->experience)) {
             $pdf->SetFont('stsongstdlight', 'B', 14);
-            $pdf->SetTextColor(102, 126, 234);
+            $pdf->SetTextColor(...$primary);
             $pdf->Cell(0, 8, '工作經驗', 0, 1);
 
             $pdf->SetFont('stsongstdlight', '', 12);
@@ -141,7 +176,7 @@ class ResumePdfController extends Controller
                 $pdf->Cell(0, 6, $exp['position'], 0, 1);
 
                 $pdf->SetFont('stsongstdlight', '', 10);
-                $pdf->SetTextColor(102, 126, 234);
+                $pdf->SetTextColor(...$primary);
                 $pdf->Cell(0, 5, $exp['company'], 0, 1);
 
                 $pdf->SetTextColor(100, 100, 100);
@@ -149,7 +184,7 @@ class ResumePdfController extends Controller
                 $pdf->Cell(0, 5, $exp['start_date'].' - '.$endDate, 0, 1);
 
                 if ($exp['current'] ?? false) {
-                    $pdf->SetTextColor(23, 162, 184);
+                    $pdf->SetTextColor(...$secondary);
                     $pdf->Cell(0, 5, '目前在職', 0, 1);
                 }
 
@@ -160,11 +195,5 @@ class ResumePdfController extends Controller
                 $pdf->Ln(3);
             }
         }
-
-        // 頁尾
-        $pdf->SetY(-20);
-        $pdf->SetFont('stsongstdlight', '', 8);
-        $pdf->SetTextColor(150, 150, 150);
-        $pdf->Cell(0, 5, '此履歷由 L13CV 履歷平台生成於 '.now()->format('Y年m月d日'), 0, 1, 'C');
     }
 }

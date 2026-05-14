@@ -3,7 +3,9 @@
 namespace App\Livewire\Resume;
 
 use App\Models\Resume;
+use App\Support\ResumeTemplates;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -17,6 +19,10 @@ class Edit extends Component
     public $title;
 
     public $summary;
+
+    public $template = ResumeTemplates::DEFAULT;
+
+    public $templateOptions = [];
 
     public $education = [];
 
@@ -54,6 +60,8 @@ class Edit extends Component
         // 初始化表單數據
         $this->title = $this->resume->title;
         $this->summary = $this->resume->summary;
+        $this->template = ResumeTemplates::resolve($this->resume->template ?? null)['key'];
+        $this->templateOptions = ResumeTemplates::all();
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     }
@@ -65,9 +73,14 @@ class Edit extends Component
 
     public function updateBasicInfo()
     {
+        $this->validate([
+            'template' => ['required', Rule::in(ResumeTemplates::keys())],
+        ]);
+
         $this->resume->update([
             'title' => $this->title,
             'summary' => $this->summary,
+            'template' => $this->template,
         ]);
 
         session()->flash('status', '✅ 基本資料已更新');

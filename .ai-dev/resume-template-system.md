@@ -1,5 +1,16 @@
 # 履歷模板系統實作規格
 
+## 狀態
+
+第一版已於 2026-05-14 完成。
+
+- `classic`、`modern`、`compact` 三種內建模板已集中定義於 `App\Support\ResumeTemplates`。
+- `resumes.template` 已新增，既有與無效模板 key 會 fallback 到 `classic`。
+- `/resume/edit` 已提供模板選擇卡片。
+- `@{slug}` 公開履歷頁會依模板套用頁面背景、卡片、區塊色系與 `data-resume-template` 標記。
+- `@{slug}/pdf` 會依模板套用 PDF 色系、標題對齊與區塊順序。
+- 回歸測試已覆蓋模板更新、無效模板驗證、公開頁 fallback 與三種模板 PDF 下載。
+
 ## 目標
 
 建立第一版履歷模板系統，讓使用者可以在履歷編輯流程中選擇內建模板，並讓公開履歷頁與 PDF 匯出使用一致的版面語意。第一版聚焦可預覽、可切換、可回歸測試，不做自訂模板編輯器。

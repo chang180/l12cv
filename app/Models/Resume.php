@@ -23,6 +23,7 @@ class Resume extends Model
         'user_id',
         'title',
         'slug',
+        'template',
         'summary',
         'experience',
         'education',
@@ -52,30 +53,26 @@ class Resume extends Model
     /**
      * 增加履歷瀏覽數（帶防刷機制）
      *
-     * @param string $ipAddress
-     * @param string $userAgent
      * @return bool 是否成功增加瀏覽數
      */
     public function incrementViewsWithTracking(string $ipAddress, string $userAgent = ''): bool
     {
         // 檢查是否應該計入瀏覽數
-        if (!ViewTracking::shouldCountView($ipAddress, 'resume', $this->id)) {
+        if (! ViewTracking::shouldCountView($ipAddress, 'resume', $this->id)) {
             return false;
         }
 
         // 記錄瀏覽
         ViewTracking::recordView($ipAddress, $userAgent, 'resume', $this->id);
-        
+
         // 增加瀏覽數
         $this->increment('views');
-        
+
         return true;
     }
 
     /**
      * 增加履歷瀏覽數（舊方法，向後兼容）
-     *
-     * @return void
      */
     public function incrementViews(): void
     {
