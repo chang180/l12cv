@@ -24,7 +24,13 @@
   - `/`、`/login`、`/register` 可載入，頁面標題與品牌為 `L13CV`。
   - 登入與註冊頁在本機模式顯示 Google OAuth 停用提示。
   - 未再出現密碼顯示切換相關的 Alpine console error。
+- 2026-05-14 Herd / HTTP check via `https://l12cv.test`
+  - `/login`、`/@test-user`、`/p/test-user-TWs4B`、`/@test-user/pdf` 回應 200。
+  - PDF 回應 `Content-Type: application/pdf`，檔名使用 UTF-8 `filename*`。
+- `php artisan test tests/Feature/PostUpgradeWalkthroughTest.php`
+  - 3 passed，23 assertions。
+  - 覆蓋登入後 `/resume`、`/resume/edit`、`/settings/profile`，公開履歷、公開作品集、專案詳情、PDF 下載，以及 Google OAuth 本機停用提示。
 
 ## 待執行
 
-- 以登入帳號進一步檢查 `/resume`、`/resume/edit`、`/settings/profile`、公開履歷與作品集頁的互動細節。
+- 真實 Google OAuth callback 測試：需要可用的 Google Cloud OAuth client、公開 callback URL，並將 `GOOGLE_AUTH_ENABLED=true`。

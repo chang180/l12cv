@@ -46,6 +46,8 @@ php artisan serve
 npm run dev
 ```
 
+若使用 Laravel Herd，本機網址為 `https://l12cv.test`。
+
 ## Google OAuth
 
 本機開發預設關閉 Google OAuth，避免沒有公開 callback URL 或 Google Cloud 憑證時阻斷登入測試。未啟用時，登入、註冊與設定頁會顯示繁體中文提示，並保留電子郵件登入流程。
@@ -76,6 +78,7 @@ npm run build
 - `.ai-dev/upgrade/plan.md`：本次 Laravel 13 與 Google OAuth 升級計畫
 - `.ai-dev/upgrade/progress.md`：實作進度
 - `.ai-dev/upgrade/verification.md`：驗證紀錄
+- `.ai-dev/resume-template-system.md`：下一階段履歷模板系統實作規格
 - `docs/portfolio-feature.md`：作品集功能規劃與背景
 
 ## 授權

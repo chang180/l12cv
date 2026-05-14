@@ -14,7 +14,11 @@
 - 完整資料庫遷移已執行。
 - `composer validate`、`php artisan route:list`、`php artisan test`、`npm run build` 已通過。
 - 已用瀏覽器檢查首頁、登入頁、註冊頁，確認 L13CV 品牌與本機 Google OAuth 停用提示。
+- 已補上升級後 walkthrough 回歸測試，涵蓋 `/resume`、`/resume/edit`、`/settings/profile`、公開履歷、公開作品集、專案詳情與 PDF 下載。
+- 修復履歷編輯頁在 Laravel 13 / Livewire 4 下可能回落到 `layouts::app` 的佈局解析問題。
+- PDF 下載改為先產生 PDF 字串，再交由 Laravel response 輸出，避免測試流程直接印出 PDF 二進位內容。
+- `.ai-dev/resume-template-system.md` 已建立，作為下一階段履歷模板系統實作規格。
 
 ## 待驗證
 
-- 以登入帳號補看履歷管理、履歷編輯、設定頁與公開作品集互動細節。
+- 真實 Google OAuth callback 仍需外部 callback URL 與 Google Cloud 憑證，尚未列入本機完成條件。

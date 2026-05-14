@@ -2,32 +2,40 @@
 
 namespace App\Livewire\Resume;
 
-use Livewire\Component;
 use App\Models\Resume;
-use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
+#[Layout('components.layouts.app')]
 class Edit extends Component
 {
     public $resumeId;
+
     public $resume;
+
     public $title;
+
     public $summary;
+
     public $education = [];
+
     public $experience = [];
+
     public $currentTab = 'basic';
+
     protected $listeners = ['update-parent-summary' => 'handleParentSummaryUpdate'];
 
     public function mount($resumeId = null)
     {
         // 如果沒有提供 resumeId，則獲取當前用戶的履歷
-        if (!$resumeId) {
+        if (! $resumeId) {
             $user = Auth::user();
-            if (!$user) {
+            if (! $user) {
                 abort(401);
             }
             $this->resume = $user->resume;
-            if (!$this->resume) {
+            if (! $this->resume) {
                 return redirect()->route('resume.dashboard')
                     ->with('error', '您還沒有建立履歷');
             }
@@ -50,7 +58,6 @@ class Edit extends Component
         $this->experience = $this->resume->experience ?? [];
     }
 
-
     public function handleParentSummaryUpdate($content)
     {
         $this->summary = $content;
@@ -63,9 +70,8 @@ class Edit extends Component
             'summary' => $this->summary,
         ]);
 
-
         session()->flash('status', '✅ 基本資料已更新');
-        
+
         // 滾動到頁面頂部
         $this->dispatch('scroll-to-top');
     }
@@ -143,23 +149,25 @@ class Edit extends Component
 
         // 獲取當前工作經驗的開始日期
         $currentStartDate = $this->experience[$index]['start_date'] ?? null;
-        if (!$currentStartDate) {
+        if (! $currentStartDate) {
             return true; // 如果沒有開始日期，顯示選項讓用戶填寫
         }
 
         // 找到其他工作經驗中最晚的結束日期
         $latestEndDate = null;
         foreach ($this->experience as $i => $exp) {
-            if ($i === $index) continue; // 跳過當前工作經驗
+            if ($i === $index) {
+                continue;
+            } // 跳過當前工作經驗
 
             $endDate = $exp['end_date'] ?? null;
-            if ($endDate && (!$latestEndDate || $endDate > $latestEndDate)) {
+            if ($endDate && (! $latestEndDate || $endDate > $latestEndDate)) {
                 $latestEndDate = $endDate;
             }
         }
 
         // 如果沒有其他工作經驗的結束日期，顯示選項
-        if (!$latestEndDate) {
+        if (! $latestEndDate) {
             return true;
         }
 
@@ -186,7 +194,7 @@ class Edit extends Component
                     $startDate = $this->experience[$index]['start_date'] ?? null;
                     if ($startDate) {
                         // 設定結束日期為開始日期後 1 年（用戶可以自行修改）
-                        $endDate = date('Y-m-d', strtotime($startDate . ' +1 year'));
+                        $endDate = date('Y-m-d', strtotime($startDate.' +1 year'));
                         $this->experience[$index]['end_date'] = $endDate;
                     }
                 }
@@ -200,7 +208,7 @@ class Edit extends Component
 
             // 如果開始日期改變後，不應該顯示「目前在職中」選項，
             // 但用戶已經勾選了，則自動取消勾選
-            if (!$this->shouldShowCurrentOption($index) && ($this->experience[$index]['current'] ?? false)) {
+            if (! $this->shouldShowCurrentOption($index) && ($this->experience[$index]['current'] ?? false)) {
                 $this->experience[$index]['current'] = false;
                 // 取消勾選時，不清空結束日期，讓用戶可以重新填寫
             }
