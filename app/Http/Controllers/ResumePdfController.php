@@ -108,6 +108,17 @@ class ResumePdfController extends Controller
         $pdf->Cell(0, 6, "建立時間：{$daysAgo} 天前", 0, 1);
         $pdf->Ln(5);
 
+        if (! empty($resume->skills)) {
+            $pdf->SetFont('stsongstdlight', 'B', 14);
+            $pdf->SetTextColor(...$primary);
+            $pdf->Cell(0, 8, '技能標籤', 0, 1);
+
+            $pdf->SetFont('stsongstdlight', '', 11);
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->MultiCell(0, 6, implode('、', $resume->skills), 0, 'L');
+            $pdf->Ln(5);
+        }
+
         if ($theme['order'] === 'experience-first') {
             $this->writeExperience($pdf, $resume, $primary, $secondary);
             $this->writeEducation($pdf, $resume, $primary);

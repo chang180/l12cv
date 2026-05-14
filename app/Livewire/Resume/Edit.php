@@ -24,6 +24,8 @@ class Edit extends Component
 
     public $templateOptions = [];
 
+    public $skills = [];
+
     public $education = [];
 
     public $experience = [];
@@ -62,6 +64,7 @@ class Edit extends Component
         $this->summary = $this->resume->summary;
         $this->template = ResumeTemplates::resolve($this->resume->template ?? null)['key'];
         $this->templateOptions = ResumeTemplates::all();
+        $this->skills = $this->resume->skills ?? [];
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     }
@@ -87,6 +90,38 @@ class Edit extends Component
 
         // 滾動到頁面頂部
         $this->dispatch('scroll-to-top');
+    }
+
+    public function addSkill()
+    {
+        $this->skills[] = '';
+    }
+
+    public function removeSkill($index)
+    {
+        unset($this->skills[$index]);
+        $this->skills = array_values($this->skills);
+    }
+
+    public function updateSkills()
+    {
+        $skills = collect($this->skills)
+            ->map(fn ($skill) => trim((string) $skill))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $this->skills = $skills;
+
+        $this->resume->update([
+            'skills' => $skills,
+        ]);
+
+        $this->dispatch('notify', [
+            'message' => '技能標籤已更新',
+            'type' => 'success',
+        ]);
     }
 
     public function addEducation()

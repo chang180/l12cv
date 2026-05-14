@@ -51,3 +51,15 @@ test('無效履歷模板會被拒絕', function () {
         ->call('updateBasicInfo')
         ->assertHasErrors(['template']);
 });
+
+test('用戶可以更新技能標籤並自動清理空白與重複值', function () {
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test(Edit::class)
+        ->set('skills', [' Laravel ', 'Livewire', '', 'Laravel'])
+        ->call('updateSkills')
+        ->assertHasNoErrors();
+
+    expect($user->resume->fresh()->skills)->toBe(['Laravel', 'Livewire']);
+});

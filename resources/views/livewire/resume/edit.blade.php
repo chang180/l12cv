@@ -6,7 +6,7 @@ use Illuminate\Validation\Rule;
 
 layout('components.layouts.app');
 
-state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
+state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'skills' => [], 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
@@ -14,6 +14,7 @@ mount(function () {
         $this->title = $this->resume->title ?? '';
         $this->summary = $this->resume->summary ?? '';
         $this->template = ResumeTemplates::resolve($this->resume->template ?? null)['key'];
+        $this->skills = $this->resume->skills ?? [];
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     } else {
@@ -21,6 +22,7 @@ mount(function () {
         $this->title = '';
         $this->summary = '';
         $this->template = ResumeTemplates::DEFAULT;
+        $this->skills = [];
         $this->education = [];
         $this->experience = [];
     }
@@ -40,6 +42,33 @@ $updateBasicInfo = function () {
     session()->flash('status', '✅ 基本資料已更新');
 
     $this->dispatch('scroll-to-top');
+};
+
+$addSkill = function () {
+    $this->skills[] = '';
+};
+
+$removeSkill = function ($index) {
+    unset($this->skills[$index]);
+    $this->skills = array_values($this->skills);
+};
+
+$updateSkills = function () {
+    $skills = collect($this->skills)
+        ->map(fn ($skill) => trim((string) $skill))
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
+
+    $this->skills = $skills;
+
+    $this->resume->update(['skills' => $skills]);
+
+    $this->dispatch('notify', [
+        'message' => '技能標籤已更新',
+        'type' => 'success',
+    ]);
 };
 
 $addEducation = function () {
@@ -158,6 +187,11 @@ $shouldShowCurrentOption = function ($index) {
                                 class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'education' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
                                 <i class="fas fa-graduation-cap text-sm"></i>
                                 <span>學歷</span>
+                            </button>
+                            <button wire:click="$set('currentTab', 'skills')"
+                                class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'skills' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
+                                <i class="fas fa-tags text-sm"></i>
+                                <span>技能標籤</span>
                             </button>
                             <button wire:click="$set('currentTab', 'experience')"
                                 class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'experience' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
@@ -287,6 +321,60 @@ $shouldShowCurrentOption = function ($index) {
                 <span wire:loading wire:target="updateBasicInfo">更新中...</span>
             </button>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 技能標籤表單 -->
+                <div x-show="$wire.currentTab === 'skills'" class="space-y-6">
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+                        <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-4">
+                            <h3 class="text-lg font-semibold text-white flex items-center">
+                                <i class="fas fa-tags mr-2"></i>
+                                技能標籤
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                @foreach ($skills as $index => $skill)
+                                    <div class="flex flex-col sm:flex-row gap-3">
+                                        <flux:input wire:model="skills.{{ $index }}" type="text" placeholder="例如：Laravel、Livewire、Tailwind CSS" class="flex-1" />
+                                        <button
+                                            wire:click="removeSkill({{ $index }})"
+                                            type="button"
+                                            class="px-4 py-2 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg shadow-sm transition-all duration-200"
+                                        >
+                                            <i class="fas fa-trash text-sm mr-2"></i>
+                                            刪除
+                                        </button>
+                                    </div>
+                                @endforeach
+
+                                @if (empty($skills))
+                                    <div class="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-center text-slate-500 dark:text-slate-400">
+                                        尚未新增技能標籤
+                                    </div>
+                                @endif
+
+                                <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 pt-4">
+                                    <button
+                                        wire:click="addSkill"
+                                        type="button"
+                                        class="w-full sm:w-auto order-2 sm:order-1 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold px-6 py-4 rounded-xl shadow-md hover:shadow-lg border border-slate-200 dark:border-slate-600 transition-all duration-200 flex items-center justify-center space-x-3 min-w-[140px]"
+                                    >
+                                        <i class="fas fa-plus-circle text-sm"></i>
+                                        <span>新增技能</span>
+                                    </button>
+                                    <button
+                                        wire:click="updateSkills"
+                                        type="button"
+                                        class="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
+                                    >
+                                        <i class="fas fa-check-circle text-sm"></i>
+                                        <span>儲存技能標籤</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>

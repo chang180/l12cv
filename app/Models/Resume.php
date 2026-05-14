@@ -25,6 +25,7 @@ class Resume extends Model
         'slug',
         'template',
         'summary',
+        'skills',
         'experience',
         'education',
         'is_public',
@@ -39,6 +40,7 @@ class Resume extends Model
     protected $casts = [
         'experience' => 'array',
         'education' => 'array',
+        'skills' => 'array',
         'is_public' => 'boolean',
     ];
 

@@ -19,6 +19,7 @@
 - PDF 下載改為先產生 PDF 字串，再交由 Laravel response 輸出，避免測試流程直接印出 PDF 二進位內容。
 - `.ai-dev/resume-template-system.md` 已建立，作為下一階段履歷模板系統實作規格。
 - 履歷模板系統第一版已完成，包含 `classic`、`modern`、`compact` 內建模板、編輯頁選擇、公開履歷套版與 PDF 主題。
+- 技能標籤系統第一版已完成，包含 `resumes.skills`、編輯頁管理、公開頁標籤展示與 PDF 匯出。
 
 ## 待驗證
 

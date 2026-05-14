@@ -236,6 +236,25 @@
                     </div>
                 </div>
 
+                <!-- 技能標籤 -->
+                @if (!empty($resume->skills))
+                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                    <div class="p-4 sm:p-6">
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
+                            <i class="fas fa-tags mr-2 sm:mr-3 text-cyan-600 dark:text-cyan-400 text-sm sm:text-base"></i>
+                            技能標籤
+                        </h2>
+                        <div class="flex flex-wrap gap-2 sm:gap-3">
+                            @foreach ($resume->skills as $skill)
+                                <span class="inline-flex items-center rounded-full bg-cyan-50 px-3 py-1.5 text-sm font-medium text-cyan-700 ring-1 ring-cyan-200 dark:bg-cyan-900/30 dark:text-cyan-200 dark:ring-cyan-800">
+                                    {{ $skill }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- 學歷背景 -->
                 @if (!empty($resume->education))
                 <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
