@@ -235,6 +235,13 @@
                                     {{ $project->title }}
                                 </h3>
 
+                                @if($project->media_type)
+                                <div class="mb-3 inline-flex items-center rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 ring-1 ring-sky-200 dark:bg-sky-900/30 dark:text-sky-200 dark:ring-sky-800">
+                                    <i class="fas {{ $project->media_type === 'video' ? 'fa-video' : 'fa-music' }} mr-1"></i>
+                                    {{ $project->media_type === 'video' ? '影片展示' : '音訊展示' }}
+                                </div>
+                                @endif
+
                                 <!-- 技術標籤 -->
                                 @if($project->technologies)
                                 <div class="flex flex-wrap gap-2 mb-4">

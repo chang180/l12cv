@@ -211,6 +211,45 @@
                             </div>
                         </div>
 
+                        <!-- 多媒體展示 -->
+                        @if($project->media_type && $project->media_url)
+                            @php
+                                $youtubeId = null;
+                                if ($project->media_type === 'video' && preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/', $project->media_url, $matches)) {
+                                    $youtubeId = $matches[1];
+                                }
+                            @endphp
+                            <div class="mb-6 sm:mb-8">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">
+                                    <i class="fas {{ $project->media_type === 'video' ? 'fa-video' : 'fa-music' }} mr-2 text-sky-600 dark:text-sky-400 text-sm sm:text-base"></i>
+                                    多媒體展示
+                                </h3>
+                                <div class="rounded-xl border border-sky-100 bg-sky-50 p-3 dark:border-sky-800 dark:bg-sky-900/30">
+                                    @if($project->media_type === 'video' && $youtubeId)
+                                        <div class="aspect-video overflow-hidden rounded-lg bg-black">
+                                            <iframe
+                                                src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                title="{{ $project->title }} 影片"
+                                                class="h-full w-full"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowfullscreen
+                                            ></iframe>
+                                        </div>
+                                    @elseif($project->media_type === 'video')
+                                        <video controls class="w-full rounded-lg">
+                                            <source src="{{ $project->media_url }}">
+                                            您的瀏覽器不支援影片播放。
+                                        </video>
+                                    @else
+                                        <audio controls class="w-full">
+                                            <source src="{{ $project->media_url }}">
+                                            您的瀏覽器不支援音訊播放。
+                                        </audio>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- 項目連結 -->
                         <div class="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
                             @if($project->url)

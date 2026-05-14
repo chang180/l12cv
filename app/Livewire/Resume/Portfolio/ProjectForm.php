@@ -2,29 +2,47 @@
 
 namespace App\Livewire\Resume\Portfolio;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\Project;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class ProjectForm extends Component
 {
     use WithFileUploads;
 
     public $resumeId;
+
     public $projectId = null;
+
     public $title = '';
+
     public $description = '';
+
     public $thumbnail = null;
+
+    public $mediaType = '';
+
+    public $mediaUrl = '';
+
     public $url = '';
+
     public $githubUrl = '';
+
     public $technologies = '';
+
     public $completionDate = '';
+
     public $isFeatured = false;
+
     public $order = 0;
+
     public $thumbnailPreview = null;
+
     public $existingThumbnail = null;
+
     public $removeThumbnail = false;
+
     public $isVisible = false;
 
     protected $listeners = ['openProjectForm', 'closeProjectForm'];
@@ -33,6 +51,8 @@ class ProjectForm extends Component
         'title' => 'required|max:255',
         'description' => 'nullable',
         'thumbnail' => 'nullable|image|max:1024',
+        'mediaType' => 'nullable|in:video,audio',
+        'mediaUrl' => 'nullable|required_with:mediaType|url|max:255',
         'url' => 'nullable|url|max:255',
         'githubUrl' => 'nullable|url|max:255',
         'technologies' => 'nullable',
@@ -49,11 +69,11 @@ class ProjectForm extends Component
     public function openProjectForm($params = [])
     {
         $this->resetForm();
-        
+
         if (isset($params['projectId'])) {
             $this->loadProject($params['projectId']);
         }
-        
+
         $this->isVisible = true;
     }
 
@@ -66,11 +86,13 @@ class ProjectForm extends Component
     public function loadProject($projectId)
     {
         $project = Project::find($projectId);
-        
+
         if ($project && $project->user_id === auth()->id()) {
             $this->projectId = $project->id;
             $this->title = $project->title;
             $this->description = $project->description;
+            $this->mediaType = $project->media_type ?? '';
+            $this->mediaUrl = $project->media_url ?? '';
             $this->url = $project->url;
             $this->githubUrl = $project->github_url;
             $this->technologies = $project->technologies ? implode(', ', $project->technologies) : '';
@@ -87,6 +109,8 @@ class ProjectForm extends Component
         $this->title = '';
         $this->description = '';
         $this->thumbnail = null;
+        $this->mediaType = '';
+        $this->mediaUrl = '';
         $this->url = '';
         $this->githubUrl = '';
         $this->technologies = '';
@@ -126,6 +150,8 @@ class ProjectForm extends Component
             'user_id' => auth()->id(),
             'title' => $this->title,
             'description' => $this->description,
+            'media_type' => $this->mediaType ?: null,
+            'media_url' => $this->mediaType ? ($this->mediaUrl ?: null) : null,
             'url' => $this->url,
             'github_url' => $this->githubUrl,
             'technologies' => $technologies,

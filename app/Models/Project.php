@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 作品集項目模型
@@ -13,15 +17,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $title 項目標題
  * @property string|null $description 項目描述
  * @property string|null $thumbnail 縮略圖路徑
+ * @property string|null $media_type 多媒體類型
+ * @property string|null $media_url 多媒體連結
  * @property string|null $url 項目鏈接
  * @property string|null $github_url GitHub鏈接
  * @property array|null $technologies 使用的技術
- * @property \Illuminate\Support\Carbon|null $completion_date 完成日期
+ * @property Carbon|null $completion_date 完成日期
  * @property bool $is_featured 是否為特色項目
  * @property int $order 排序順序
- * @property \Illuminate\Support\Carbon $created_at 創建時間
- * @property \Illuminate\Support\Carbon $updated_at 更新時間
- * @property-read \App\Models\User $user 關聯的用戶
+ * @property Carbon $created_at 創建時間
+ * @property Carbon $updated_at 更新時間
+ * @property-read User $user 關聯的用戶
  */
 class Project extends Model
 {
@@ -37,6 +43,8 @@ class Project extends Model
         'title',
         'description',
         'thumbnail',
+        'media_type',
+        'media_url',
         'url',
         'github_url',
         'technologies',
@@ -60,7 +68,7 @@ class Project extends Model
     /**
      * 獲取擁有此項目的用戶
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user()
     {
@@ -75,7 +83,7 @@ class Project extends Model
     public function getThumbnailUrl()
     {
         if ($this->thumbnail) {
-            return \Illuminate\Support\Facades\Storage::url($this->thumbnail);
+            return Storage::url($this->thumbnail);
         }
 
         return null;
@@ -84,7 +92,7 @@ class Project extends Model
     /**
      * 獲取格式化的完成日期
      *
-     * @param string $format
+     * @param  string  $format
      * @return string|null
      */
     public function getFormattedCompletionDate($format = 'Y-m-d')
@@ -95,9 +103,9 @@ class Project extends Model
     /**
      * 獲取特色項目
      *
-     * @param int $userId
-     * @param int $limit
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param  int  $userId
+     * @param  int  $limit
+     * @return Collection
      */
     public static function getFeatured($userId, $limit = 3)
     {
@@ -111,8 +119,8 @@ class Project extends Model
     /**
      * 獲取用戶的所有項目
      *
-     * @param int $userId
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param  int  $userId
+     * @return Collection
      */
     public static function getAllForUser($userId)
     {
@@ -125,30 +133,26 @@ class Project extends Model
     /**
      * 增加項目瀏覽數（帶防刷機制）
      *
-     * @param string $ipAddress
-     * @param string $userAgent
      * @return bool 是否成功增加瀏覽數
      */
     public function incrementViewsWithTracking(string $ipAddress, string $userAgent = ''): bool
     {
         // 檢查是否應該計入瀏覽數
-        if (!ViewTracking::shouldCountView($ipAddress, 'project', $this->id)) {
+        if (! ViewTracking::shouldCountView($ipAddress, 'project', $this->id)) {
             return false;
         }
 
         // 記錄瀏覽
         ViewTracking::recordView($ipAddress, $userAgent, 'project', $this->id);
-        
+
         // 增加瀏覽數
         $this->increment('views');
-        
+
         return true;
     }
 
     /**
      * 增加項目瀏覽數（舊方法，向後兼容）
-     *
-     * @return void
      */
     public function incrementViews(): void
     {

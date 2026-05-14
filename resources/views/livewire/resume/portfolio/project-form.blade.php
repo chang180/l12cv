@@ -147,6 +147,48 @@
                     @error('thumbnail') <flux:error :messages="$message" /> @enderror
                 </div>
 
+                <!-- 多媒體區塊 -->
+                <div class="bg-gradient-to-r from-sky-50 to-cyan-50 dark:from-sky-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-sky-200 dark:border-sky-700">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="p-2 bg-gradient-to-r from-sky-500 to-cyan-600 rounded-lg">
+                            <i class="fas fa-photo-film text-white text-sm"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-slate-900 dark:text-white">多媒體展示</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <flux:label for="mediaType" class="text-slate-700 dark:text-slate-300 font-medium">媒體類型</flux:label>
+                            <flux:select
+                                wire:model="mediaType"
+                                id="mediaType"
+                                class="mt-2 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                            >
+                                <option value="">不使用多媒體</option>
+                                <option value="video">影片</option>
+                                <option value="audio">音訊</option>
+                            </flux:select>
+                            @error('mediaType') <flux:error :messages="$message" /> @enderror
+                        </div>
+
+                        <div>
+                            <flux:label for="mediaUrl" class="text-slate-700 dark:text-slate-300 font-medium">媒體連結</flux:label>
+                            <flux:input
+                                wire:model="mediaUrl"
+                                id="mediaUrl"
+                                type="url"
+                                placeholder="https://example.com/media.mp4"
+                                class="mt-2 dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder-slate-400"
+                            />
+                            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                                <i class="fas fa-circle-info mr-1"></i>
+                                影片支援 YouTube 或直接影片連結；音訊支援直接音訊連結
+                            </p>
+                            @error('mediaUrl') <flux:error :messages="$message" /> @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 鏈接和技術區塊 -->
                 <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-700">
                     <div class="flex items-center space-x-3 mb-6">
