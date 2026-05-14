@@ -119,6 +119,24 @@ class ResumePdfController extends Controller
             $pdf->Ln(5);
         }
 
+        if (! empty($resume->languages)) {
+            $pdf->SetFont('stsongstdlight', 'B', 14);
+            $pdf->SetTextColor(...$primary);
+            $pdf->Cell(0, 8, '語言能力', 0, 1);
+
+            $pdf->SetFont('stsongstdlight', '', 11);
+            $pdf->SetTextColor(0, 0, 0);
+            foreach ($resume->languages as $language) {
+                $name = $language['name'] ?? '';
+                $level = $language['level'] ?? '基礎';
+
+                if ($name !== '') {
+                    $pdf->Cell(0, 6, "{$name}：{$level}", 0, 1);
+                }
+            }
+            $pdf->Ln(5);
+        }
+
         if ($theme['order'] === 'experience-first') {
             $this->writeExperience($pdf, $resume, $primary, $secondary);
             $this->writeEducation($pdf, $resume, $primary);

@@ -26,6 +26,8 @@ class Edit extends Component
 
     public $skills = [];
 
+    public $languages = [];
+
     public $education = [];
 
     public $experience = [];
@@ -65,6 +67,7 @@ class Edit extends Component
         $this->template = ResumeTemplates::resolve($this->resume->template ?? null)['key'];
         $this->templateOptions = ResumeTemplates::all();
         $this->skills = $this->resume->skills ?? [];
+        $this->languages = $this->resume->languages ?? [];
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     }
@@ -120,6 +123,47 @@ class Edit extends Component
 
         $this->dispatch('notify', [
             'message' => '技能標籤已更新',
+            'type' => 'success',
+        ]);
+    }
+
+    public function addLanguage()
+    {
+        $this->languages[] = [
+            'name' => '',
+            'level' => '基礎',
+        ];
+    }
+
+    public function removeLanguage($index)
+    {
+        unset($this->languages[$index]);
+        $this->languages = array_values($this->languages);
+    }
+
+    public function updateLanguages()
+    {
+        $languages = collect($this->languages)
+            ->map(fn ($language) => [
+                'name' => trim((string) ($language['name'] ?? '')),
+                'level' => trim((string) ($language['level'] ?? '')),
+            ])
+            ->filter(fn ($language) => $language['name'] !== '')
+            ->map(fn ($language) => [
+                'name' => $language['name'],
+                'level' => $language['level'] !== '' ? $language['level'] : '基礎',
+            ])
+            ->values()
+            ->all();
+
+        $this->languages = $languages;
+
+        $this->resume->update([
+            'languages' => $languages,
+        ]);
+
+        $this->dispatch('notify', [
+            'message' => '語言能力已更新',
             'type' => 'success',
         ]);
     }

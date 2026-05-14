@@ -63,3 +63,22 @@ test('用戶可以更新技能標籤並自動清理空白與重複值', function
 
     expect($user->resume->fresh()->skills)->toBe(['Laravel', 'Livewire']);
 });
+
+test('用戶可以更新語言能力並清理空白項目', function () {
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test(Edit::class)
+        ->set('languages', [
+            ['name' => ' 英文 ', 'level' => '流利'],
+            ['name' => '', 'level' => '母語'],
+            ['name' => '日文', 'level' => ''],
+        ])
+        ->call('updateLanguages')
+        ->assertHasNoErrors();
+
+    expect($user->resume->fresh()->languages)->toBe([
+        ['name' => '英文', 'level' => '流利'],
+        ['name' => '日文', 'level' => '基礎'],
+    ]);
+});

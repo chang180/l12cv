@@ -26,6 +26,7 @@ class Resume extends Model
         'template',
         'summary',
         'skills',
+        'languages',
         'experience',
         'education',
         'is_public',
@@ -41,6 +42,7 @@ class Resume extends Model
         'experience' => 'array',
         'education' => 'array',
         'skills' => 'array',
+        'languages' => 'array',
         'is_public' => 'boolean',
     ];
 

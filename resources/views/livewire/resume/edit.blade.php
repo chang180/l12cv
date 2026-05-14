@@ -6,7 +6,7 @@ use Illuminate\Validation\Rule;
 
 layout('components.layouts.app');
 
-state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'skills' => [], 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
+state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'skills' => [], 'languages' => [], 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
 
 mount(function () {
     $this->resume = auth()->user()->resume;
@@ -15,6 +15,7 @@ mount(function () {
         $this->summary = $this->resume->summary ?? '';
         $this->template = ResumeTemplates::resolve($this->resume->template ?? null)['key'];
         $this->skills = $this->resume->skills ?? [];
+        $this->languages = $this->resume->languages ?? [];
         $this->education = $this->resume->education ?? [];
         $this->experience = $this->resume->experience ?? [];
     } else {
@@ -23,6 +24,7 @@ mount(function () {
         $this->summary = '';
         $this->template = ResumeTemplates::DEFAULT;
         $this->skills = [];
+        $this->languages = [];
         $this->education = [];
         $this->experience = [];
     }
@@ -42,6 +44,42 @@ $updateBasicInfo = function () {
     session()->flash('status', '✅ 基本資料已更新');
 
     $this->dispatch('scroll-to-top');
+};
+
+$addLanguage = function () {
+    $this->languages[] = [
+        'name' => '',
+        'level' => '基礎',
+    ];
+};
+
+$removeLanguage = function ($index) {
+    unset($this->languages[$index]);
+    $this->languages = array_values($this->languages);
+};
+
+$updateLanguages = function () {
+    $languages = collect($this->languages)
+        ->map(fn ($language) => [
+            'name' => trim((string) ($language['name'] ?? '')),
+            'level' => trim((string) ($language['level'] ?? '')),
+        ])
+        ->filter(fn ($language) => $language['name'] !== '')
+        ->map(fn ($language) => [
+            'name' => $language['name'],
+            'level' => $language['level'] !== '' ? $language['level'] : '基礎',
+        ])
+        ->values()
+        ->all();
+
+    $this->languages = $languages;
+
+    $this->resume->update(['languages' => $languages]);
+
+    $this->dispatch('notify', [
+        'message' => '語言能力已更新',
+        'type' => 'success',
+    ]);
 };
 
 $addSkill = function () {
@@ -192,6 +230,11 @@ $shouldShowCurrentOption = function ($index) {
                                 class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'skills' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
                                 <i class="fas fa-tags text-sm"></i>
                                 <span>技能標籤</span>
+                            </button>
+                            <button wire:click="$set('currentTab', 'languages')"
+                                class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'languages' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
+                                <i class="fas fa-language text-sm"></i>
+                                <span>語言能力</span>
                             </button>
                             <button wire:click="$set('currentTab', 'experience')"
                                 class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 {{ $currentTab === 'experience' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50' }}">
@@ -374,6 +417,66 @@ $shouldShowCurrentOption = function ($index) {
                                     >
                                         <i class="fas fa-check-circle text-sm"></i>
                                         <span>儲存技能標籤</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 語言能力表單 -->
+                <div x-show="$wire.currentTab === 'languages'" class="space-y-6">
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-500 to-violet-600 p-4">
+                            <h3 class="text-lg font-semibold text-white flex items-center">
+                                <i class="fas fa-language mr-2"></i>
+                                語言能力
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                @foreach ($languages as $index => $language)
+                                    <div class="grid grid-cols-1 sm:grid-cols-[1fr_180px_auto] gap-3 items-start">
+                                        <flux:input wire:model="languages.{{ $index }}.name" type="text" placeholder="例如：中文、英文、日文" />
+                                        <flux:select wire:model="languages.{{ $index }}.level">
+                                            <option value="基礎">基礎</option>
+                                            <option value="中等">中等</option>
+                                            <option value="流利">流利</option>
+                                            <option value="母語">母語</option>
+                                        </flux:select>
+                                        <button
+                                            wire:click="removeLanguage({{ $index }})"
+                                            type="button"
+                                            class="px-4 py-2 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg shadow-sm transition-all duration-200"
+                                        >
+                                            <i class="fas fa-trash text-sm mr-2"></i>
+                                            刪除
+                                        </button>
+                                    </div>
+                                @endforeach
+
+                                @if (empty($languages))
+                                    <div class="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-center text-slate-500 dark:text-slate-400">
+                                        尚未新增語言能力
+                                    </div>
+                                @endif
+
+                                <div class="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 pt-4">
+                                    <button
+                                        wire:click="addLanguage"
+                                        type="button"
+                                        class="w-full sm:w-auto order-2 sm:order-1 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold px-6 py-4 rounded-xl shadow-md hover:shadow-lg border border-slate-200 dark:border-slate-600 transition-all duration-200 flex items-center justify-center space-x-3 min-w-[140px]"
+                                    >
+                                        <i class="fas fa-plus-circle text-sm"></i>
+                                        <span>新增語言</span>
+                                    </button>
+                                    <button
+                                        wire:click="updateLanguages"
+                                        type="button"
+                                        class="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
+                                    >
+                                        <i class="fas fa-check-circle text-sm"></i>
+                                        <span>儲存語言能力</span>
                                     </button>
                                 </div>
                             </div>

@@ -255,6 +255,26 @@
                 </div>
                 @endif
 
+                <!-- 語言能力 -->
+                @if (!empty($resume->languages))
+                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                    <div class="p-4 sm:p-6">
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
+                            <i class="fas fa-language mr-2 sm:mr-3 text-indigo-600 dark:text-indigo-400 text-sm sm:text-base"></i>
+                            語言能力
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            @foreach ($resume->languages as $language)
+                                <div class="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 dark:border-indigo-800 dark:bg-indigo-900/30">
+                                    <div class="font-semibold text-indigo-900 dark:text-indigo-100">{{ $language['name'] ?? '' }}</div>
+                                    <div class="text-sm text-indigo-700 dark:text-indigo-300">{{ $language['level'] ?? '基礎' }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- 學歷背景 -->
                 @if (!empty($resume->education))
                 <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">

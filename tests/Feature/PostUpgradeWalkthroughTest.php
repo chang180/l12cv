@@ -48,6 +48,9 @@ test('public resume portfolio project and pdf pages render with seeded content',
         'template' => 'modern',
         'summary' => '具備 Laravel 與 Livewire 專案經驗。',
         'skills' => ['Laravel', 'Livewire', 'Tailwind CSS'],
+        'languages' => [
+            ['name' => '英文', 'level' => '流利'],
+        ],
         'education' => [
             [
                 'school' => '測試大學',
@@ -88,6 +91,8 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertSee('data-resume-template="modern"', false)
         ->assertSee('Test User 的履歷')
         ->assertSee('Tailwind CSS')
+        ->assertSee('英文')
+        ->assertSee('流利')
         ->assertSee('下載 PDF');
 
     $this->get('/p/test-user')
