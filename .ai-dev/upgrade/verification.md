@@ -12,6 +12,9 @@
   - 輸出：Laravel Framework 13.8.0。
 - `composer validate`
   - 通過。
+- 2026-05-14 Herd / HTTP check via `https://l12cv.test/@test-user/docx`
+  - DOCX 回應 200，`Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document`。
+  - 下載檔案可被辨識為 Microsoft Word 2007+，`word/document.xml` 含有姓名、技能、證照與專案經驗內容。
 - `php artisan route:list --except-vendor`
   - Google OAuth、公開履歷、作品集、設定解除綁定等專案路由可解析。
 - `php artisan migrate --force`
@@ -31,10 +34,10 @@
   - 3 passed，23 assertions。
   - 覆蓋登入後 `/resume`、`/resume/edit`、`/settings/profile`，公開履歷、公開作品集、專案詳情、PDF 下載，以及 Google OAuth 本機停用提示。
 - `php artisan test tests/Feature/ResumeUpdateTest.php tests/Feature/PostUpgradeWalkthroughTest.php`
-  - 10 passed，64 assertions。
-  - 覆蓋履歷模板更新、無效模板驗證、公開頁模板標記、無效模板 fallback、`classic`、`modern`、`compact` 三種模板 PDF 回應、技能標籤清理/儲存/公開展示、語言能力清理/儲存/公開展示、證照和認證清理/儲存/公開展示、專案經驗在公開履歷展示，以及公開履歷列印入口。
+  - 10 passed，68 assertions。
+  - 覆蓋履歷模板更新、無效模板驗證、公開頁模板標記、無效模板 fallback、`classic`、`modern`、`compact` 三種模板 PDF 回應、技能標籤清理/儲存/公開展示、語言能力清理/儲存/公開展示、證照和認證清理/儲存/公開展示、專案經驗在公開履歷展示、公開履歷列印入口，以及 DOCX 下載回應。
 - `php artisan test`
-  - 45 passed，161 assertions。
+  - 45 passed，165 assertions。
 - `npm run build`
   - Vite build 成功，產出 `public/build/assets/app-DTKK66q5.css`。
 - `composer validate`

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ResumeDocxController;
 use App\Http\Controllers\ResumePdfController;
 use App\Models\Project;
 use App\Models\Resume;
@@ -35,6 +36,9 @@ Route::get('/@{slug}', function ($slug) {
 
 // PDF 導出路由
 Route::get('/@{slug}/pdf', [ResumePdfController::class, 'download'])->name('resume.pdf');
+
+// DOCX 導出路由
+Route::get('/@{slug}/docx', [ResumeDocxController::class, 'download'])->name('resume.docx');
 
 // 公開作品集路由 - 不需要驗證 (使用 slug 而不是 ID)
 Route::get('/p/{slug}', function ($slug) {
