@@ -14,7 +14,11 @@ class ResumePdfController extends Controller
     {
         $resume = Resume::where('slug', $slug)
             ->where('is_public', true)
-            ->with('user')
+            ->with(['user.projects' => fn ($query) => $query
+                ->orderByDesc('is_featured')
+                ->orderBy('order')
+                ->orderByDesc('created_at'),
+            ])
             ->firstOrFail();
 
         // 創建 TCPDF 實例
@@ -168,6 +172,8 @@ class ResumePdfController extends Controller
             $pdf->Ln(5);
         }
 
+        $this->writeProjects($pdf, $resume, $primary);
+
         if ($theme['order'] === 'experience-first') {
             $this->writeExperience($pdf, $resume, $primary, $secondary);
             $this->writeEducation($pdf, $resume, $primary);
@@ -181,6 +187,49 @@ class ResumePdfController extends Controller
         $pdf->SetFont('stsongstdlight', '', 8);
         $pdf->SetTextColor(150, 150, 150);
         $pdf->Cell(0, 5, '此履歷由 L13CV 履歷平台生成於 '.now()->format('Y年m月d日'), 0, 1, 'C');
+    }
+
+    /**
+     * @param  array<int, int>  $primary
+     */
+    private function writeProjects(TCPDF $pdf, Resume $resume, array $primary): void
+    {
+        $projects = $resume->user?->projects?->take(3) ?? collect();
+
+        if ($projects->isEmpty()) {
+            return;
+        }
+
+        $pdf->SetFont('stsongstdlight', 'B', 14);
+        $pdf->SetTextColor(...$primary);
+        $pdf->Cell(0, 8, '專案經驗', 0, 1);
+
+        foreach ($projects as $project) {
+            $pdf->SetFont('stsongstdlight', 'B', 12);
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->Cell(0, 6, $project->title, 0, 1);
+
+            $details = array_filter([
+                $project->completion_date?->format('Y-m'),
+                $project->technologies ? implode('、', array_slice($project->technologies, 0, 5)) : null,
+            ]);
+
+            if ($details !== []) {
+                $pdf->SetFont('stsongstdlight', '', 10);
+                $pdf->SetTextColor(100, 100, 100);
+                $pdf->MultiCell(0, 5, implode(' · ', $details), 0, 'L');
+            }
+
+            if (! empty($project->description)) {
+                $pdf->SetFont('stsongstdlight', '', 10);
+                $pdf->SetTextColor(0, 0, 0);
+                $pdf->MultiCell(0, 5, $project->description, 0, 'L');
+            }
+
+            $pdf->Ln(3);
+        }
+
+        $pdf->Ln(5);
     }
 
     /**

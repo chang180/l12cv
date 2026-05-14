@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\RedisTestController;
 use App\Http\Controllers\ResumePdfController;
 use App\Models\Project;
 use App\Models\Resume;
@@ -12,12 +11,15 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-
 // 公開履歷路由 - 不需要驗證
 Route::get('/@{slug}', function ($slug) {
     $resume = Resume::where('slug', $slug)
         ->where('is_public', true)
-        ->with('user')  // 預先載入用戶資料
+        ->with(['user.projects' => fn ($query) => $query
+            ->orderByDesc('is_featured')
+            ->orderBy('order')
+            ->orderByDesc('created_at'),
+        ])  // 預先載入用戶資料與履歷專案經驗
         ->firstOrFail();
 
     // 增加履歷瀏覽數（帶防刷機制）

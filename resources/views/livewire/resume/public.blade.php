@@ -27,6 +27,7 @@
     @php
         $template = \App\Support\ResumeTemplates::resolve($resume->template ?? null);
         $templateClasses = \App\Support\ResumeTemplates::publicClasses($template['key']);
+        $resumeProjects = $resume->user?->projects?->take(3) ?? collect();
     @endphp
 
     <div class="min-h-screen {{ $templateClasses['page'] }}" data-resume-template="{{ $template['key'] }}">
@@ -266,6 +267,59 @@
                                         @endif
                                     </div>
                                 </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- 專案經驗 -->
+                @if ($resumeProjects->isNotEmpty())
+                <div class="bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
+                    <div class="p-4 sm:p-6">
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+                            <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center justify-center sm:justify-start">
+                                <i class="fas fa-diagram-project mr-2 sm:mr-3 text-purple-600 dark:text-purple-400 text-sm sm:text-base"></i>
+                                專案經驗
+                            </h2>
+                            <a href="{{ route('portfolio.public', $resume->user->slug) }}" class="inline-flex items-center justify-center text-sm font-medium text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100">
+                                查看完整作品集
+                                <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                            </a>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            @foreach ($resumeProjects as $project)
+                                <a href="{{ route('portfolio.project.detail', ['slug' => $resume->user->slug, 'project' => $project->id]) }}" class="group rounded-xl border border-purple-100 bg-purple-50 px-4 py-4 transition-all duration-200 hover:border-purple-200 hover:bg-purple-100 dark:border-purple-800 dark:bg-purple-900/30 dark:hover:bg-purple-900/50">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-purple-950 dark:text-purple-100 group-hover:text-purple-700 dark:group-hover:text-purple-200">
+                                                {{ $project->title }}
+                                            </div>
+                                            @if ($project->completion_date)
+                                                <div class="mt-1 text-xs text-purple-700 dark:text-purple-300">
+                                                    {{ $project->getFormattedCompletionDate('Y年m月') }} 完成
+                                                </div>
+                                            @endif
+                                        </div>
+                                        @if ($project->is_featured)
+                                            <span class="shrink-0 rounded-full bg-white px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-purple-200 dark:bg-purple-950 dark:text-purple-200 dark:ring-purple-700">精選</span>
+                                        @endif
+                                    </div>
+                                    @if ($project->technologies)
+                                        <div class="mt-3 flex flex-wrap gap-2">
+                                            @foreach (array_slice($project->technologies, 0, 3) as $tech)
+                                                <span class="rounded-full bg-white px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-purple-200 dark:bg-purple-950 dark:text-purple-200 dark:ring-purple-700">
+                                                    {{ $tech }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if ($project->description)
+                                        <p class="mt-3 line-clamp-3 text-sm leading-relaxed text-purple-800 dark:text-purple-200">
+                                            {{ $project->description }}
+                                        </p>
+                                    @endif
+                                </a>
                             @endforeach
                         </div>
                     </div>

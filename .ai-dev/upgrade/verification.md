@@ -31,8 +31,14 @@
   - 3 passed，23 assertions。
   - 覆蓋登入後 `/resume`、`/resume/edit`、`/settings/profile`，公開履歷、公開作品集、專案詳情、PDF 下載，以及 Google OAuth 本機停用提示。
 - `php artisan test tests/Feature/ResumeUpdateTest.php tests/Feature/PostUpgradeWalkthroughTest.php`
-  - 10 passed，60 assertions。
-  - 覆蓋履歷模板更新、無效模板驗證、公開頁模板標記、無效模板 fallback、`classic`、`modern`、`compact` 三種模板 PDF 回應、技能標籤清理/儲存/公開展示、語言能力清理/儲存/公開展示，以及證照和認證清理/儲存/公開展示。
+  - 10 passed，63 assertions。
+  - 覆蓋履歷模板更新、無效模板驗證、公開頁模板標記、無效模板 fallback、`classic`、`modern`、`compact` 三種模板 PDF 回應、技能標籤清理/儲存/公開展示、語言能力清理/儲存/公開展示、證照和認證清理/儲存/公開展示，以及專案經驗在公開履歷展示。
+- `php artisan test`
+  - 45 passed，160 assertions。
+- `npm run build`
+  - Vite build 成功，產出 `public/build/assets/app-D4wVS_i4.css`。
+- `composer validate`
+  - 通過。
 
 ## 待執行
 
