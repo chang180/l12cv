@@ -31,6 +31,7 @@
   - Google OAuth、公開履歷、作品集、設定解除綁定等專案路由可解析。
 - `php artisan migrate --force`
   - 已套用 `personal_access_tokens` 與 Google OAuth 欄位遷移。
+  - 已套用 `resume_versions` 履歷版本歷史資料表遷移。
 - `php artisan test`
   - 36 passed，100 assertions。
 - `npm run build`
@@ -55,13 +56,13 @@
   - 4 passed，84 assertions。
   - 覆蓋登入後履歷編輯頁即時預覽面板，以及公開作品集關鍵字搜尋、分類篩選、標籤篩選與無符合結果狀態。
 - `php artisan test tests/Feature/ResumeUpdateTest.php tests/Feature/PostUpgradeWalkthroughTest.php`
-  - 11 passed，103 assertions。
-  - 覆蓋履歷基本資料自動儲存 action、`auto-saved` 事件，以及登入後履歷編輯頁即時預覽面板。
+  - 11 passed，106 assertions。
+  - 覆蓋履歷基本資料自動儲存 action、版本快照記錄、`auto-saved` 事件，以及登入後履歷編輯頁即時預覽與版本歷史面板。
 - `php artisan test tests/Feature/PortfolioProjectUpdateTest.php`
   - 2 passed，4 assertions。
   - 覆蓋作品標籤清理/儲存，以及作品集拖曳排序後的資料庫排序寫入。
 - `php artisan test`
-  - 48 passed，204 assertions。
+  - 48 passed，207 assertions。
 - `npm run build`
   - Vite build 成功，產出 `public/build/assets/app-DRprppu4.css`。
 - `composer validate`

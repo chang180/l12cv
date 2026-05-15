@@ -33,6 +33,7 @@
 - 拖拽排序功能第一版已完成，作品集管理列表可拖曳項目把手並透過 `ProjectList::reorderProjects()` 重寫使用者作品排序。
 - 即時預覽功能第一版已完成，履歷編輯頁新增即時預覽面板，並將標題、模板、技能欄位改為 live model，同步 Markdown editor 的父層更新事件。
 - 自動儲存功能第一版已完成，履歷基本資料可透過 `autoSaveBasicInfo()` 自動寫回，Markdown editor 更新事件也會同步保存簡介。
+- 版本歷史記錄第一版已完成，新增 `resume_versions` 快照資料表、`ResumeVersion` 模型、`Resume::recordVersion()`，並在履歷編輯頁顯示最近版本。
 
 ## 待驗證
 

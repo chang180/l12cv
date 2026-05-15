@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * 履歷模型
@@ -54,6 +55,32 @@ class Resume extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function versions(): HasMany
+    {
+        return $this->hasMany(ResumeVersion::class);
+    }
+
+    public function recordVersion(string $event = 'manual'): ResumeVersion
+    {
+        $resume = $this->fresh() ?? $this;
+
+        return $this->versions()->create([
+            'event' => $event,
+            'title' => $resume->title,
+            'snapshot' => [
+                'title' => $resume->title,
+                'template' => $resume->template,
+                'summary' => $resume->summary,
+                'skills' => $resume->skills ?? [],
+                'languages' => $resume->languages ?? [],
+                'certifications' => $resume->certifications ?? [],
+                'education' => $resume->education ?? [],
+                'experience' => $resume->experience ?? [],
+                'is_public' => $resume->is_public,
+            ],
+        ]);
     }
 
     /**

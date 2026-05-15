@@ -43,6 +43,7 @@ $updateBasicInfo = function () {
         'summary' => $this->summary,
         'template' => $this->template,
     ]);
+    $this->resume->recordVersion('basic.updated');
 
     session()->flash('status', '✅ 基本資料已更新');
 
@@ -59,6 +60,7 @@ $autoSaveBasicInfo = function () {
         'summary' => $this->summary,
         'template' => $this->template,
     ]);
+    $this->resume->recordVersion('basic.autosaved');
 
     $this->dispatch('auto-saved');
 };
@@ -92,6 +94,7 @@ $updateCertifications = function () {
     $this->certifications = $certifications;
 
     $this->resume->update(['certifications' => $certifications]);
+    $this->resume->recordVersion('certifications.updated');
 
     $this->dispatch('notify', [
         'message' => '證照和認證已更新',
@@ -128,6 +131,7 @@ $updateLanguages = function () {
     $this->languages = $languages;
 
     $this->resume->update(['languages' => $languages]);
+    $this->resume->recordVersion('languages.updated');
 
     $this->dispatch('notify', [
         'message' => '語言能力已更新',
@@ -155,6 +159,7 @@ $updateSkills = function () {
     $this->skills = $skills;
 
     $this->resume->update(['skills' => $skills]);
+    $this->resume->recordVersion('skills.updated');
 
     $this->dispatch('notify', [
         'message' => '技能標籤已更新',
@@ -180,6 +185,7 @@ $removeEducation = function ($index) {
 
 $updateEducation = function () {
     $this->resume->update(['education' => $this->education]);
+    $this->resume->recordVersion('education.updated');
     
     $this->dispatch('notify', [
         'message' => '學歷資料已更新',
@@ -205,6 +211,7 @@ $removeExperience = function ($index) {
 
 $updateExperience = function () {
     $this->resume->update(['experience' => $this->experience]);
+    $this->resume->recordVersion('experience.updated');
     
     $this->dispatch('notify', [
         'message' => '工作經驗已更新',
@@ -228,6 +235,7 @@ on(['update-parent-summary' => function ($content) {
 
     if ($this->resume) {
         $this->resume->update(['summary' => $this->summary]);
+        $this->resume->recordVersion('summary.autosaved');
         $this->dispatch('auto-saved');
     }
 }]);
@@ -369,6 +377,35 @@ on(['update-parent-summary' => function ($content) {
                                 @endif
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                @php($recentVersions = $resume?->versions()->latest()->limit(5)->get() ?? collect())
+                <div class="mt-6 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-clock-rotate-left mr-2"></i>
+                            版本歷史
+                        </h3>
+                    </div>
+                    <div class="p-4">
+                        @if($recentVersions->isNotEmpty())
+                            <div class="space-y-3">
+                                @foreach($recentVersions as $version)
+                                    <div class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900">
+                                        <div class="flex items-center justify-between gap-3">
+                                            <span class="font-medium text-slate-900 dark:text-white">{{ $version->title ?: '未命名履歷' }}</span>
+                                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ $version->created_at->format('m/d H:i') }}</span>
+                                        </div>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $version->event }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="rounded-lg border border-dashed border-slate-300 px-3 py-4 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                                尚無版本紀錄
+                            </p>
+                        @endif
                     </div>
                 </div>
             </div>

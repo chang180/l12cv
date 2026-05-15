@@ -29,6 +29,7 @@ test('authenticated resume and settings pages render after the Laravel 13 upgrad
         ->assertOk()
         ->assertSee('編輯履歷')
         ->assertSee('即時預覽')
+        ->assertSee('版本歷史')
         ->assertSee('Test User 的履歷')
         ->assertSee('作品集');
 

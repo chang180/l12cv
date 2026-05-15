@@ -28,6 +28,7 @@ test('用戶可以更新履歷基本資料', function () {
     $resume->refresh();
     expect($resume->title)->toBe('新標題');
     expect($resume->summary)->toBe('新簡介');
+    expect($resume->versions()->where('event', 'basic.updated')->count())->toBe(1);
 });
 
 test('用戶可以更新履歷模板', function () {
@@ -59,6 +60,7 @@ test('基本資料可以自動儲存', function () {
     expect($resume->title)->toBe('自動儲存標題');
     expect($resume->summary)->toBe('自動儲存簡介');
     expect($resume->template)->toBe('compact');
+    expect($resume->versions()->where('event', 'basic.autosaved')->count())->toBe(1);
 });
 
 test('無效履歷模板會被拒絕', function () {

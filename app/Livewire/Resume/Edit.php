@@ -81,6 +81,7 @@ class Edit extends Component
 
         if ($this->resume) {
             $this->resume->update(['summary' => $this->summary]);
+            $this->resume->recordVersion('summary.autosaved');
             $this->dispatch('auto-saved');
         }
     }
@@ -96,6 +97,7 @@ class Edit extends Component
             'summary' => $this->summary,
             'template' => $this->template,
         ]);
+        $this->resume->recordVersion('basic.updated');
 
         session()->flash('status', '✅ 基本資料已更新');
 
@@ -114,6 +116,7 @@ class Edit extends Component
             'summary' => $this->summary,
             'template' => $this->template,
         ]);
+        $this->resume->recordVersion('basic.autosaved');
 
         $this->dispatch('auto-saved');
     }
@@ -143,6 +146,7 @@ class Edit extends Component
         $this->resume->update([
             'skills' => $skills,
         ]);
+        $this->resume->recordVersion('skills.updated');
 
         $this->dispatch('notify', [
             'message' => '技能標籤已更新',
@@ -184,6 +188,7 @@ class Edit extends Component
         $this->resume->update([
             'languages' => $languages,
         ]);
+        $this->resume->recordVersion('languages.updated');
 
         $this->dispatch('notify', [
             'message' => '語言能力已更新',
@@ -225,6 +230,7 @@ class Edit extends Component
         $this->resume->update([
             'certifications' => $certifications,
         ]);
+        $this->resume->recordVersion('certifications.updated');
 
         $this->dispatch('notify', [
             'message' => '證照和認證已更新',
@@ -255,6 +261,7 @@ class Edit extends Component
         $this->resume->update([
             'education' => $this->education,
         ]);
+        $this->resume->recordVersion('education.updated');
 
         $this->dispatch('notify', [
             'message' => '學歷資料已更新',
@@ -285,6 +292,7 @@ class Edit extends Component
         $this->resume->update([
             'experience' => $this->experience,
         ]);
+        $this->resume->recordVersion('experience.updated');
 
         $this->dispatch('notify', [
             'message' => '工作經驗已更新',
