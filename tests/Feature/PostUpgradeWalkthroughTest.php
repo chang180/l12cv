@@ -98,6 +98,16 @@ test('public resume portfolio project and pdf pages render with seeded content',
         'order' => 1,
     ]);
 
+    Project::create([
+        'user_id' => $user->id,
+        'title' => '無關作品',
+        'description' => '用於確認公開作品集搜尋會排除不符合條件的項目。',
+        'technologies' => ['Vue'],
+        'tags' => ['行銷頁'],
+        'category' => '品牌網站',
+        'order' => 2,
+    ]);
+
     $this->get('/@test-user')
         ->assertOk()
         ->assertSee('data-resume-template="modern"', false)
@@ -119,10 +129,31 @@ test('public resume portfolio project and pdf pages render with seeded content',
     $this->get('/p/test-user')
         ->assertOk()
         ->assertSee('L13CV 驗證作品')
+        ->assertSee('無關作品')
+        ->assertSee('搜尋作品名稱、描述、技術或標籤')
         ->assertSee('音訊展示')
         ->assertSee('網站平台')
         ->assertSee('#後台系統')
         ->assertSee('Laravel');
+
+    $this->get('/p/test-user?q=Livewire')
+        ->assertOk()
+        ->assertSee('找到 1 個符合條件的作品')
+        ->assertSee('L13CV 驗證作品')
+        ->assertDontSee('無關作品');
+
+    $this->get('/p/test-user?category='.urlencode('網站平台').'&tag=SaaS')
+        ->assertOk()
+        ->assertSee('找到 1 個符合條件的作品')
+        ->assertSee('L13CV 驗證作品')
+        ->assertSee('#SaaS')
+        ->assertDontSee('無關作品');
+
+    $this->get('/p/test-user?q='.urlencode('不存在的作品'))
+        ->assertOk()
+        ->assertSee('沒有符合條件的作品')
+        ->assertDontSee('L13CV 驗證作品')
+        ->assertDontSee('無關作品');
 
     $this->get("/p/test-user/project/{$project->id}")
         ->assertOk()

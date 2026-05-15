@@ -23,6 +23,10 @@
   - 專案詳情頁顯示 `多媒體展示`，並輸出 `<audio>` 與 `https://example.com/demo.mp3` 來源。
   - 公開作品集與專案詳情頁顯示分類 `網站平台`。
   - 公開履歷、公開作品集與專案詳情頁顯示作品標籤 `#SaaS`、`#後台系統`。
+- 2026-05-15 Herd / HTTP check via `https://l12cv.test/p/test-user`
+  - `q=Livewire` 顯示 `找到 1 個符合條件的作品` 與 `L13CV 驗證作品`，並排除不符合條件的作品。
+  - `category=網站平台&tag=SaaS` 顯示 `找到 1 個符合條件的作品`、`#SaaS` 與 `L13CV 驗證作品`。
+  - `q=不存在的作品` 顯示 `沒有符合條件的作品`。
 - `php artisan route:list --except-vendor`
   - Google OAuth、公開履歷、作品集、設定解除綁定等專案路由可解析。
 - `php artisan migrate --force`
@@ -47,10 +51,13 @@
 - `php artisan test tests/Feature/PortfolioProjectUpdateTest.php tests/Feature/PostUpgradeWalkthroughTest.php`
   - 5 passed，69 assertions。
   - 覆蓋作品集標籤清理/儲存，以及公開履歷、公開作品集與專案詳情頁標籤展示。
+- `php artisan test tests/Feature/PostUpgradeWalkthroughTest.php`
+  - 4 passed，82 assertions。
+  - 覆蓋公開作品集關鍵字搜尋、分類篩選、標籤篩選與無符合結果狀態。
 - `php artisan test`
-  - 46 passed，180 assertions。
+  - 46 passed，195 assertions。
 - `npm run build`
-  - Vite build 成功，產出 `public/build/assets/app-Za-ND9Vd.css`。
+  - Vite build 成功，產出 `public/build/assets/app-CZpKFttM.css`。
 - `composer validate`
   - 通過。
 

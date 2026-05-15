@@ -180,7 +180,7 @@
                                 <div class="flex items-center justify-center w-12 h-12 mx-auto mb-2 rounded-full bg-purple-100 dark:bg-purple-900/50">
                                     <i class="fas fa-folder-open text-purple-600 dark:text-purple-400"></i>
                                 </div>
-                                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ count($projects) }}</div>
+                                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalProjects ?? count($projects) }}</div>
                                 <div class="text-sm text-gray-600 dark:text-gray-400">專案作品</div>
                             </div>
                             <div class="text-center">
@@ -200,6 +200,78 @@
                         </div>
                     </div>
                 </div>
+
+                @if(($totalProjects ?? count($projects)) > 0)
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8 border border-gray-100 dark:border-gray-700">
+                    <form method="GET" action="{{ route('portfolio.public', $user->slug) }}" class="grid gap-4 lg:grid-cols-[1fr_180px_180px_auto]">
+                        <label class="block">
+                            <span class="sr-only">搜尋作品集</span>
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input
+                                    type="search"
+                                    name="q"
+                                    value="{{ $search ?? '' }}"
+                                    placeholder="搜尋作品名稱、描述、技術或標籤"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm text-gray-900 transition focus:border-purple-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-purple-500 dark:focus:bg-gray-950 dark:focus:ring-purple-900/40"
+                                >
+                            </div>
+                        </label>
+
+                        <label class="block">
+                            <span class="sr-only">分類篩選</span>
+                            <select
+                                name="category"
+                                class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 transition focus:border-purple-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-purple-500 dark:focus:bg-gray-950 dark:focus:ring-purple-900/40"
+                            >
+                                <option value="">所有分類</option>
+                                @foreach(($categories ?? collect()) as $category)
+                                <option value="{{ $category }}" @selected(($selectedCategory ?? '') === $category)>{{ $category }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+
+                        <label class="block">
+                            <span class="sr-only">標籤篩選</span>
+                            <select
+                                name="tag"
+                                class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 transition focus:border-purple-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-purple-500 dark:focus:bg-gray-950 dark:focus:ring-purple-900/40"
+                            >
+                                <option value="">所有標籤</option>
+                                @foreach(($tags ?? collect()) as $tag)
+                                <option value="{{ $tag }}" @selected(($selectedTag ?? '') === $tag)>#{{ $tag }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl bg-purple-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-800 lg:flex-none">
+                                <i class="fas fa-search mr-2"></i>搜尋
+                            </button>
+                            @if($hasPortfolioFilters ?? false)
+                            <a href="{{ route('portfolio.public', $user->slug) }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-700">
+                                清除
+                            </a>
+                            @endif
+                        </div>
+                    </form>
+
+                    @if($hasPortfolioFilters ?? false)
+                    <div class="mt-4 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                        <span>找到 {{ count($projects) }} 個符合條件的作品</span>
+                        @if(($search ?? '') !== '')
+                        <span class="rounded-full bg-purple-50 px-3 py-1 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200">「{{ $search }}」</span>
+                        @endif
+                        @if(($selectedCategory ?? '') !== '')
+                        <span class="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-200">{{ $selectedCategory }}</span>
+                        @endif
+                        @if(($selectedTag ?? '') !== '')
+                        <span class="rounded-full bg-teal-50 px-3 py-1 text-teal-700 dark:bg-teal-900/30 dark:text-teal-200">#{{ $selectedTag }}</span>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+                @endif
 
                 @if(count($projects) > 0)
                 <!-- 作品集網格 -->
@@ -306,11 +378,11 @@
                     <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50 rounded-full flex items-center justify-center">
                         <i class="fas fa-folder-open text-purple-600 dark:text-purple-400 text-3xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">暫無作品</h3>
-                    <p class="text-gray-500 dark:text-gray-400 text-lg mb-6">該用戶尚未添加任何作品</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">{{ ($hasPortfolioFilters ?? false) ? '沒有符合條件的作品' : '暫無作品' }}</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-lg mb-6">{{ ($hasPortfolioFilters ?? false) ? '請調整搜尋關鍵字、分類或標籤後再試一次' : '該用戶尚未添加任何作品' }}</p>
                     <div class="text-sm text-gray-400 dark:text-gray-500">
                         <i class="fas fa-info-circle mr-1"></i>
-                        作品集功能正在開發中
+                        {{ ($hasPortfolioFilters ?? false) ? '搜尋會比對作品名稱、描述、技術與標籤' : '作品集功能正在開發中' }}
                     </div>
                 </div>
                 @endif

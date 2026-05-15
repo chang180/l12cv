@@ -47,7 +47,38 @@ Route::get('/@{slug}/exports', [ResumeBatchExportController::class, 'download'])
 // 公開作品集路由 - 不需要驗證 (使用 slug 而不是 ID)
 Route::get('/p/{slug}', function ($slug) {
     $user = User::where('slug', $slug)->firstOrFail();
-    $projects = $user->projects()->orderBy('order')->orderBy('created_at', 'desc')->get();
+    $allProjects = $user->projects()->orderBy('order')->orderBy('created_at', 'desc')->get();
+
+    $search = trim((string) request('q', ''));
+    $selectedCategory = trim((string) request('category', ''));
+    $selectedTag = trim((string) request('tag', ''));
+
+    $projects = $allProjects->filter(function (Project $project) use ($search, $selectedCategory, $selectedTag) {
+        if ($selectedCategory !== '' && $project->category !== $selectedCategory) {
+            return false;
+        }
+
+        if ($selectedTag !== '' && ! in_array($selectedTag, $project->tags ?? [], true)) {
+            return false;
+        }
+
+        if ($search === '') {
+            return true;
+        }
+
+        $searchableValues = collect([
+            $project->title,
+            $project->description,
+            $project->category,
+        ])->merge($project->technologies ?? [])
+            ->merge($project->tags ?? [])
+            ->filter();
+
+        return $searchableValues->contains(fn ($value) => mb_stripos((string) $value, $search) !== false);
+    })->values();
+
+    $categories = $allProjects->pluck('category')->filter()->unique()->sort()->values();
+    $tags = $allProjects->flatMap(fn (Project $project) => $project->tags ?? [])->filter()->unique()->sort()->values();
 
     // 獲取用戶的公開履歷，用於頁面切換
     $resume = $user->resume()->where('is_public', true)->first();
@@ -55,6 +86,13 @@ Route::get('/p/{slug}', function ($slug) {
     return view('livewire.portfolio.public', [
         'user' => $user,
         'projects' => $projects,
+        'totalProjects' => $allProjects->count(),
+        'categories' => $categories,
+        'tags' => $tags,
+        'search' => $search,
+        'selectedCategory' => $selectedCategory,
+        'selectedTag' => $selectedTag,
+        'hasPortfolioFilters' => $search !== '' || $selectedCategory !== '' || $selectedTag !== '',
         'resume' => $resume,
     ]);
 })->name('portfolio.public');
