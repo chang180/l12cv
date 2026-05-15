@@ -1,5 +1,6 @@
 <?php
 use function Livewire\Volt\{state, mount, on, layout};
+use App\Helpers\MarkdownHelper;
 use App\Models\Resume;
 use App\Support\ResumeTemplates;
 use Illuminate\Validation\Rule;
@@ -208,7 +209,9 @@ $shouldShowCurrentOption = function ($index) {
     return true;
 };
 
-// Markdown 編輯器的內容更新由 app/Livewire/Resume/Edit.php 中的 handleMarkdownUpdate 方法處理
+on(['update-parent-summary' => function ($content) {
+    $this->summary = $content;
+}]);
 ?>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -292,6 +295,52 @@ $shouldShowCurrentOption = function ($index) {
                         </nav>
                     </div>
                 </div>
+
+                <div class="mt-6 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden">
+                    <div class="bg-gradient-to-r from-slate-700 to-slate-900 p-4 dark:from-slate-600 dark:to-slate-800">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-eye mr-2"></i>
+                            即時預覽
+                        </h3>
+                    </div>
+                    <div class="p-4">
+                        @php($previewTemplate = ResumeTemplates::resolve($template ?? null))
+                        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                            <div class="mb-3 h-2 rounded-full bg-gradient-to-r {{ $previewTemplate['hero'] }}"></div>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400">履歷標題</p>
+                                    <p class="mt-1 text-base font-semibold text-slate-900 dark:text-white">
+                                        {{ $title !== '' ? $title : '未命名履歷' }}
+                                    </p>
+                                </div>
+                                <div class="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2 text-sm dark:bg-slate-800">
+                                    <span class="text-slate-500 dark:text-slate-400">模板</span>
+                                    <span class="font-medium text-slate-900 dark:text-white">{{ $previewTemplate['name'] }}</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400">簡介</p>
+                                    <div class="prose prose-slate dark:prose-invert mt-2 max-h-44 max-w-none overflow-hidden text-sm">
+                                        @if(trim((string) $summary) !== '')
+                                            {!! MarkdownHelper::toHtmlWithDarkMode($summary) !!}
+                                        @else
+                                            <p class="text-slate-500 dark:text-slate-400">尚未填寫簡介</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                @if(collect($skills)->filter()->isNotEmpty())
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach(collect($skills)->map(fn ($skill) => trim((string) $skill))->filter()->take(6) as $skill)
+                                            <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-100 dark:bg-blue-900/30 dark:text-blue-200 dark:ring-blue-800">
+                                                {{ $skill }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Right Column - Content -->
@@ -325,7 +374,7 @@ $shouldShowCurrentOption = function ($index) {
                                     <div>
                                         <flux:label for="title">標題</flux:label>
                                         <flux:input 
-                                            wire:model="title" 
+                                            wire:model.live.debounce.300ms="title"
                                             id="title" 
                                             type="text" 
                                             placeholder="請輸入履歷標題，例如：張三的履歷"
@@ -340,7 +389,7 @@ $shouldShowCurrentOption = function ($index) {
                                         <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
                                             @foreach ($templateOptions as $option)
                                                 <label class="cursor-pointer">
-                                                    <input type="radio" wire:model="template" value="{{ $option['key'] }}" class="sr-only peer">
+                                                    <input type="radio" wire:model.live="template" value="{{ $option['key'] }}" class="sr-only peer">
                                                     <div class="h-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 p-4 shadow-sm transition-all duration-200 peer-checked:border-blue-500 peer-checked:ring-2 peer-checked:ring-blue-200 dark:peer-checked:ring-blue-900 hover:border-slate-300 dark:hover:border-slate-600">
                                                         <div class="mb-3 h-16 rounded-lg bg-gradient-to-r {{ $option['hero'] }}"></div>
                                                         <div class="flex items-start justify-between gap-3">
@@ -500,7 +549,7 @@ $shouldShowCurrentOption = function ($index) {
                             <div class="space-y-4">
                                 @foreach ($skills as $index => $skill)
                                     <div class="flex flex-col sm:flex-row gap-3">
-                                        <flux:input wire:model="skills.{{ $index }}" type="text" placeholder="例如：Laravel、Livewire、Tailwind CSS" class="flex-1" />
+                                        <flux:input wire:model.live.debounce.300ms="skills.{{ $index }}" type="text" placeholder="例如：Laravel、Livewire、Tailwind CSS" class="flex-1" />
                                         <button
                                             wire:click="removeSkill({{ $index }})"
                                             type="button"
