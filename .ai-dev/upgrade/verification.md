@@ -54,13 +54,16 @@
 - `php artisan test tests/Feature/PostUpgradeWalkthroughTest.php`
   - 4 passed，84 assertions。
   - 覆蓋登入後履歷編輯頁即時預覽面板，以及公開作品集關鍵字搜尋、分類篩選、標籤篩選與無符合結果狀態。
+- `php artisan test tests/Feature/ResumeUpdateTest.php tests/Feature/PostUpgradeWalkthroughTest.php`
+  - 11 passed，103 assertions。
+  - 覆蓋履歷基本資料自動儲存 action、`auto-saved` 事件，以及登入後履歷編輯頁即時預覽面板。
 - `php artisan test tests/Feature/PortfolioProjectUpdateTest.php`
   - 2 passed，4 assertions。
   - 覆蓋作品標籤清理/儲存，以及作品集拖曳排序後的資料庫排序寫入。
 - `php artisan test`
-  - 47 passed，199 assertions。
+  - 48 passed，204 assertions。
 - `npm run build`
-  - Vite build 成功，產出 `public/build/assets/app-BalZKtye.css`。
+  - Vite build 成功，產出 `public/build/assets/app-DRprppu4.css`。
 - `composer validate`
   - 通過。
 

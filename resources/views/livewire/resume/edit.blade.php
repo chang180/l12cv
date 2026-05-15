@@ -49,6 +49,20 @@ $updateBasicInfo = function () {
     $this->dispatch('scroll-to-top');
 };
 
+$autoSaveBasicInfo = function () {
+    $this->validate([
+        'template' => ['required', Rule::in(ResumeTemplates::keys())],
+    ]);
+
+    $this->resume->update([
+        'title' => $this->title,
+        'summary' => $this->summary,
+        'template' => $this->template,
+    ]);
+
+    $this->dispatch('auto-saved');
+};
+
 $addCertification = function () {
     $this->certifications[] = [
         'name' => '',
@@ -211,10 +225,19 @@ $shouldShowCurrentOption = function ($index) {
 
 on(['update-parent-summary' => function ($content) {
     $this->summary = $content;
+
+    if ($this->resume) {
+        $this->resume->update(['summary' => $this->summary]);
+        $this->dispatch('auto-saved');
+    }
 }]);
 ?>
 
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+<div
+    class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+    x-data="{ autoSavedAt: null }"
+    x-on:auto-saved.window="autoSavedAt = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })"
+>
     <!-- Flash Messages -->
     @if (session('status'))
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -305,6 +328,13 @@ on(['update-parent-summary' => function ($content) {
                     </div>
                     <div class="p-4">
                         @php($previewTemplate = ResumeTemplates::resolve($template ?? null))
+                        <div class="mb-3 flex min-h-6 items-center justify-between text-xs">
+                            <span class="font-medium text-slate-500 dark:text-slate-400">自動儲存</span>
+                            <span x-show="autoSavedAt" x-cloak class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-green-700 ring-1 ring-green-100 dark:bg-green-900/30 dark:text-green-200 dark:ring-green-800">
+                                <i class="fas fa-check mr-1"></i>
+                                <span x-text="autoSavedAt"></span>
+                            </span>
+                        </div>
                         <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                             <div class="mb-3 h-2 rounded-full bg-gradient-to-r {{ $previewTemplate['hero'] }}"></div>
                             <div class="space-y-3">
@@ -375,6 +405,7 @@ on(['update-parent-summary' => function ($content) {
                                         <flux:label for="title">標題</flux:label>
                                         <flux:input 
                                             wire:model.live.debounce.300ms="title"
+                                            wire:change="autoSaveBasicInfo"
                                             id="title" 
                                             type="text" 
                                             placeholder="請輸入履歷標題，例如：張三的履歷"
@@ -389,7 +420,7 @@ on(['update-parent-summary' => function ($content) {
                                         <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
                                             @foreach ($templateOptions as $option)
                                                 <label class="cursor-pointer">
-                                                    <input type="radio" wire:model.live="template" value="{{ $option['key'] }}" class="sr-only peer">
+                                                    <input type="radio" wire:model.live="template" wire:change="autoSaveBasicInfo" value="{{ $option['key'] }}" class="sr-only peer">
                                                     <div class="h-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 p-4 shadow-sm transition-all duration-200 peer-checked:border-blue-500 peer-checked:ring-2 peer-checked:ring-blue-200 dark:peer-checked:ring-blue-900 hover:border-slate-300 dark:hover:border-slate-600">
                                                         <div class="mb-3 h-16 rounded-lg bg-gradient-to-r {{ $option['hero'] }}"></div>
                                                         <div class="flex items-start justify-between gap-3">

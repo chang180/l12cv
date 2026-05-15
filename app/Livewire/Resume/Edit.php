@@ -78,6 +78,11 @@ class Edit extends Component
     public function handleParentSummaryUpdate($content)
     {
         $this->summary = $content;
+
+        if ($this->resume) {
+            $this->resume->update(['summary' => $this->summary]);
+            $this->dispatch('auto-saved');
+        }
     }
 
     public function updateBasicInfo()
@@ -96,6 +101,21 @@ class Edit extends Component
 
         // 滾動到頁面頂部
         $this->dispatch('scroll-to-top');
+    }
+
+    public function autoSaveBasicInfo(): void
+    {
+        $this->validate([
+            'template' => ['required', Rule::in(ResumeTemplates::keys())],
+        ]);
+
+        $this->resume->update([
+            'title' => $this->title,
+            'summary' => $this->summary,
+            'template' => $this->template,
+        ]);
+
+        $this->dispatch('auto-saved');
     }
 
     public function addSkill()

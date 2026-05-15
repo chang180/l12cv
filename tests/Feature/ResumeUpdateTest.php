@@ -42,6 +42,25 @@ test('用戶可以更新履歷模板', function () {
     expect($user->resume->fresh()->template)->toBe('modern');
 });
 
+test('基本資料可以自動儲存', function () {
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test(Edit::class)
+        ->set('title', '自動儲存標題')
+        ->set('summary', '自動儲存簡介')
+        ->set('template', 'compact')
+        ->call('autoSaveBasicInfo')
+        ->assertHasNoErrors()
+        ->assertDispatched('auto-saved');
+
+    $resume = $user->resume->fresh();
+
+    expect($resume->title)->toBe('自動儲存標題');
+    expect($resume->summary)->toBe('自動儲存簡介');
+    expect($resume->template)->toBe('compact');
+});
+
 test('無效履歷模板會被拒絕', function () {
     $user = User::factory()->create();
 
