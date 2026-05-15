@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Resume\Portfolio;
 
-use Livewire\Component;
 use App\Models\Project;
+use Livewire\Component;
 
 class ProjectList extends Component
 {
     public $resumeId;
+
     public $projects = [];
 
     protected $listeners = ['projectSaved' => 'refreshProjects', 'projectDeleted' => 'refreshProjects'];
@@ -39,6 +40,27 @@ class ProjectList extends Component
     public function confirmDelete($projectId)
     {
         $this->dispatch('openDeleteModal', ['projectId' => $projectId]);
+    }
+
+    public function reorderProjects(array $projectIds): void
+    {
+        $ownedProjectIds = auth()->user()->projects()
+            ->whereIn('id', $projectIds)
+            ->pluck('id')
+            ->all();
+
+        if (count($ownedProjectIds) !== count($projectIds)) {
+            return;
+        }
+
+        foreach (array_values($projectIds) as $index => $projectId) {
+            Project::where('user_id', auth()->id())
+                ->whereKey($projectId)
+                ->update(['order' => $index + 1]);
+        }
+
+        $this->refreshProjects();
+        $this->dispatch('projectOrderSaved');
     }
 
     public function render()

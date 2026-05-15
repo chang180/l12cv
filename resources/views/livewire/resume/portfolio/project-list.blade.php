@@ -1,11 +1,58 @@
 <div>
     <!-- 項目列表 -->
     @if(count($projects) > 0)
+    <div class="mb-3 flex items-center justify-between rounded-lg bg-indigo-50 px-4 py-3 text-sm text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-200">
+        <div class="flex items-center">
+            <flux:icon name="arrows-up-down" class="mr-2 h-4 w-4" />
+            拖曳項目左側把手即可調整公開作品集排序
+        </div>
+        <span class="hidden text-xs text-indigo-500 dark:text-indigo-300 sm:inline">放開後自動儲存</span>
+    </div>
+
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+        <ul
+            class="divide-y divide-gray-200 dark:divide-gray-700"
+            x-data="{
+                dragging: null,
+                syncOrder() {
+                    const ids = Array.from($el.querySelectorAll('[data-project-id]')).map((item) => Number(item.dataset.projectId));
+                    $wire.reorderProjects(ids);
+                },
+                moveBeforeTarget(event) {
+                    const target = event.currentTarget;
+
+                    if (!this.dragging || this.dragging === target) {
+                        return;
+                    }
+
+                    const box = target.getBoundingClientRect();
+                    const shouldPlaceAfter = event.clientY > box.top + box.height / 2;
+                    target.parentNode.insertBefore(this.dragging, shouldPlaceAfter ? target.nextSibling : target);
+                }
+            }"
+        >
             @foreach($projects as $project)
-            <li class="p-6">
+            <li
+                wire:key="portfolio-project-{{ $project->id }}"
+                data-project-id="{{ $project->id }}"
+                class="p-6 transition-colors duration-150"
+                @dragover.prevent="moveBeforeTarget($event)"
+                @dragend="dragging = null; syncOrder()"
+            >
                 <div class="flex flex-col sm:flex-row">
+                    <div class="mb-4 flex sm:mb-0 sm:mr-4 sm:items-start">
+                        <button
+                            type="button"
+                            draggable="true"
+                            class="inline-flex h-10 w-10 cursor-grab items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-500 transition hover:bg-gray-100 active:cursor-grabbing dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-700"
+                            title="拖曳排序"
+                            aria-label="拖曳排序：{{ $project->title }}"
+                            @dragstart="dragging = $event.currentTarget.closest('[data-project-id]'); $event.dataTransfer.effectAllowed = 'move';"
+                        >
+                            <flux:icon name="bars-3" class="h-5 w-5" />
+                        </button>
+                    </div>
+
                     <!-- 項目縮略圖 - 更大尺寸 -->
                     <div class="flex-shrink-0 w-full sm:w-48 h-48 sm:h-36 mb-4 sm:mb-0 sm:mr-6">
                         @if($project->thumbnail)

@@ -54,10 +54,13 @@
 - `php artisan test tests/Feature/PostUpgradeWalkthroughTest.php`
   - 4 passed，82 assertions。
   - 覆蓋公開作品集關鍵字搜尋、分類篩選、標籤篩選與無符合結果狀態。
+- `php artisan test tests/Feature/PortfolioProjectUpdateTest.php`
+  - 2 passed，4 assertions。
+  - 覆蓋作品標籤清理/儲存，以及作品集拖曳排序後的資料庫排序寫入。
 - `php artisan test`
-  - 46 passed，195 assertions。
+  - 47 passed，197 assertions。
 - `npm run build`
-  - Vite build 成功，產出 `public/build/assets/app-CZpKFttM.css`。
+  - Vite build 成功，產出 `public/build/assets/app-B46YmDqD.css`。
 - `composer validate`
   - 通過。
 
