@@ -86,6 +86,13 @@
                             </span>
                             @endforeach
                             @endif
+                            @if($project->tags)
+                            @foreach($project->tags as $tag)
+                            <span class="px-2 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-200 text-xs rounded-md ring-1 ring-teal-200 dark:ring-teal-800">
+                                #{{ $tag }}
+                            </span>
+                            @endforeach
+                            @endif
                         </div>
 
                         <div class="mt-4 flex items-center space-x-4">

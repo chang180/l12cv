@@ -256,6 +256,23 @@
                             @error('technologies') <flux:error :messages="$message" /> @enderror
                         </div>
 
+                        <!-- 作品標籤 -->
+                        <div>
+                            <flux:label for="tags" class="text-slate-700 dark:text-slate-300 font-medium">作品標籤</flux:label>
+                            <flux:input
+                                wire:model="tags"
+                                id="tags"
+                                type="text"
+                                placeholder="SaaS, 後台系統, 開源專案"
+                                class="mt-2 dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder-slate-400"
+                            />
+                            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                                <i class="fas fa-tags mr-1"></i>
+                                使用逗號分隔多個作品標籤，會自動清理空白與重複值
+                            </p>
+                            @error('tags') <flux:error :messages="$message" /> @enderror
+                        </div>
+
                         <!-- 完成日期 -->
                         <div>
                             <flux:label for="completionDate" class="text-slate-700 dark:text-slate-300 font-medium">完成日期</flux:label>

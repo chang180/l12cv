@@ -33,6 +33,8 @@ class ProjectForm extends Component
 
     public $technologies = '';
 
+    public $tags = '';
+
     public $completionDate = '';
 
     public $isFeatured = false;
@@ -59,6 +61,7 @@ class ProjectForm extends Component
         'url' => 'nullable|url|max:255',
         'githubUrl' => 'nullable|url|max:255',
         'technologies' => 'nullable',
+        'tags' => 'nullable',
         'completionDate' => 'nullable|date',
         'isFeatured' => 'boolean',
         'order' => 'integer|min:0',
@@ -100,6 +103,7 @@ class ProjectForm extends Component
             $this->url = $project->url;
             $this->githubUrl = $project->github_url;
             $this->technologies = $project->technologies ? implode(', ', $project->technologies) : '';
+            $this->tags = $project->tags ? implode(', ', $project->tags) : '';
             $this->completionDate = $project->completion_date ? $project->completion_date->format('Y-m-d') : '';
             $this->isFeatured = $project->is_featured;
             $this->order = $project->order;
@@ -119,6 +123,7 @@ class ProjectForm extends Component
         $this->url = '';
         $this->githubUrl = '';
         $this->technologies = '';
+        $this->tags = '';
         $this->completionDate = '';
         $this->isFeatured = false;
         $this->order = 0;
@@ -150,6 +155,8 @@ class ProjectForm extends Component
 
         $technologies = $this->technologies ? explode(',', $this->technologies) : [];
         $technologies = array_map('trim', $technologies);
+        $technologies = array_values(array_unique(array_filter($technologies)));
+        $tags = $this->cleanCsvValues($this->tags);
 
         $projectData = [
             'user_id' => auth()->id(),
@@ -161,6 +168,7 @@ class ProjectForm extends Component
             'url' => $this->url,
             'github_url' => $this->githubUrl,
             'technologies' => $technologies,
+            'tags' => $tags,
             'completion_date' => $this->completionDate ?: null,
             'is_featured' => $this->isFeatured,
             'order' => $this->order,
@@ -216,5 +224,15 @@ class ProjectForm extends Component
     public function render()
     {
         return view('livewire.resume.portfolio.project-form');
+    }
+
+    private function cleanCsvValues(string $value): array
+    {
+        return collect(explode(',', $value))
+            ->map(fn ($item) => trim($item))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 }

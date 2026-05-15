@@ -362,6 +362,15 @@
                                             @endforeach
                                         </div>
                                     @endif
+                                    @if ($project->tags)
+                                        <div class="mt-3 flex flex-wrap gap-2">
+                                            @foreach (array_slice($project->tags, 0, 3) as $tag)
+                                                <span class="rounded-full bg-teal-50 px-2 py-1 text-xs font-medium text-teal-700 ring-1 ring-teal-200 dark:bg-teal-950 dark:text-teal-200 dark:ring-teal-700">
+                                                    #{{ $tag }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                     @if ($project->description)
                                         <p class="mt-3 line-clamp-3 text-sm leading-relaxed text-purple-800 dark:text-purple-200">
                                             {{ $project->description }}

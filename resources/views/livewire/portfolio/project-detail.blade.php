@@ -206,6 +206,23 @@
                             </div>
                         @endif
 
+                        <!-- 作品標籤 -->
+                        @if($project->tags)
+                            <div class="mb-6 sm:mb-8">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">
+                                    <i class="fas fa-tags mr-2 text-teal-600 dark:text-teal-400 text-sm sm:text-base"></i>
+                                    作品標籤
+                                </h3>
+                                <div class="flex flex-wrap gap-2 sm:gap-3">
+                                    @foreach($project->tags as $tag)
+                                        <span class="px-3 sm:px-4 py-1.5 sm:py-2 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-200 text-xs sm:text-sm font-medium rounded-full border border-teal-200 dark:border-teal-800">
+                                            #{{ $tag }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- 項目描述 -->
                         <div class="mb-6 sm:mb-8">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center">

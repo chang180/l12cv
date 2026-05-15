@@ -264,6 +264,21 @@
                                 </div>
                                 @endif
 
+                                @if($project->tags)
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    @foreach(array_slice($project->tags, 0, 4) as $tag)
+                                    <span class="px-3 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-200 text-xs font-medium rounded-full border border-teal-200 dark:border-teal-800">
+                                        #{{ $tag }}
+                                    </span>
+                                    @endforeach
+                                    @if(count($project->tags) > 4)
+                                    <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-full">
+                                        +{{ count($project->tags) - 4 }}
+                                    </span>
+                                    @endif
+                                </div>
+                                @endif
+
                                 <!-- 項目描述 -->
                                 <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3 mb-4">
                                     {{ $project->description }}

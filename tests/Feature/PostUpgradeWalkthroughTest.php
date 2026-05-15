@@ -89,6 +89,7 @@ test('public resume portfolio project and pdf pages render with seeded content',
         'url' => 'https://example.com/demo',
         'github_url' => 'https://github.com/example/l13cv',
         'technologies' => ['Laravel', 'Livewire', 'Tailwind'],
+        'tags' => ['SaaS', '後台系統'],
         'media_type' => 'audio',
         'media_url' => 'https://example.com/demo.mp3',
         'category' => '網站平台',
@@ -104,6 +105,7 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertSee('專案經驗')
         ->assertSee('L13CV 驗證作品')
         ->assertSee('查看完整作品集')
+        ->assertSee('#SaaS')
         ->assertSee('列印')
         ->assertSee('下載 DOCX')
         ->assertSee('下載全部')
@@ -119,12 +121,15 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertSee('L13CV 驗證作品')
         ->assertSee('音訊展示')
         ->assertSee('網站平台')
+        ->assertSee('#後台系統')
         ->assertSee('Laravel');
 
     $this->get("/p/test-user/project/{$project->id}")
         ->assertOk()
         ->assertSee('用於升級後 walkthrough 的公開作品集項目。')
         ->assertSee('網站平台')
+        ->assertSee('作品標籤')
+        ->assertSee('#SaaS')
         ->assertSee('多媒體展示')
         ->assertSee('https://example.com/demo.mp3');
 

@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string|null $url 項目鏈接
  * @property string|null $github_url GitHub鏈接
  * @property array|null $technologies 使用的技術
+ * @property array|null $tags 作品標籤
  * @property Carbon|null $completion_date 完成日期
  * @property bool $is_featured 是否為特色項目
  * @property int $order 排序順序
@@ -50,6 +51,7 @@ class Project extends Model
         'url',
         'github_url',
         'technologies',
+        'tags',
         'completion_date',
         'is_featured',
         'order',
@@ -63,6 +65,7 @@ class Project extends Model
      */
     protected $casts = [
         'technologies' => 'array',
+        'tags' => 'array',
         'completion_date' => 'date',
         'is_featured' => 'boolean',
     ];
