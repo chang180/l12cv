@@ -1,0 +1,46 @@
+---
+description: Cursor 作為本 repo 的 AI orchestrator 時的編排規則（由 ai-orchestrator skill bootstrap 產生）
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Orchestrator Rules
+
+本專案中 **Cursor IDE 為主 orchestrator**；Slack 的 `@Cursor` 為 **Cloud Agent**（另一條執行路徑）。
+
+## Handoff（v3）
+
+1. 建 branch + `docs/agent-handoff/tasks/*` → **git push 後**再 Slack。
+2. 指派用 **execute 模板**（見 `docs/agent-handoff/PROTOCOL-v3.md`、skill `handoff-protocol.md`）。
+3. 每則 Slack 加 **`Reply in Traditional Chinese (zh-TW).`**
+4. **禁止**把 `handoff-complete …` **@Cursor** 當工作單（會開 PR）；Ping 用 `ack-only`。
+5. 收工：`slack_read_thread` 搜 `handoff-complete` → `gh pr diff` → 複審。
+
+## 執行優先順序
+
+1. Slack MCP 讀需求。
+2. `gh` 更新 issue / branch / `docs/progress.md`。
+3. Slack 回報 + 依 roster handoff。
+4. `include_bots: true` 掃成員。
+
+## 禁止假設
+
+- Workflow YAML 自動部署 Slack。
+- MCP 邀請 bot、管理頻道區段、列出全部 App。
+- 其他 AI 會自動排隊執行編排指令。
+- Contributors 出現「Claude/Codex」帳號（實為你的帳號或 bot）。
+
+## 契約檔（由 skill bootstrap 產生，可再執行 bootstrap 更新）
+
+- `docs/agent-contract.md`
+- `docs/agent-handoff/PROTOCOL-v3.md`
+- `docs/slack-capability-matrix.md`
+- `docs/slack-handoff-template.md`
+- `docs/agent-roster.md`
+
+## 本專案 Slack
+
+- **產品頻道**：`#{{SLACK_PROJECT_CHANNEL}}`（`{{SLACK_PROJECT_CHANNEL_ID}}`）
+- **Repo**：`{{GITHUB_FULL_REPO}}`
+- **Skill**：`.cursor/skills/ai-orchestrator/` · 工作區治理：`.cursor/skills/slack-orchestrator/`
