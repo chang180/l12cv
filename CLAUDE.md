@@ -1,3 +1,8 @@
+<!-- PROJECT IDENTITY — 任何 Claude session 啟動時必讀 -->
+<!-- GitHub Repo: chang180/l12cv  (非 chang180/chang180) -->
+<!-- Slack Workspace: devstream-core  |  頻道: #10-proj-l12cv (C0B47UBS2HH) -->
+<!-- 若 session 綁定的 repo 非 chang180/l12cv，請拒絕執行並提示使用者重新建立 session。 -->
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
