@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "required": [
+    { "template": "orchestrator.mdc.tpl", "output": ".cursor/rules/orchestrator.mdc" },
+    { "template": "docs/progress.md.tpl", "output": "docs/progress.md" },
+    { "template": "docs/agent-roster.md.tpl", "output": "docs/agent-roster.md" },
+    { "template": "docs/agent-contract.md", "output": "docs/agent-contract.md" },
+    { "template": "docs/slack-handoff-template.md", "output": "docs/slack-handoff-template.md" },
+    { "template": "docs/agent-handoff/PROTOCOL-v3.md", "output": "docs/agent-handoff/PROTOCOL-v3.md" },
+    { "template": "docs/agent-handoff/COMPLETION-REPORT.md", "output": "docs/agent-handoff/COMPLETION-REPORT.md" },
+    { "template": "docs/agent-handoff/ORCHESTRATOR-REVIEW.md.tpl", "output": "docs/agent-handoff/ORCHESTRATOR-REVIEW.md" },
+    { "template": "docs/agent-handoff/README.md.tpl", "output": "docs/agent-handoff/README.md" },
+    { "template": "docs/slack-capability-matrix.md", "output": "docs/slack-capability-matrix.md" }
+  ],
+  "optional": [
+    { "template": "workflow-specs/project-request.yml.tpl", "output": ".workflow-specs/{{GITHUB_REPO}}-request.yml" },
+    { "template": "workflow-specs/project-request.md.tpl", "output": ".workflow-specs/{{GITHUB_REPO}}-request.md" }
+  ]
+}
