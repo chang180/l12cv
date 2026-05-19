@@ -31,8 +31,9 @@
 
 ## @Claude（Slack MCP）
 
-- 派工時 **`slack_send_message` 必帶 `thread_ts`**（`docs/progress.md` → `claude_slack_thread_ts`）。
-- 勿開新 top-level `@Claude` thread（會落到錯誤 repo session）。
+- App Home → **Routing Mode: Code only**；每則必含 **`Repo: chang180/l12cv`** 與 **Coding task** 用語。
+- **`slack_send_message` 必帶 `thread_ts`**（`docs/progress.md`）。
+- 主頻道要可見時加 **`reply_broadcast: true`**。
 - 換 Claude web session 後更新 thread_ts 並重跑 repo 綁定確認。
 
 ## GitHub bot

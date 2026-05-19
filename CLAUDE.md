@@ -3,6 +3,12 @@
 <!-- Slack Workspace: devstream-core  |  頻道: #10-proj-l12cv (C0B47UBS2HH) -->
 <!-- 若 session 綁定的 repo 非 chang180/l12cv，請拒絕執行並提示使用者重新建立 session。 -->
 
+<!-- SLACK @Claude（Claude Code in Slack）
+     - 僅在頻道內有效（非 DM）；App Home → Routing Mode 建議 Code only
+     - 指派必須明示：Repo: chang180/l12cv（否則可能選到 chang180/chang180）
+     - 在 thread 內 @Claude 以帶入脈絡；見 docs/progress.md 的 claude_slack_thread_ts
+     - 文件：https://code.claude.com/docs/en/slack -->
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

@@ -45,9 +45,13 @@ alwaysApply: true
 - **Repo**：`chang180/l12cv`
 - **Skill**：`.cursor/skills/ai-orchestrator/` · 工作區治理：`.cursor/skills/slack-orchestrator/`
 
-## @Claude（Slack MCP 路由）
+## @Claude（Slack → Claude Code on the web）
 
-- **禁止**在頻道開新 top-level thread 指派 `@Claude`（易落到舊 `chang180/chang180` session）。
-- **必須**在已驗證的 Claude Code session thread 內回覆，並帶 `thread_ts`（見 `docs/progress.md` 的 `claude_slack_thread_ts`）。
-- Cursor Slack MCP 發文會附「已透過 @Cursor 傳送」；在正確 thread 內仍可到達 `chang180/l12cv` session。
-- 換新 Claude web session 後：更新 `docs/progress.md` 的 thread_ts，並在該 thread 再跑一次 repo 綁定確認。
+依 [Claude Code in Slack](https://code.claude.com/docs/en/slack)：
+
+- App Home → **Routing Mode**：`Code only`（避免誤走 Chat）。
+- 每則指派**首行必含**：`Repo: chang180/l12cv` 與明確 coding 用語（fix / implement / refactor）。
+- `slack_send_message`：**必帶** `thread_ts`（`docs/progress.md` → `claude_slack_thread_ts`）。
+- 需要主頻道可見時：加 `reply_broadcast: true`（否則僅 thread 內可見）。
+- 勿只寫「請確認 repo」等模糊句；Claude 會依脈絡**自動選 repo**，易選錯 `chang180/chang180`。
+- 換 session 後：更新 `claude_slack_thread_ts` 並重跑 repo 綁定確認。

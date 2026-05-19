@@ -69,14 +69,18 @@ Acceptance:
 
 ## 3. Claude（review-only）
 
+> **Claude Code in Slack**：首行寫 `Coding task` + `Repo: chang180/l12cv`；在**同一 thread** 內 @Claude。Routing Mode 設 **Code only**（App Home）。
+
 ```text
 [handoff]
+
+Coding task in repository chang180/l12cv.
 
 Task:
 {{task_summary}}
 
 Repo:
-{{repo}}
+chang180/l12cv
 
 Branch:
 {{branch}}

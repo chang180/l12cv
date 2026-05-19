@@ -1,32 +1,33 @@
 #!/bin/bash
 set -euo pipefail
 
-# Only run in remote Claude Code on the web environments
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
 cd "$CLAUDE_PROJECT_DIR"
 
-# Install PHP dependencies
-COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --prefer-dist
-
-# Set up .env if it doesn't exist
-if [ ! -f ".env" ]; then
-  cp .env.example .env
-  php artisan key:generate --no-interaction
+if [ ! -d vendor ]; then
+  COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --prefer-dist || true
 fi
 
-# Create SQLite database if it doesn't exist
-if [ ! -f "database/database.sqlite" ]; then
+if [ ! -f .env ]; then
+  cp .env.example .env
+  php artisan key:generate --no-interaction || true
+fi
+
+if [ ! -f database/database.sqlite ]; then
   touch database/database.sqlite
 fi
 
-# Run migrations
-php artisan migrate --no-interaction --force
+php artisan migrate --no-interaction --force || true
 
-# Install Node.js dependencies
-npm install
+if [ ! -d node_modules ]; then
+  npm install || true
+fi
 
-# Build frontend assets
-npm run build
+if [ ! -f public/build/manifest.json ]; then
+  npm run build || true
+fi
+
+exit 0
