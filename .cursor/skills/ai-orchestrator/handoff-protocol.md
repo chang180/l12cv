@@ -29,6 +29,12 @@
 3. `slack_read_thread` 搜 `handoff-complete`
 4. `gh pr diff` → 複審 → `docs/progress.md` + issue 留言
 
+## @Claude（Slack MCP）
+
+- 派工時 **`slack_send_message` 必帶 `thread_ts`**（`docs/progress.md` → `claude_slack_thread_ts`）。
+- 勿開新 top-level `@Claude` thread（會落到錯誤 repo session）。
+- 換 Claude web session 後更新 thread_ts 並重跑 repo 綁定確認。
+
 ## GitHub bot
 
 - 僅 **`@github`** / `<@U0B3VUN3QA1>`，無獨立 Copilot bot

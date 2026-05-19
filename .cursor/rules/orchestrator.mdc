@@ -44,3 +44,10 @@ alwaysApply: true
 - **產品頻道**：`#10-proj-l12cv`（`C0B47UBS2HH`）
 - **Repo**：`chang180/l12cv`
 - **Skill**：`.cursor/skills/ai-orchestrator/` · 工作區治理：`.cursor/skills/slack-orchestrator/`
+
+## @Claude（Slack MCP 路由）
+
+- **禁止**在頻道開新 top-level thread 指派 `@Claude`（易落到舊 `chang180/chang180` session）。
+- **必須**在已驗證的 Claude Code session thread 內回覆，並帶 `thread_ts`（見 `docs/progress.md` 的 `claude_slack_thread_ts`）。
+- Cursor Slack MCP 發文會附「已透過 @Cursor 傳送」；在正確 thread 內仍可到達 `chang180/l12cv` session。
+- 換新 Claude web session 後：更新 `docs/progress.md` 的 thread_ts，並在該 thread 再跑一次 repo 綁定確認。
