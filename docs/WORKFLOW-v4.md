@@ -45,6 +45,15 @@ plan.md（可選）→ docs/tasks/T-xxx.md
 
 `[status]` 範本見 [slack-handoff-template.md](slack-handoff-template.md)。
 
+## Slack 進度可讀性
+
+1. 先 push `docs/progress.md`，再發 `[status]`。
+2. 編排者用 `slack_read_channel` / `slack_search_public` 驗證鏡像。
+3. Slack 內 bot 需被 @ 或讀 progress thread；建議 Pin 進度串。
+4. 唯讀摘要用 `[read-only]`，不是 `[handoff]`。
+
+詳述：`.cursor/skills/ai-orchestrator/slack-status-sync.md`
+
 ## 本機多 AI
 
 | 工具 | 角色 | 觸發 |

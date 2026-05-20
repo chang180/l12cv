@@ -13,6 +13,7 @@
 | **Slack 產品頻道** | `#10-proj-l12cv`（`C0B47UBS2HH`） |
 | **Repo** | `chang180/l12cv` |
 | **Claude Slack thread** | `1779200466.309049`（legacy；v4 本機優先） |
+| **Slack progress thread** | （建議 Pin `[status-thread]` 後填入 `thread_ts`） |
 | **最後更新** | 2026-05-20 |
 
 ## 進行中任務
@@ -20,6 +21,7 @@
 | Task | Status | Executor | Notes |
 |------|--------|----------|-------|
 | T-001-bootstrap-v4 | done | cursor | skills v4 portability E2E |
+| T-002-slack-status-sync | done | cursor | MCP 發/讀/搜 [status] 通過 |
 
 ## 里程碑
 
@@ -47,6 +49,7 @@
 
 - 升級 ai-orchestrator skills v4（local-first）。
 - Bootstrap：`WORKFLOW-v4.md`、`docs/tasks/`、orchestrator.mdc v4。
+- **Slack [status] 可讀性 E2E**：發送 + `slack_read_channel` + `slack_search_public` 通過（T-002）。
 
 ### 2026-05-19
 
