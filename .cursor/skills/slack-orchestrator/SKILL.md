@@ -1,53 +1,50 @@
 ---
 name: slack-orchestrator
 description: >-
-  Slack workspace governance for AI Engineering OS. Bootstrap docs/slack-channel-taxonomy
-  from templates. Channel audit, charters, taxonomy. Use with ai-orchestrator; copy
-  skill only to new projects—do not copy docs.
+  Slack workspace governance for AI Engineering OS v4. Product channels are progress
+  dashboards [status]; agent channels idle by default. Bootstrap taxonomy and charters.
+  Use with ai-orchestrator; copy skill only to new projects.
 ---
 
-# Slack Orchestrator
+# Slack Orchestrator（v4）
 
 **只需複製本 skill**；`docs/slack-channel-taxonomy.md` 用 [bootstrap-workspace.md](bootstrap-workspace.md) 產生。
 
-## 何時啟用
+## v4 頻道角色
 
-- 新 workspace / 新 Layer 頻道稽核
-- 發 Channel charter（模板：`templates/charter-product.md.tpl`）
-- 與 ai-orchestrator bootstrap 搭配
-
-## Bootstrap 工作區文件
-
-見 [bootstrap-workspace.md](bootstrap-workspace.md) → 產生 `docs/slack-channel-taxonomy.md`
-
-## 頻道分層（摘要）
-
-| Layer | 用途 |
-|-------|------|
-| 0 `00-*` | 通用 |
-| 1 `10-proj-*` / `11-proj-*` | 產品 |
-| 2 `20-agent-*` | handoff bus |
-| 3 `30-dev-*` | 工程 |
-| 4 `40-knowledge-*` | 知識 |
-| 9 `99-*` | 孵化 |
+| Layer | 用途（v4） |
+|-------|------------|
+| `10-proj-*` / `11-proj-*` | **進度看板** — `[status]`、`[feature]`；本機編排 |
+| `20-agent-*` | **預設閒置**；非預設派工 |
+| `30-dev-*` | GitHub 通知、發版、缺陷（被動） |
+| `40-*` / `42-*` | 知識、決策鏡像 |
+| `99-*` | 孵化 → 升級為 L1 |
 
 ## 訊息契約
 
-- 產品：`[feature]` `[bug]` `[release]` `[ux]` `[infra]`
-- Agent：`[ask]` `[handoff]` `[handoff-complete]`
+- 產品：`[feature]` `[bug]` `[release]` `[ux]` `[infra]` · **`[status]`** **`[decision]`**
+- ~~`[handoff]`~~：預設禁用（legacy 見 ai-orchestrator optional PROTOCOL-v3）
 - 決策：`Decision:` / `Why:` / `Tradeoff:`
 
-Handoff 全文：目標 repo 的 `docs/slack-handoff-template.md`（ai-orchestrator bootstrap）
+Charter 模板：`templates/charter-product.md.tpl`（含「本機編排、不 @ bot」）
+
+## 何時啟用
+
+- 新 workspace / Layer 頻道稽核
+- 新專案開 `#10-proj-*` + Pin charter
+- 與 ai-orchestrator bootstrap 搭配
+
+## Bootstrap
+
+[bootstrap-workspace.md](bootstrap-workspace.md) → `docs/slack-channel-taxonomy.md`
 
 ## MCP
 
-`include_bots: true` · 無法 `/invite` / rename / 頻道區段 → 人工
-
-能力邊界：目標 repo `docs/slack-capability-matrix.md`（ai-orchestrator bootstrap 內建模板）
+`include_bots: true` · 無法 `/invite` / rename → 人工
 
 ## 與 ai-orchestrator
 
 | Skill | 產生 |
 |-------|------|
-| ai-orchestrator | `rules`、roster、PROTOCOL、handoff 模板、progress |
-| slack-orchestrator | `slack-channel-taxonomy`（可選）、charter 訊息 |
+| ai-orchestrator | `WORKFLOW-v4`、roster、progress、tasks、rules |
+| slack-orchestrator | taxonomy、charter 訊息 |

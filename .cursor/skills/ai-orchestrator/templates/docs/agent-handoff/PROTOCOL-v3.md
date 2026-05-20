@@ -1,3 +1,8 @@
+# Handoff 協定 v3（Legacy）
+
+> **v4 預設**：本專案使用 [WORKFLOW-v4.md](../WORKFLOW-v4.md)（本機編排 + Slack `[status]`）。  
+> 本檔僅在 bootstrap **optional** 或 `progress.md` 標記 `exception: slack-delegate` 時參考。
+
 # Handoff 協定 v3（定稿用於 Skill）
 
 ## 三種 Slack 訊息（勿混淆）

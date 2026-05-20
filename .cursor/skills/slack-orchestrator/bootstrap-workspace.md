@@ -1,7 +1,8 @@
-# Bootstrap：Slack 工作區治理文件
+# Bootstrap：Slack 工作區治理文件（v4）
 
 > 與 **ai-orchestrator** `bootstrap.md` 搭配。  
-> 僅在需要 `docs/slack-channel-taxonomy.md` 時執行（新 workspace 或首次治理）。
+> 僅在需要 `docs/slack-channel-taxonomy.md` 時執行（新 workspace 或首次治理）。  
+> v4：L1 產品頻道 = 進度看板；L2 `20-agent-*` = 預設閒置。
 
 ## 產出
 

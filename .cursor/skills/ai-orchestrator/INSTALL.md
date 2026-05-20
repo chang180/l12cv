@@ -1,54 +1,61 @@
-# 安裝：只複製 Skills
+# 安裝：只複製 Skills（v4）
 
-> **總覽**：[../README.md](../README.md) — 複製整個 `.cursor/skills/` 即可。
+> **總覽**：[../README.md](../README.md)
 
-其他專案（如 **l12cv**）**只需**複製 skills；`rules` 與 `docs` 由 Agent 在目標 repo **bootstrap 產生**。
+其他專案**只需**複製 `.cursor/skills/`；`rules` 與 `docs` 由 **bootstrap 產生**。
 
 ## 1. 複製（必做）
 
 ```bash
-cp -R /path/to/ai-orchestrator-workflow-demo/.cursor/skills /path/to/your-project/.cursor/
+DEMO=/path/to/ai-orchestrator-workflow-demo
+TARGET=/path/to/your-project
+
+mkdir -p "$TARGET/.cursor"
+cp -R "$DEMO/.cursor/skills" "$TARGET/.cursor/"
 ```
 
-**不要複製**：`docs/`、`.cursor/rules/`、`.worktrees/`（demo 專用或將由 bootstrap 產生）。
+**不要複製**：demo 的 `docs/`、`.cursor/rules/`、`.worktrees/`。
 
 ## 2. Bootstrap（在目標 repo 對 Cursor 說）
 
 ```text
-請依 ai-orchestrator skill 的 bootstrap.md，為本 repo 建立 orchestrator rules 與 docs。
-Slack 產品頻道：#10-proj-l12cv（請用 MCP 查 channel_id）。
+請依 ai-orchestrator/bootstrap.md 為本 repo 初始化 v4 orchestrator。
+Slack 產品頻道：#10-proj-你的專案（請用 MCP 查 channel_id）。
 ```
 
-Agent 會：
-
-1. 讀 `.cursor/skills/ai-orchestrator/templates/manifest.json`
-2. 替換 `{{GITHUB_*}}`、`{{SLACK_*}}` 變數
-3. 寫入 `.cursor/rules/orchestrator.mdc` 與 `docs/**`
-4. 可選執行 `slack-orchestrator/bootstrap-workspace.md`
+Agent 會依 `templates/manifest.json` v2.0.0 寫入 `docs/WORKFLOW-v4.md` 等。
 
 ## 3. 人工收尾
 
-- `/invite` bots、Pin charter、`@Cursor settings`、GitHub App login
-- 第一次 E2E：`[feature]` → push task → `[handoff]`
+- 開 / 確認 `#10-proj-*` 或 `#11-proj-*`
+- Pin v4 charter（見 bootstrap 後 `docs/slack-handoff-template.md` §2）
+- **可零 bot**；若需 GitHub 通知再 `/invite @github`
+- **勿**預設 `@Cursor settings` 用於產品頻道派工
 
-## 本 demo repo 的定位
+## 4. 第一次 E2E（v4）
+
+1. 建立 `docs/tasks/T-001-bootstrap-verify.md`（自 `_TEMPLATE.md`）
+2. 更新 `docs/progress.md` → commit → push
+3. Slack 發 `[status]`（**無** @ bot）
+
+驗收清單：[PORTABILITY.md](PORTABILITY.md)
+
+## 本 demo repo
 
 | 內容 | 角色 |
 |------|------|
-| `.cursor/skills/**` | **可攜帶原始碼**（唯一需要 copy 的） |
-| `docs/`、`.cursor/rules/` | **living demo 實例**（含 E2E 歷史，非必複製） |
-| `.workflow-specs/` | 可選；bootstrap 可產生 |
-| `.worktrees/` | 勿複製 |
+| `.cursor/skills/**` | **可攜原始碼**（唯一要 copy） |
+| `docs/`、`.cursor/rules/` | living demo；非必複製 |
 
 ## 更新 skill
 
 ```bash
 cp -R "$DEMO/.cursor/skills/ai-orchestrator" "$TARGET/.cursor/skills/"
-# 已 bootstrap 的 docs 不會自動更新；重大協定變更時可重新 bootstrap 或手動 merge
+cp -R "$DEMO/.cursor/skills/slack-orchestrator" "$TARGET/.cursor/skills/"  # 可選
 ```
+
+已 bootstrap 的 `docs/` 不會自動更新 → [MIGRATION-v3-to-v4.md](MIGRATION-v3-to-v4.md)
 
 ## 全域安裝（可選）
 
-```bash
-cp -R "$DEMO/.cursor/skills/ai-orchestrator" ~/.cursor/skills/
-```
+見 [INSTALL.md](INSTALL.md) 文末或 skill 原始完整版（若存在 `~/.cursor/skills` 路徑說明）。

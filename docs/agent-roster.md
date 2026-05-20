@@ -1,46 +1,40 @@
 # Agent Roster
 
-Slack workspace 內可調用的 bot／整合角色。Cursor orchestrator 執行 handoff 時依此表 `@mention`。
-
 **Workspace**：`devstream-core`  
 **本 repo 產品頻道**：`#10-proj-l12cv`（`C0B47UBS2HH`）  
+**政策（v4）**：預設 **local_only** — 不在產品頻道 Slack execute 派工。
+
 **清查**：`slack_list_channel_members(channel_id, include_bots=true)`
 
 ## 頻道對照（本專案）
 
-| 頻道 | Channel ID | 用途 |
-|------|------------|------|
-| `#10-proj-l12cv` | `C0B47UBS2HH` | **本 repo** 產品／E2E |
+| 頻道 | Channel ID | 用途（v4） |
+|------|------------|------------|
+| `#10-proj-l12cv` | `C0B47UBS2HH` | **進度看板** — `[status]`、`[feature]` |
 
-Agent 專線（若使用 devstream-core 分層）：`#20-agent-claude`、`#21-agent-cursor`、`#22-agent-codex`、`#30-dev-github` — 見 slack-orchestrator skill 或 `docs/slack-channel-taxonomy.md`。
+Workspace 分層：`#20-agent-*` 預設閒置；`#30-dev-github` 通知；`#42-knowledge-decisions` 決策鏡像。
 
 ## Roster（bot user_id）
 
-> 以下為 **devstream-core** 預設；新 workspace 請用 MCP 復掃後覆寫。
+> devstream-core 預設；v4 **不預設** @ 下列 bot 派工。
 
-| 名稱 | Role | Slack user_id | Mention | 專屬頻道 | channel_status |
-|------|------|---------------|---------|----------|----------------|
-| **chang180** | owner | `U09HE0C7HBK` | `<@U09HE0C7HBK>` | — | joined |
-| **Cursor** | orchestrator (cloud) | `U09H5GMRSEQ` | `<@U09H5GMRSEQ>` / `@Cursor` | `#21-agent-cursor` | （復掃） |
-| Cursor IDE Agent | orchestrator (local) | — | Slack MCP | — | n/a |
-| **Claude** | reviewer | `U0B404P284S` | `<@U0B404P284S>` | `#20-agent-claude` | （復掃） |
-| **GitHub** | integration + Copilot | `U0B3VUN3QA1` | `<@U0B3VUN3QA1>` | `#30-dev-github` | （復掃） |
-| **Codex** | executor | `U0B411CESCR` | `<@U0B411CESCR>` | `#22-agent-codex` | （復掃） |
+| 名稱 | Role | Slack user_id | Mention | v4 預設 |
+|------|------|---------------|---------|---------|
+| **Cursor** | cloud agent | `U09H5GMRSEQ` | `<@U09H5GMRSEQ>` | **不用** |
+| Cursor IDE | orchestrator (local) | — | Slack MCP | **主控** |
+| **Claude** | reviewer | `U0B404P284S` | `<@U0B404P284S>` | 本機優先 |
+| **GitHub** | integration + Copilot | `U0B3VUN3QA1` | `<@U0B3VUN3QA1>` | on_demand only |
+| **Codex** | executor | `U0B411CESCR` | `<@U0B411CESCR>` | **不用** |
 
-## 預設 handoff
+## 調用規則（v4）
 
-1. `<@U0B404P284S>` Claude → `#20-agent-claude`（審閱）
-2. `<@U0B411CESCR>` Codex → `#22-agent-codex`（實作）
-3. `<@U0B3VUN3QA1>` Copilot → `#30-dev-github` 或產品頻道（on_demand）
-
-## 調用規則
-
-1. 編排與 repo 主控僅 Cursor IDE Agent。
-2. 同一任務勿同時 @ `@Cursor` 與 `<@U0B3VUN3QA1>` 做重複實作。
-3. `notify_agents` 前查 `channel_status`（`include_bots: true`）。
+1. 編排與 repo 主控僅 **Cursor IDE**。
+2. 進度以 `docs/progress.md` 為準；Slack 只鏡像 `[status]`。
+3. Slack execute 僅在 `progress.md` 記錄 `exception: slack-delegate` 時。
 
 ## 更新紀錄
 
 | 日期 | 變更 |
 |------|------|
-| 2026-05-19 | bootstrap 自 ai-orchestrator skill |
+| 2026-05-20 | bootstrap v4 local-first |
+| 2026-05-19 | v3 bootstrap、Claude thread 綁定 |

@@ -1,57 +1,47 @@
 ---
-description: Cursor 作為本 repo 的 AI orchestrator 時的編排規則（由 ai-orchestrator skill bootstrap 產生）
+description: Cursor 作為本 repo 的 AI orchestrator 時的編排規則（由 ai-orchestrator skill bootstrap 產生，v4 local-first）
 globs:
   - "**/*"
 alwaysApply: true
 ---
 
-# Orchestrator Rules
+# Orchestrator Rules（v4 local-first）
 
-本專案中 **Cursor IDE 為主 orchestrator**；Slack 的 `@Cursor` 為 **Cloud Agent**（另一條執行路徑）。
+本專案 **Cursor IDE 為唯一主編排者**。Slack 產品頻道只做**進度看板**；`@Cursor` Cloud Agent **預設不用於派工**。
 
-## Handoff（v3）
+## Workflow v4
 
-1. 建 branch + `docs/agent-handoff/tasks/*` → **git push 後**再 Slack。
-2. 指派用 **execute 模板**（見 `docs/agent-handoff/PROTOCOL-v3.md`、skill `handoff-protocol.md`）。
-3. 每則 Slack 加 **`Reply in Traditional Chinese (zh-TW).`**
-4. **禁止**把 `handoff-complete …` **@Cursor** 當工作單（會開 PR）；Ping 用 `ack-only`。
-5. 收工：`slack_read_thread` 搜 `handoff-complete` → `gh pr diff` → 複審。
+1. 任務寫入 `docs/tasks/T-*.md`；進度寫入 `docs/progress.md` → **git push**（SoT 在 GitHub）。
+2. **本機**執行（Cursor / Claude Code / subagent）；讀任務檔，勿預設 Slack `[handoff]`。
+3. 里程碑後可選 Slack **`[status]`** 至 `#10-proj-l12cv` — **勿 @ bot**。
+4. 重大決策寫 `docs/decisions/*.md`，可鏡像 `[decision]` 至 `#42-knowledge-decisions`。
+5. Slack execute 派工僅在 `progress.md` 標記 `exception: slack-delegate` 時；見 legacy `docs/agent-handoff/PROTOCOL-v3.md`（optional）。
 
 ## 執行優先順序
 
-1. Slack MCP 讀需求。
-2. `gh` 更新 issue / branch / `docs/progress.md`。
-3. Slack 回報 + 依 roster handoff。
-4. `include_bots: true` 掃成員。
+1. 讀 `docs/WORKFLOW-v4.md`、`docs/progress.md`、相關 `docs/tasks/*.md`。
+2. `gh` 更新 issue / branch / PR / `docs/progress.md`。
+3. 本機實作與複審。
+4. 可選：Slack MCP 發 `[status]`（無 mention）。
+5. `include_bots: true` 僅在復掃 roster 時使用。
 
 ## 禁止假設
 
 - Workflow YAML 自動部署 Slack。
-- MCP 邀請 bot、管理頻道區段、列出全部 App。
-- 其他 AI 會自動排隊執行編排指令。
-- Contributors 出現「Claude/Codex」帳號（實為你的帳號或 bot）。
+- MCP 邀請 bot、管理頻道區段。
+- Slack `@executor` 會自動排隊執行。
+- `handoff-complete` 可 @Cursor 當工作單（會誤開 PR）。
 
-## 契約檔（由 skill bootstrap 產生，可再執行 bootstrap 更新）
+## 契約檔
 
+- `docs/WORKFLOW-v4.md`
+- `docs/progress.md`
 - `docs/agent-contract.md`
-- `docs/agent-handoff/PROTOCOL-v3.md`
-- `docs/slack-capability-matrix.md`
 - `docs/slack-handoff-template.md`
 - `docs/agent-roster.md`
 
-## 本專案 Slack
+## 本專案
 
 - **產品頻道**：`#10-proj-l12cv`（`C0B47UBS2HH`）
 - **Repo**：`chang180/l12cv`
-- **Skill**：`.cursor/skills/ai-orchestrator/` · 工作區治理：`.cursor/skills/slack-orchestrator/`
-
-## @Claude（Slack → Claude Code on the web）
-
-依 [Claude Code in Slack](https://code.claude.com/docs/en/slack)：
-
-- App Home → **Routing Mode**：`Code only`（避免誤走 Chat）。
-- 每則指派**首行必含**：`Repo: chang180/l12cv` 與明確 coding 用語（fix / implement / refactor）。
-- `slack_send_message`：**必帶** `thread_ts`（`docs/progress.md` → `claude_slack_thread_ts`）。
-- 需要主頻道可見時：加 `reply_broadcast: true`（否則僅 thread 內可見）。
-- 勿只寫「請確認 repo」等模糊句；Claude 會依脈絡**自動選 repo**，易選錯 `chang180/chang180`。
-- 換 session 後：更新 `claude_slack_thread_ts` 並重跑 repo 綁定確認。
+- **Skill**：`.cursor/skills/ai-orchestrator/`

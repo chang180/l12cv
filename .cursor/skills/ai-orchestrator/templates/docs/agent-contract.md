@@ -1,117 +1,68 @@
-# Agent 執行契約
+# Agent 執行契約（v4 local-first）
 
-本文件定義各角色在 workflow 中的權責與介面。主執行 orchestrator 為 **Cursor**。
+主編排者：**Cursor IDE**。完整流程見 [WORKFLOW-v4.md](WORKFLOW-v4.md)。
 
 ## 角色定義
 
 ### ChatGPT（advisory）
 
-- **可做**：發想、PRD、任務拆解、驗收標準、風險清單。
-- **不可做**：直接寫入本 repo、直接操作 Slack/GitHub（除非人工轉貼）。
-- **輸出格式**：建議以 Markdown 貼入 Slack thread，含標題、驗收條件、優先級。
+- **可做**：PRD、任務拆解、驗收標準。
+- **不可做**：直接寫入 repo（除非人工轉貼或匯入 `docs/tasks/`）。
 
-### Cursor（orchestrator / executor）
+### Cursor IDE（orchestrator / 主執行）
 
 - **可做**：
-  - 讀寫 Slack thread（Slack MCP）
-  - 建立/更新 GitHub issue、branch、PR（`gh`）
-  - 更新 `docs/progress.md`
-  - 依 [agent-roster.md](agent-roster.md) 發送 `@mention` 調用其他 bot
+  - 讀寫 `docs/progress.md`、`docs/tasks/*.md`
+  - `gh`：issue、branch、PR
+  - Slack MCP：發 `[status]`、`[decision]`（**不**預設 @ bot）
 - **不可做**：
-  - 假設可程式化部署 Slack Workflow Builder YAML
-  - 假設可管理 Slack 側邊欄「頻道區段」
-  - 未經 roster 登記即假設某 bot 已在頻道內
+  - 假設 Slack Workflow YAML 自動部署
+  - 假設 MCP 可 `/invite` bot
+  - 預設 Slack `[handoff]` execute
 
 ### Cursor Cloud（`@Cursor`）
 
-- **觸發**：Slack `@Cursor [prompt]`，可帶 `branch=`、`autopr=`、repo 名稱。
-- **可做**：遠端改 code、測試、開 PR、thread 內狀態通知。
-- **與 IDE 分工**：IDE 負責編排與輕量任務；Cloud 負責重型實作（見 [architecture.md](architecture.md)）。
+- **v4 預設**：**不用於派工**。
+- **觸發**（僅例外）：人工在 `#21-agent-cursor` 或記錄 `exception: slack-delegate` 時。
+- **風險**：`handoff-complete` @Cursor 可能誤開 PR。
+
+### Claude / Codex / GitHub Copilot（Slack bots）
+
+- **v4 預設**：**不在產品頻道派工**。
+- **本機替代**：Claude Code、Cursor subagent、Copilot CLI / IDE。
+- **Slack on_demand**：僅 `exception: slack-delegate`；見 optional PROTOCOL-v3。
 
 ### Slack Workflow Builder
 
-- **角色**：入口（shortcut、排程、表單），輸出結構化需求到頻道/thread。
-- **executor**：`manual`（見 workflow spec 中 `setup_workflow_shortcut`）。
+- **角色**：可選入口（shortcut、表單）→ 產出需求文字；由人貼入 `docs/tasks/` 或 `[feature]`。
+- **executor**：`manual`。
 
-### 協作 Bot（Claude、Codex 等）
-
-- **觸發**：Cursor 在 thread 內 `@mention`（見 roster）。
-- **不可假設**：已安裝於 workspace 或已加入頻道——執行前查 roster 的 `channel_status`。
-
-### GitHub App（`@github` / `<@U0B3VUN3QA1>`）
-
-Slack 內**只有一個** GitHub bot；整合與 Copilot coding agent 共用此 mention（見 [slack-bot-mention-tests.md](slack-bot-mention-tests.md)）。
-
-**整合模式**（slash）
-
-- **觸發**：`/github subscribe|open|close|help`…
-- **可做**：訂閱通知、開/關 issue、將 **既有 PR** 的 thread 脈絡同步進 PR。
-
-**Copilot coding agent 模式**（on_demand）
-
-- **觸發**：`<@U0B3VUN3QA1>` + 自然語言任務（例：`In owner/repo, …`）；**勿**用純文字 `@GitHub Copilot`（非 Slack mention）。
-- **可做**：讀整串 thread、非同步寫 code、開 PR、issue 草稿（需 Copilot 訂閱與 repo write）。
-- **分工**：Cursor 主控 repo 與 `docs/progress.md`；Copilot 負責委派出去的實作。
-- **參考**：[Copilot cloud agent + Slack](https://docs.github.com/copilot/how-tos/use-copilot-agents/coding-agent/integrate-coding-agent-with-slack)
-- **與 @Cursor**：同一任務擇一，避免重複開 PR。
-
-## 步驟契約（對應 workflow spec）
+## 步驟契約（v4）
 
 | Step ID | Action | Executor | 輸入 | 輸出 |
 |---------|--------|----------|------|------|
-| `intake` | `slack.thread.read` | cursor | `channel_id`, `thread_ts` | 需求摘要 |
-| `create_issue` | `github.issue.create` | cursor | `title`, `body` | issue URL |
-| `create_branch` | `github.branch.create` | cursor | `branch_name` | branch ref |
-| `notify_agents` | `slack.thread.message`（**notify_handoff**） | cursor | `mentions_from: agent-roster` | thread 訊息 |
-| `update_progress` | `github.file.update` | cursor | `path: docs/progress.md` | commit |
-| `setup_workflow_shortcut` | `slack.workflow.builder` | manual | runbook | Slack workflow ID |
+| `plan` | 撰寫/更新規格 | human / cursor | 需求 | `docs/plan.md`（可選） |
+| `task` | 建立任務檔 | cursor | 驗收條件 | `docs/tasks/T-*.md` |
+| `execute` | 本機實作 | cursor / claude-code / subagent | task 檔 | code + commit |
+| `progress` | 更新進度 | cursor | 狀態 | `docs/progress.md` commit |
+| `mirror` | Slack 鏡像 | cursor | progress URL | `[status]` 訊息 |
+| `pr` | 開 PR / 合併 | cursor + `gh` | branch | PR URL |
 
-## Branch + 任務文件 handoff（建議模式）
+## 任務文件（取代 Slack handoff 正文）
 
-編排者（Cursor IDE）在 **push 前** 完成：
+1. `docs/tasks/T-xxx.md` 含 Context、Executor、Acceptance、Status。
+2. **git push** 後才視為可執行/可鏡像。
+3. 編排者在本機依 `Executor` 欄位派工（非 Slack mention）。
 
-1. `git checkout -b feature/...`（或 `test/...`）
-2. 撰寫 `docs/agent-handoff/PROTOCOL-v3.md` 與 `docs/agent-handoff/tasks/v2/TASK-<executor>.md`
-3. `git push -u origin <branch>`
-4. Slack **每 bot 一則**，含 `branch=`、任務檔 **GitHub blob URL**、交付路徑、**完成後 `@Cursor` + `handoff-complete` 格式**（見 [agent-handoff/COMPLETION-REPORT.md](agent-handoff/COMPLETION-REPORT.md)）
+## Slack 規則
 
-**v2 交付契約**（可複審）：
+1. 產品頻道預設只發 `[status]`、`[feature]`、`[decision]`。
+2. `[status]` **不得**含 `@Cursor`、`@codex`、`@claude`、`@github`。
+3. Legacy `[handoff]` 僅見 optional PROTOCOL-v3 + 例外紀錄。
 
-| Agent | 交付 |
-|-------|------|
-| Codex / @Cursor / @github | **PR** → 實驗 branch + `artifacts/v2/*-deliverable.md`（`status: ready_for_review`） |
-| Claude | **Slack** 結構化審閱（`verdict:`），不要求 commit |
+## 完成定義
 
-編排者複審：[agent-handoff/ORCHESTRATOR-REVIEW.md](agent-handoff/ORCHESTRATOR-REVIEW.md)。  
-**Worktree** 僅編排者本機用；勿在 Slack 寫本機路徑。
-
-## `slack.thread.message` 規則（notify_handoff）
-
-**不是** sub-agent 自動執行佇列。Slack 只轉發 `app_mention` 給被 @ 的 App；各 bot 依**自家產品邏輯**回應。實測見 [slack-bot-mention-tests.md](slack-bot-mention-tests.md)。
-
-1. 從 [agent-roster.md](agent-roster.md) 解析 `mention` 與 `role`。
-2. 僅 mention `channel_status: joined` 的 bot；頻道內 **Claude/Codex/Copilot 須先完成 App 頻道綁 repo**（人工設定）。
-3. 使用 [slack-bot-mention-tests.md](slack-bot-mention-tests.md) 的 **invoke 模板**，勿只寫「請 Claude 審閱」。
-4. 預設 handoff：Claude、Codex；**GitHub Copilot 實作**僅 `on_demand`（`<@U0B3VUN3QA1>` + 任務）。
-5. 訊息需含：issue 連結、branch 名、下一步；Codex 可能仍會附帶開 task。
-
-範例：
-
-```markdown
-**編排更新**（Cursor）
-- Issue: https://github.com/{{GITHUB_FULL_REPO}}/issues/N
-- Branch: `feature/bootstrap`
-- 請 <@U0B404P284S> 審閱、<@U0B411CESCR> 實作
-- （若需 GitHub Copilot 實作）<@U0B3VUN3QA1> In {{GITHUB_FULL_REPO}}, …
-```
-
-## GitHub 寫入規則
-
-- Issue title/body 來自 Slack thread 摘要。
-- `docs/progress.md` 每次狀態變更必更新（時間、issue、branch、狀態）。
-- PR 描述需連回 Slack thread permalink（若有）。
-
-## 安全與隱私
-
-- 私有頻道搜尋使用 `slack_search_public_and_private` 前需使用者同意。
-- 不在 Slack 貼 secrets、token、`.env` 內容。
+- 任務檔 `Status: done`
+- `docs/progress.md` 已更新並 push
+- PR 合併或明確標記 blocked
+- 可選：`[status]` 已鏡像至 Slack

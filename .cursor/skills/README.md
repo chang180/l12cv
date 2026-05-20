@@ -1,13 +1,16 @@
-# Cursor Skills — AI Orchestrator
+# Cursor Skills — AI Orchestrator（v4 local-first）
 
-**帶到新專案（例如 l12cv）只需要複製本目錄。**
+**帶到新專案只需要複製本目錄。**
 
 ```bash
 cp -R /path/to/ai-orchestrator-workflow-demo/.cursor/skills /path/to/your-project/.cursor/
 ```
 
-不必複製 demo repo 的 `docs/`、`.cursor/rules/`、`.worktrees/`。  
-在目標專案對 Cursor 說一句話，由 skill **bootstrap** 產生 rules 與 docs。
+不必複製 demo repo 的 `docs/`、`.cursor/rules/`。  
+在目標專案對 Cursor 執行 **bootstrap** 產生 v4 文件。
+
+可攜驗收：[ai-orchestrator/PORTABILITY.md](ai-orchestrator/PORTABILITY.md)  
+v3 升級：[ai-orchestrator/MIGRATION-v3-to-v4.md](ai-orchestrator/MIGRATION-v3-to-v4.md)
 
 ---
 
@@ -15,8 +18,8 @@ cp -R /path/to/ai-orchestrator-workflow-demo/.cursor/skills /path/to/your-projec
 
 | Skill | 用途 |
 |-------|------|
-| [**ai-orchestrator/**](ai-orchestrator/) | 編排、handoff、GitHub、`docs/` + `rules` bootstrap |
-| [**slack-orchestrator/**](slack-orchestrator/) | Slack 工作區治理（可選，建議 devstream-core 共用） |
+| [**ai-orchestrator/**](ai-orchestrator/) | v4 本機編排、bootstrap、`docs/WORKFLOW-v4.md` |
+| [**slack-orchestrator/**](slack-orchestrator/) | Slack 頻道治理、v4 charter（可選） |
 
 ---
 
@@ -26,7 +29,7 @@ cp -R /path/to/ai-orchestrator-workflow-demo/.cursor/skills /path/to/your-projec
 
 ```bash
 DEMO=/path/to/ai-orchestrator-workflow-demo
-TARGET=/path/to/l12cv   # 你的專案
+TARGET=/path/to/your-project
 
 mkdir -p "$TARGET/.cursor"
 cp -R "$DEMO/.cursor/skills" "$TARGET/.cursor/"
@@ -35,24 +38,27 @@ cp -R "$DEMO/.cursor/skills" "$TARGET/.cursor/"
 ### 2. Bootstrap（在目標專案開 Cursor）
 
 ```text
-請依 ai-orchestrator/bootstrap.md 初始化本 repo：
-產生 .cursor/rules/orchestrator.mdc 與 docs/。
-Slack 產品頻道：#10-proj-l12cv（請用 MCP 查 channel_id）。
+請依 ai-orchestrator/bootstrap.md 初始化本 repo v4 orchestrator。
+Slack 產品頻道：#10-proj-你的專案（請用 MCP 查 channel_id）。
 ```
 
-Agent 會讀 `ai-orchestrator/templates/`，寫入：
+產物含：`docs/WORKFLOW-v4.md`、`docs/progress.md`、`docs/tasks/_TEMPLATE.md`、`.cursor/rules/orchestrator.mdc`（見 `manifest.json` v2.0.0）
 
-- `.cursor/rules/orchestrator.mdc`
-- `docs/agent-roster.md`
-- `docs/agent-handoff/PROTOCOL-v3.md`
-- `docs/slack-handoff-template.md`
-- `docs/progress.md`
-- …（見 `ai-orchestrator/templates/manifest.json`）
+### 3. 人工收尾
 
-### 3. 人工收尾（一次性）
+- 開 / 確認產品頻道、Pin v4 charter
+- 第一筆本機 `docs/tasks/T-001-*.md` + push `progress.md`
+- Slack 發 `[status]`（**勿 @ bot**）
 
-- Slack `/invite` bots、`@Cursor settings`、Pin charter
-- 第一次 `[feature]` → push task → `[handoff]` E2E
+---
+
+## v4 與 v3 差異（摘要）
+
+| | v3 | v4 |
+|---|----|-----|
+| 派工 | Slack `[handoff]` | 本機 `docs/tasks/*.md` |
+| 進度 | 掃 thread | `docs/progress.md` |
+| Slack | execute | **`[status]`** 鏡像 |
 
 ---
 
@@ -60,16 +66,15 @@ Agent 會讀 `ai-orchestrator/templates/`，寫入：
 
 | 路徑 | 原因 |
 |------|------|
-| `docs/` | 由 bootstrap 在目標 repo 產生 |
+| `docs/` | bootstrap 在目標 repo 產生 |
 | `.cursor/rules/` | 同上 |
-| `.worktrees/` | demo 本機實驗，勿帶 |
-| `.workflow-specs/` | 可選；bootstrap 可產生 |
+| `.worktrees/` | demo 本機實驗 |
 
 ---
 
-## 本 demo repo 是什麼
+## 本 demo repo
 
-`ai-orchestrator-workflow-demo` 的 **完整 AI demo**：skills 是**原始碼**，根目錄的 `docs/`、`rules/` 是**已跑過 E2E 的實例**（含歷史），給你對照用，不是給你 copy 的。
+`ai-orchestrator-workflow-demo` 根目錄 `docs/` 是 **living demo**（含 E2E 歷史），供對照；**不是**可攜包的一部分。
 
 ---
 
