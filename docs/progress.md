@@ -7,8 +7,8 @@
 | 欄位 | 值 |
 |------|-----|
 | **Workflow** | v4 local-first |
-| **Phase** | bootstrap verify |
-| **狀態** | in_progress |
+| **Phase** | bootstrap complete |
+| **狀態** | ready |
 | **Branch** | `main` |
 | **Slack 產品頻道** | `#10-proj-l12cv`（`C0B47UBS2HH`） |
 | **Repo** | `chang180/l12cv` |
@@ -19,15 +19,15 @@
 
 | Task | Status | Executor | Notes |
 |------|--------|----------|-------|
-| T-001-bootstrap-v4 | in_progress | cursor | skills v4 portability E2E |
+| T-001-bootstrap-v4 | done | cursor | skills v4 portability E2E |
 
 ## 里程碑
 
 - [x] ai-orchestrator skill bootstrap（v3）
 - [x] Claude Code web session 綁定 `chang180/l12cv`
 - [x] **v4 skills** 複製 + `docs/WORKFLOW-v4.md`、tasks、rules
-- [ ] T-001 完成 + push
-- [ ] 首則 v4 Slack `[status]`（無 @ bot）
+- [x] T-001 完成 + push
+- [x] 首則 v4 Slack `[status]`（無 @ bot）
 - [ ] Pin v4 charter（`docs/slack-handoff-template.md` §2）
 
 ## Claude Code on the web（選用）

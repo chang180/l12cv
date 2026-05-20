@@ -17,13 +17,13 @@ local: cursor
 - [x] `docs/WORKFLOW-v4.md` 存在
 - [x] `docs/tasks/_TEMPLATE.md` 存在
 - [x] `.cursor/rules/orchestrator.mdc` 為 v4 條款
-- [ ] `docs/progress.md` 更新並 push
-- [ ] Slack `[status]` 已鏡像（無 @ bot）
+- [x] `docs/progress.md` 更新並 push
+- [x] Slack `[status]` 已鏡像（無 @ bot）
 
 ## Status
 
 ```text
-in_progress
+done
 ```
 
 ## Notes
