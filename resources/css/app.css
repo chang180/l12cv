@@ -91,7 +91,7 @@ select:focus[data-flux-control] {
         max-width: none !important;
     }
 
-    .print-card {
+    .print-card:not(.print-section) {
         break-inside: avoid;
         page-break-inside: avoid;
         border: 1px solid #e5e7eb !important;
@@ -99,8 +99,32 @@ select:focus[data-flux-control] {
     }
 
     .print-section {
+        break-inside: auto;
+        page-break-inside: auto;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: none !important;
+    }
+
+    .print-section-header {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    .print-item {
         break-inside: avoid;
         page-break-inside: avoid;
+    }
+
+    .print-page .prose p,
+    .print-page .prose li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    .print-page,
+    .print-page * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     .print-page a {

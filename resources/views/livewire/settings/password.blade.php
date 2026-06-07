@@ -44,6 +44,17 @@ new #[Layout('components.layouts.app')] class extends Component {
 
     <x-settings.layout heading="密碼設定" subheading="設定一組安全密碼，讓您在未使用 Google 時仍可登入">
         <form wire:submit="updatePassword" class="mt-6 space-y-6">
+            <input
+                type="text"
+                name="username"
+                value="{{ auth()->user()->email }}"
+                autocomplete="username"
+                tabindex="-1"
+                aria-hidden="true"
+                class="sr-only"
+                readonly
+            />
+
             <flux:input
                 wire:model="current_password"
                 id="update_password_current_passwordpassword"

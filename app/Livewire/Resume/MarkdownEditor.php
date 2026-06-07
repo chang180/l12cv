@@ -14,11 +14,22 @@ class MarkdownEditor extends Component
 
     public $placeholder = '開始撰寫您的履歷簡介...';
 
-    public function mount($content = '', $height = '300px', $placeholder = '開始撰寫您的履歷簡介...')
-    {
+    public string $parentEvent = 'update-parent-summary';
+
+    public mixed $context = null;
+
+    public function mount(
+        $content = '',
+        $height = '300px',
+        $placeholder = '開始撰寫您的履歷簡介...',
+        string $parentEvent = 'update-parent-summary',
+        mixed $context = null,
+    ): void {
         $this->content = $content;
         $this->height = $height;
         $this->placeholder = $placeholder;
+        $this->parentEvent = $parentEvent;
+        $this->context = $context;
         $this->editorId = 'markdown-editor-'.uniqid();
     }
 
@@ -28,11 +39,10 @@ class MarkdownEditor extends Component
         $this->dispatch('markdown-content-updated', $value);
     }
 
-    public function updateContent($content)
+    public function updateContent(string $content): void
     {
         $this->content = $content;
-        // 直接更新父組件的 summary 屬性
-        $this->dispatch('update-parent-summary', $content);
+        $this->dispatch($this->parentEvent, content: $content, context: $this->context);
     }
 
     public function render()

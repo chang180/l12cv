@@ -28,6 +28,7 @@
         $template = \App\Support\ResumeTemplates::resolve($resume->template ?? null);
         $templateClasses = \App\Support\ResumeTemplates::publicClasses($template['key']);
         $resumeProjects = $resume->user?->projects?->take(3) ?? collect();
+        $sortedExperience = \App\Support\ResumeExperience::sort($resume->experience ?? []);
     @endphp
 
     <div class="min-h-screen {{ $templateClasses['page'] }} print-page" data-resume-template="{{ $template['key'] }}">
@@ -74,7 +75,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         </button>
-                            
+
+                            @if (config('resume.downloads_enabled'))
                             <a 
                                 href="{{ route('resume.pdf', ['slug' => $resume->slug]) }}"
                                 target="_blank"
@@ -98,6 +100,7 @@
                             >
                                 <i class="fas fa-file-zipper text-xs"></i>
                             </a>
+                            @endif
                             <button
                                 type="button"
                                 onclick="window.print()"
@@ -176,6 +179,7 @@
                             </svg>
                         </button>
                         
+                        @if (config('resume.downloads_enabled'))
                         <a 
                             href="{{ route('resume.pdf', ['slug' => $resume->slug]) }}"
                             target="_blank"
@@ -200,6 +204,7 @@
                             <i class="fas fa-file-zipper"></i>
                             <span>下載全部</span>
                         </a>
+                        @endif
                         <button
                             type="button"
                             onclick="window.print()"
@@ -220,7 +225,7 @@
                 <!-- 個人資料卡片 -->
                 <div class="print-card bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="bg-gradient-to-r {{ $templateClasses['hero'] }} p-4 sm:p-6">
-                        <div class="flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
+                        <div class="print-item flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                             <div class="flex-shrink-0 mx-auto sm:mx-0">
                                 @if ($resume->user && $resume->user->avatar)
                                 <img src="{{ Storage::url($resume->user->avatar) }}"
@@ -251,7 +256,7 @@
                     </div>
                     
                     <!-- 統計資訊 -->
-                    <div class="p-4 sm:p-6 bg-gray-50 dark:bg-gray-700/50">
+                    <div class="p-4 sm:p-6 bg-gray-50 dark:bg-gray-700/50 print-item">
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                             <div class="text-center">
                                 <div class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 rounded-full bg-blue-100 dark:bg-blue-900/50">
@@ -289,13 +294,13 @@
                 @if (!empty($resume->certifications))
                 <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="p-4 sm:p-6">
-                        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
+                        <h2 class="print-section-header text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center sm:justify-start">
                             <i class="fas fa-certificate mr-2 sm:mr-3 text-amber-600 dark:text-amber-400 text-sm sm:text-base"></i>
                             證照和認證
                         </h2>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             @foreach ($resume->certifications as $certification)
-                                <div class="rounded-xl border border-amber-100 bg-amber-50 px-4 py-4 dark:border-amber-800 dark:bg-amber-900/30">
+                                <div class="print-item rounded-xl border border-amber-100 bg-amber-50 px-4 py-4 dark:border-amber-800 dark:bg-amber-900/30">
                                     <div class="font-semibold text-amber-950 dark:text-amber-100">{{ $certification['name'] ?? '' }}</div>
                                     @if (!empty($certification['issuer']))
                                         <div class="mt-1 text-sm text-amber-800 dark:text-amber-200">{{ $certification['issuer'] }}</div>
@@ -325,7 +330,7 @@
                 @if ($resumeProjects->isNotEmpty())
                 <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
                     <div class="p-4 sm:p-6">
-                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+                        <div class="print-section-header flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
                             <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center justify-center sm:justify-start">
                                 <i class="fas fa-diagram-project mr-2 sm:mr-3 text-purple-600 dark:text-purple-400 text-sm sm:text-base"></i>
                                 專案經驗
@@ -337,7 +342,7 @@
                         </div>
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                             @foreach ($resumeProjects as $project)
-                                <a href="{{ route('portfolio.project.detail', ['slug' => $resume->user->slug, 'project' => $project->id]) }}" class="group rounded-xl border border-purple-100 bg-purple-50 px-4 py-4 transition-all duration-200 hover:border-purple-200 hover:bg-purple-100 dark:border-purple-800 dark:bg-purple-900/30 dark:hover:bg-purple-900/50">
+                                <a href="{{ route('portfolio.project.detail', ['slug' => $resume->user->slug, 'project' => $project->id]) }}" class="print-item group rounded-xl border border-purple-100 bg-purple-50 px-4 py-4 transition-all duration-200 hover:border-purple-200 hover:bg-purple-100 dark:border-purple-800 dark:bg-purple-900/30 dark:hover:bg-purple-900/50">
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="min-w-0">
                                             <div class="font-semibold text-purple-950 dark:text-purple-100 group-hover:text-purple-700 dark:group-hover:text-purple-200">
@@ -412,7 +417,7 @@
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             @foreach ($resume->languages as $language)
-                                <div class="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 dark:border-indigo-800 dark:bg-indigo-900/30">
+                                <div class="print-item rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 dark:border-indigo-800 dark:bg-indigo-900/30">
                                     <div class="font-semibold text-indigo-900 dark:text-indigo-100">{{ $language['name'] ?? '' }}</div>
                                     <div class="text-sm text-indigo-700 dark:text-indigo-300">{{ $language['level'] ?? '基礎' }}</div>
                                 </div>
@@ -425,7 +430,7 @@
                 <!-- 學歷背景 -->
                 @if (!empty($resume->education))
                 <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
-                    <div class="bg-gradient-to-r {{ $templateClasses['sectionEducation'] }} px-4 sm:px-6 py-3 sm:py-4">
+                    <div class="print-section-header bg-gradient-to-r {{ $templateClasses['sectionEducation'] }} px-4 sm:px-6 py-3 sm:py-4">
                         <h2 class="text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start">
                             <i class="fas fa-graduation-cap mr-2 sm:mr-3 text-sm sm:text-base"></i>
                             學歷背景
@@ -434,7 +439,7 @@
                     <div class="p-4 sm:p-6">
                         <div class="space-y-4 sm:space-y-6">
                             @foreach ($resume->education as $index => $edu)
-                            <div class="relative pb-4 sm:pb-6 last:pb-0">
+                            <div class="print-item relative pb-4 sm:pb-6 last:pb-0">
                                 <!-- 時間軸線 -->
                                 @if($index < count($resume->education) - 1)
                                 <div class="absolute left-5 sm:left-6 top-10 sm:top-12 w-0.5 h-full bg-gradient-to-b from-blue-200 to-blue-100 dark:from-blue-800 dark:to-blue-900"></div>
@@ -480,9 +485,9 @@
                 @endif
 
                 <!-- 工作經驗 -->
-                @if (!empty($resume->experience))
+                @if (!empty($sortedExperience))
                 <div class="print-card print-section bg-white dark:bg-gray-800 {{ $templateClasses['card'] }} shadow-xl overflow-hidden {{ $templateClasses['spacing'] }} border border-gray-100 dark:border-gray-700">
-                    <div class="bg-gradient-to-r {{ $templateClasses['sectionExperience'] }} px-4 sm:px-6 py-3 sm:py-4">
+                    <div class="print-section-header bg-gradient-to-r {{ $templateClasses['sectionExperience'] }} px-4 sm:px-6 py-3 sm:py-4">
                         <h2 class="text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start">
                             <i class="fas fa-briefcase mr-2 sm:mr-3 text-sm sm:text-base"></i>
                             工作經驗
@@ -490,10 +495,10 @@
                     </div>
                     <div class="p-4 sm:p-6">
                         <div class="space-y-4 sm:space-y-6">
-                            @foreach ($resume->experience as $index => $exp)
-                            <div class="relative pb-4 sm:pb-6 last:pb-0">
+                            @foreach ($sortedExperience as $index => $exp)
+                            <div class="print-item relative pb-4 sm:pb-6 last:pb-0">
                                 <!-- 時間軸線 -->
-                                @if($index < count($resume->experience) - 1)
+                                @if($index < count($sortedExperience) - 1)
                                 <div class="absolute left-5 sm:left-6 top-10 sm:top-12 w-0.5 h-full bg-gradient-to-b from-green-200 to-green-100 dark:from-green-800 dark:to-green-900"></div>
                                 @endif
                                 
@@ -532,9 +537,9 @@
                                                 </div>
                                             </div>
                                             @if (!empty($exp['description']))
-                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
-                                                {{ $exp['description'] }}
-                                            </p>
+                                            <div class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none">
+                                                {!! \App\Helpers\MarkdownHelper::toHtmlWithDarkMode($exp['description']) !!}
+                                            </div>
                                             @endif
                                         </div>
                                     </div>

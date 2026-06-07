@@ -36,6 +36,17 @@ new class extends Component {
 
     <flux:modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable class="max-w-lg">
         <form wire:submit="deleteUser" class="space-y-6">
+            <input
+                type="text"
+                name="username"
+                value="{{ auth()->user()->email }}"
+                autocomplete="username"
+                tabindex="-1"
+                aria-hidden="true"
+                class="sr-only"
+                readonly
+            />
+
             <div>
                 <flux:heading size="lg">{{ __('確定要刪除帳號嗎？') }}</flux:heading>
 
@@ -44,7 +55,7 @@ new class extends Component {
                 </flux:subheading>
             </div>
 
-            <flux:input wire:model="password" id="password" label="{{ __('密碼') }}" type="password" name="password" />
+            <flux:input wire:model="password" id="password" label="{{ __('密碼') }}" type="password" name="password" autocomplete="current-password" />
 
             <div class="flex justify-end space-x-2">
                 <flux:modal.close>

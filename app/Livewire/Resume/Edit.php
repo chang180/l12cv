@@ -36,6 +36,10 @@ class Edit extends Component
 
     public $currentTab = 'basic';
 
+    public $statusMessage = '';
+
+    public int $statusMessageToken = 0;
+
     protected $listeners = ['update-parent-summary' => 'handleParentSummaryUpdate'];
 
     public function mount($resumeId = null)
@@ -99,9 +103,13 @@ class Edit extends Component
         ]);
         $this->resume->recordVersion('basic.updated');
 
-        session()->flash('status', '✅ 基本資料已更新');
+        $this->showStatus('✅ 基本資料已更新');
+    }
 
-        // 滾動到頁面頂部
+    protected function showStatus(string $message): void
+    {
+        $this->statusMessage = $message;
+        $this->statusMessageToken++;
         $this->dispatch('scroll-to-top');
     }
 
@@ -263,6 +271,8 @@ class Edit extends Component
         ]);
         $this->resume->recordVersion('education.updated');
 
+        $this->showStatus('✅ 學歷資料已更新');
+
         $this->dispatch('notify', [
             'message' => '學歷資料已更新',
             'type' => 'success',
@@ -293,6 +303,8 @@ class Edit extends Component
             'experience' => $this->experience,
         ]);
         $this->resume->recordVersion('experience.updated');
+
+        $this->showStatus('✅ 工作經驗已更新');
 
         $this->dispatch('notify', [
             'message' => '工作經驗已更新',

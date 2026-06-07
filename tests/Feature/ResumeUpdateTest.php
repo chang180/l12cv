@@ -3,6 +3,7 @@
 use App\Livewire\Resume\Edit;
 use App\Models\User;
 use Livewire\Livewire;
+use Livewire\Volt\Volt;
 
 test('用戶可以更新履歷基本資料', function () {
     // 創建用戶（UserObserver 會自動創建履歷）
@@ -134,4 +135,31 @@ test('用戶可以更新證照和認證並清理空白項目', function () {
             'url' => 'https://example.com/cert',
         ],
     ]);
+});
+
+test('用戶儲存學歷後會看到成功提示', function () {
+    $user = User::factory()->create();
+
+    $user->resume->update([
+        'education' => [
+            [
+                'school' => '舊學校',
+                'degree' => '學士',
+                'field' => '資訊工程',
+                'start_date' => '2018-09-01',
+                'end_date' => '2022-06-30',
+                'description' => '',
+            ],
+        ],
+    ]);
+
+    Volt::actingAs($user)
+        ->test('resume.edit')
+        ->set('education.0.school', '新學校')
+        ->call('updateEducation')
+        ->assertHasNoErrors()
+        ->assertSet('statusMessage', '✅ 學歷資料已更新')
+        ->assertSee('✅ 學歷資料已更新');
+
+    expect($user->resume->fresh()->education[0]['school'])->toBe('新學校');
 });

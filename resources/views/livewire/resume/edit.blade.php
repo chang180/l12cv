@@ -2,12 +2,19 @@
 use function Livewire\Volt\{state, mount, on, layout};
 use App\Helpers\MarkdownHelper;
 use App\Models\Resume;
+use App\Support\ResumeExperience;
 use App\Support\ResumeTemplates;
 use Illuminate\Validation\Rule;
 
 layout('components.layouts.app');
 
-state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'skills' => [], 'languages' => [], 'certifications' => [], 'education' => [], 'experience' => [], 'currentTab' => 'basic']);
+state(['resume' => null, 'title' => '', 'summary' => '', 'template' => ResumeTemplates::DEFAULT, 'templateOptions' => ResumeTemplates::all(), 'skills' => [], 'languages' => [], 'certifications' => [], 'education' => [], 'experience' => [], 'currentTab' => 'basic', 'statusMessage' => '', 'statusMessageToken' => 0]);
+
+$showStatus = function (string $message) {
+    $this->statusMessage = $message;
+    $this->statusMessageToken++;
+    $this->dispatch('scroll-to-top');
+};
 
 mount(function () {
     $this->resume = auth()->user()->resume;
@@ -19,7 +26,7 @@ mount(function () {
         $this->languages = $this->resume->languages ?? [];
         $this->certifications = $this->resume->certifications ?? [];
         $this->education = $this->resume->education ?? [];
-        $this->experience = $this->resume->experience ?? [];
+        $this->experience = ResumeExperience::sort($this->resume->experience ?? []);
     } else {
         // 新用戶，保持空欄位
         $this->title = '';
@@ -45,9 +52,7 @@ $updateBasicInfo = function () {
     ]);
     $this->resume->recordVersion('basic.updated');
 
-    session()->flash('status', '✅ 基本資料已更新');
-
-    $this->dispatch('scroll-to-top');
+    $showStatus('✅ 基本資料已更新');
 };
 
 $autoSaveBasicInfo = function () {
@@ -186,7 +191,9 @@ $removeEducation = function ($index) {
 $updateEducation = function () {
     $this->resume->update(['education' => $this->education]);
     $this->resume->recordVersion('education.updated');
-    
+
+    $showStatus('✅ 學歷資料已更新');
+
     $this->dispatch('notify', [
         'message' => '學歷資料已更新',
         'type' => 'success',
@@ -210,9 +217,12 @@ $removeExperience = function ($index) {
 };
 
 $updateExperience = function () {
+    $this->experience = ResumeExperience::sort($this->experience);
     $this->resume->update(['experience' => $this->experience]);
     $this->resume->recordVersion('experience.updated');
-    
+
+    $showStatus('✅ 工作經驗已更新');
+
     $this->dispatch('notify', [
         'message' => '工作經驗已更新',
         'type' => 'success',
@@ -230,7 +240,7 @@ $shouldShowCurrentOption = function ($index) {
     return true;
 };
 
-on(['update-parent-summary' => function ($content) {
+on(['update-parent-summary' => function (string $content) {
     $this->summary = $content;
 
     if ($this->resume) {
@@ -239,18 +249,52 @@ on(['update-parent-summary' => function ($content) {
         $this->dispatch('auto-saved');
     }
 }]);
+
 ?>
 
 <div
     class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
-    x-data="{ autoSavedAt: null }"
+    x-data="{
+        autoSavedAt: null,
+        resizeTextarea(el) {
+            if (! el) {
+                return;
+            }
+
+            el.style.height = 'auto';
+            el.style.height = `${el.scrollHeight}px`;
+        },
+        async saveBasicInfo() {
+            if (typeof window.flushMarkdownEditors === 'function') {
+                await window.flushMarkdownEditors();
+            }
+
+            await $wire.call('updateBasicInfo');
+        },
+    }"
     x-on:auto-saved.window="autoSavedAt = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })"
 >
-    <!-- Flash Messages -->
-    @if (session('status'))
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <!-- Status Messages -->
+    @if ($this->statusMessage)
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"
+            wire:key="resume-edit-status-{{ $this->statusMessageToken }}"
+            x-data="{ visible: true }"
+            x-init="
+                const fadeMs = 500;
+                const visibleMs = 4000;
+                setTimeout(() => {
+                    visible = false;
+                    setTimeout(() => $wire.set('statusMessage', ''), fadeMs);
+                }, visibleMs);
+            "
+            x-show="visible"
+            x-transition:leave="transition ease-in duration-500"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+        >
             <flux:callout icon="check-circle" color="green" variant="success">
-                <flux:callout.heading>{{ session('status') }}</flux:callout.heading>
+                <flux:callout.heading>{{ $this->statusMessage }}</flux:callout.heading>
             </flux:callout>
         </div>
     @endif
@@ -358,9 +402,12 @@ on(['update-parent-summary' => function ($content) {
                                 </div>
                                 <div>
                                     <p class="text-xs font-medium text-slate-500 dark:text-slate-400">簡介</p>
-                                    <div class="prose prose-slate dark:prose-invert mt-2 max-h-44 max-w-none overflow-hidden text-sm">
+                                    <div
+                                        class="prose prose-slate dark:prose-invert mt-2 max-h-44 max-w-none overflow-hidden text-sm"
+                                        wire:key="summary-preview-{{ md5($summary) }}"
+                                    >
                                         @if(trim((string) $summary) !== '')
-                                            {!! MarkdownHelper::toHtmlWithDarkMode($summary) !!}
+                                            {!! MarkdownHelper::getPreviewHtml($summary) !!}
                                         @else
                                             <p class="text-slate-500 dark:text-slate-400">尚未填寫簡介</p>
                                         @endif
@@ -512,10 +559,11 @@ on(['update-parent-summary' => function ($content) {
                                     <div class="flex justify-end pt-6 space-x-4">
             <!-- 更新基本資料按鈕 -->
             <button
-                wire:click="updateBasicInfo"
+                type="button"
                 wire:loading.attr="disabled"
                 wire:loading.class="opacity-50 cursor-not-allowed"
-                type="button"
+                wire:target="updateBasicInfo"
+                x-on:click="saveBasicInfo()"
                 class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 w-full sm:w-auto min-w-[160px]"
             >
                 <i class="fas fa-check-circle text-sm" wire:loading.remove wire:target="updateBasicInfo"></i>
@@ -859,7 +907,27 @@ on(['update-parent-summary' => function ($content) {
                                         </div>
                                         <div class="mt-4">
                                             <flux:label>工作描述</flux:label>
-                                            <flux:textarea wire:model="experience.{{ $index }}.description" rows="3" />
+                                            <div
+                                                class="mt-2"
+                                                wire:key="experience-description-{{ $index }}"
+                                                x-init="$nextTick(() => {
+                                                    const textarea = $el.querySelector('textarea');
+
+                                                    if (! textarea) {
+                                                        return;
+                                                    }
+
+                                                    resizeTextarea(textarea);
+                                                })"
+                                            >
+                                                <flux:textarea
+                                                    wire:model="experience.{{ $index }}.description"
+                                                    rows="3"
+                                                    placeholder="描述您的工作內容、主要職責與成果..."
+                                                    class="min-h-24 resize-none overflow-hidden"
+                                                    @input="resizeTextarea($event.target)"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -873,11 +941,20 @@ on(['update-parent-summary' => function ($content) {
                                         <span>新增工作經驗</span>
                                     </button>
                                     <button 
-                                        wire:click="updateExperience" 
-                                        class="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 active:scale-95 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
+                                        type="button"
+                                        wire:click="updateExperience"
+                                        wire:loading.attr="disabled"
+                                        wire:target="updateExperience"
+                                        class="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 active:scale-95 disabled:opacity-60 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 min-w-[160px]"
                                     >
-                                        <i class="fas fa-check-circle text-sm"></i>
-                                        <span>儲存工作經驗</span>
+                                        <span wire:loading.remove wire:target="updateExperience" class="inline-flex items-center gap-2">
+                                            <i class="fas fa-check-circle text-sm"></i>
+                                            <span>儲存工作經驗</span>
+                                        </span>
+                                        <span wire:loading wire:target="updateExperience" class="inline-flex items-center gap-2">
+                                            <i class="fas fa-spinner fa-spin text-sm"></i>
+                                            <span>儲存中...</span>
+                                        </span>
                                     </button>
                                 </div>
                             </div>

@@ -14,7 +14,7 @@
 | **Repo** | `chang180/l12cv` |
 | **Claude Slack thread** | `1779200466.309049`（legacy；v4 本機優先） |
 | **Slack progress thread** | （建議 Pin `[status-thread]` 後填入 `thread_ts`） |
-| **最後更新** | 2026-05-20 |
+| **最後更新** | 2026-06-07 |
 
 ## 進行中任務
 
@@ -44,6 +44,16 @@
 | — | — | — |
 
 ## 日誌
+
+### 2026-06-07
+
+- **履歷顯示與列印改進**（`.ai-dev/resume-improvements/`）— 已 commit：
+  - 預設隱藏公開履歷 PDF/DOCX/ZIP 下載（`config/resume.php`），保留列印
+  - 工作經驗最新在前（`ResumeExperience::sort()`）
+  - 列印 CSS `print-item` / `print-section-header`
+  - 編輯頁儲存提示（`statusMessage` 淡出）、學歷/工作經驗/基本資料 UX 修正
+  - 工作描述改 textarea；簡介保留 Markdown 編輯器；公開預覽 `soft_break` 換行
+  - 測試：`ResumeExperienceTest`、`ResumeEditPreviewTest`、`ResumeUpdateTest`、`PostUpgradeWalkthroughTest`
 
 ### 2026-05-20
 

@@ -120,14 +120,14 @@ test('public resume portfolio project and pdf pages render with seeded content',
         ->assertSee('查看完整作品集')
         ->assertSee('#SaaS')
         ->assertSee('列印')
-        ->assertSee('下載 DOCX')
-        ->assertSee('下載全部')
+        ->assertDontSee('下載 DOCX')
+        ->assertDontSee('下載全部')
         ->assertSee('Tailwind CSS')
         ->assertSee('英文')
         ->assertSee('流利')
         ->assertSee('AWS Certified Developer')
         ->assertSee('Amazon Web Services')
-        ->assertSee('下載 PDF');
+        ->assertDontSee('下載 PDF');
 
     $this->get('/p/test-user')
         ->assertOk()
